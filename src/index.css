@@ -11,3 +11,34 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+@font-face {
+	font-family: "NanumSquareNeo-Light";
+	src: url(./assets/font/NaverNanumSquareNeo/NanumSquareNeo/TTF/NanumSquareNeo-aLt.ttf);
+}
+@font-face {
+	font-family: "NanumSquareNeo-Regular";
+	src: url(./assets/font/NaverNanumSquareNeo/NanumSquareNeo/TTF/NanumSquareNeo-bRg.ttf);
+}
+
+@font-face {
+	font-family: "NanumSquareNeo-Bold";
+	src: url(./assets/font/NaverNanumSquareNeo/NanumSquareNeo/TTF/NanumSquareNeo-cBd.ttf);
+}
+@font-face {
+	font-family: "NanumSquareNeo-Extrabold";
+	src: url(./assets/font/NaverNanumSquareNeo/NanumSquareNeo/TTF/NanumSquareNeo-dEb.ttf);
+}
+@font-face {
+	font-family: "NanumSquareNeo-Heavy";
+	src: url(./assets/font/NaverNanumSquareNeo/NanumSquareNeo/TTF/NanumSquareNeo-eHv.ttf);
+}
+
+:root {
+	--font-l: "NanumSquareNeo-Light";
+  --font-r: "NanumSquareNeo-Regular";
+  --font-b: "NanumSquareNeo-Bold";
+  --font-e: "NanumSquareNeo-Extrabold";
+  --font-h: "NanumSquareNeo-Heavy";
+}

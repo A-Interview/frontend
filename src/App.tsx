@@ -1,11 +1,12 @@
 import React from "react";
 import MainPage from "./pages/MainPage";
-
+import GlobalStyle from "./style/GlobalStyle";
 function App(): JSX.Element {
   return (
-    <div>
+    <>
+      <GlobalStyle />
       <MainPage />
-    </div>
+    </>
   );
 }
 
