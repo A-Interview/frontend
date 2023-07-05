@@ -9,6 +9,8 @@ const NavBarBackGround = styled.div`
   justify-content: space-between;
   position: absolute;
   top: 0;
+  padding-right: 2em;
+  padding-left: 2em;
 `;
 
 const NavBarTitle = styled.h1`
@@ -35,12 +37,33 @@ const TitleInform = styled.div`
 `;
 const NavItem1 = styled.a`
   margin: auto;
+  font-family: var(--font-r);
+  color: #fff;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: none;
 `;
 const NavItem2 = styled.a`
   margin: auto;
+  font-family: var(--font-r);
+  color: #fff;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: none;
 `;
 const NavItem3 = styled.a`
   margin: auto;
+  font-family: var(--font-r);
+  color: #fff;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: none;
 `;
 
 const LoginButton = styled.button`
@@ -54,31 +77,14 @@ const LoginButton = styled.button`
   color: #fff;
   text-align: center;
   font-size: 1.125rem;
-  font-family: NanumSquare Neo OTF;
+  font-family: var(--font-r);
   font-style: normal;
   font-weight: 400;
   line-height: 134.766%;
   margin: auto;
-`;
-/*
-const StartButton = styled.button`
-  border-radius: 0.5625rem;
-  border: 1px solid #fff;
-  box-shadow: 0px 3px 8px 0px #000;
-  border-radius: 0.3125rem;
-  width: 12.5rem;
-  height: 3.75rem;
   background: transparent;
-  color: #fff;
-  text-align: center;
-  font-size: 1.375rem;
-  font-family: font(--font-b);
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  margin-top: 2rem;
-  margin-bottom: 10em;
-`; */
+`;
+
 const NavBar = (): JSX.Element => {
   return (
     <NavBarBackGround>

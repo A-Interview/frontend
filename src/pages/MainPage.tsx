@@ -69,7 +69,7 @@ const StartButton = styled.button`
   color: #fff;
   text-align: center;
   font-size: 1.375rem;
-  font-family: font(--font-b);
+  font-family: var(--font-b);
   font-style: normal;
   font-weight: 700;
   line-height: normal;
