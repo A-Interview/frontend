@@ -1,4 +1,5 @@
 import React from "react";
+import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import MainImage1 from "../assets/img/MainPageImage1.png";
 import MainImage2 from "../assets/img/MainPageImage2.png";
@@ -86,6 +87,7 @@ const MainPageBackGround2 = styled.img`
 const MainPage = (): JSX.Element => {
   return (
     <div>
+      <NavBar></NavBar>
       <MainPageBackGround>
         <TitleInfo>
           <Title>A-Interview</Title>
