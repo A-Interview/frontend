@@ -1,13 +1,15 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
 
-function App() {
+function App(): JSX.Element {
+  const hi = 0;
+
   return (
     <div className="App">
       <header className="App-header">
         <img className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Edit <code>src/App.tsx {hi}</code> and save to reload.
         </p>
         <a
           className="App-link"
