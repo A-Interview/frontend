@@ -3,6 +3,7 @@ import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import MainImage1 from "../assets/img/MainPageImage1.png";
 import MainImage2 from "../assets/img/MainPageImage2.png";
+import { Link } from "react-router-dom";
 
 const MainPageBackGround = styled.div`
   background: linear-gradient(
@@ -75,6 +76,7 @@ const StartButton = styled.button`
   line-height: normal;
   margin-top: 2rem;
   margin-bottom: 10em;
+  cursor: pointer;
 `;
 
 const MainPageBackGround2 = styled.img`
@@ -83,7 +85,6 @@ const MainPageBackGround2 = styled.img`
   width: 100vw;
   height: 25.8125rem;
 `;
-
 const MainPage = (): JSX.Element => {
   return (
     <div>
@@ -98,7 +99,9 @@ const MainPage = (): JSX.Element => {
             Commencez dès maintenant le meilleur service dentretien dembauche.
           </TitleSubContent>
 
-          <StartButton>면접 시작</StartButton>
+          <Link to="/wating-room">
+            <StartButton>면접 시작</StartButton>
+          </Link>
         </TitleInfo>
         <MainPageImage src={MainImage1} />
         <MainPageBackGround2 src={MainImage2} />
