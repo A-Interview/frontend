@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import { ReactComponent as Blurry } from "../assets/img/Blurry.svg";
+// import { ReactComponent as Blurry } from "../assets/img/Blurry.svg";
 import StandByArch from "../assets/img/StandByArch.png";
 
 const BackWard = styled.div`
@@ -53,10 +53,10 @@ const StandByArchImg = styled.img`
 
 const StandByText = styled.p`
   width: 58%;
-  color: #86e7b8;
+  color: #fff;
   text-align: center;
   font-family: var(--font-r);
-  font-size: 4rem;
+  font-size: 2.7rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -66,6 +66,9 @@ const StandByText = styled.p`
   left: 21%;
   right: 10%;
   bottom: 2rem;
+  @media only screen and (max-width: 1300px) {
+    font-size: 2rem;
+  }
 `;
 
 const StandByButton = styled.button`
@@ -83,9 +86,13 @@ const StandByButton = styled.button`
   font-weight: 800;
   line-height: 134.766%;
   position: absolute;
-  top: 80%;
-  left: 42%;
+  bottom: 20%;
+  margin-left: auto;
+  margin-right: auto;
   background: transparent;
+
+  
+}
 `;
 
 const StandBy = (): JSX.Element => {
@@ -109,18 +116,27 @@ const StandBy = (): JSX.Element => {
         <StandByInfo>
           <div style={{ position: "relative" }}>
             <StandByBlurry />
-            <div style={{ position: "absolute", top: "5%", left: "5%" }}>
+            {/* <div style={{ position: "absolute", top: "5%", left: "5%" }}>
               <Blurry />
-            </div>
+            </div> */}
           </div>
 
           <StandByArchImg src={StandByArch} />
           <StandByText>
-            면접은 주변 소음이 없는 곳에서 진행해야 합니다. 긴장을 풀어주시고,
-            준비되면 시작하세요.
+            <span style={{ color: "#86e7b8" }}>면접</span>은 주변 소음이 없는
+            곳에서 진행해야 합니다. 긴장을 풀어주시고, 준비되면 시작하세요.
           </StandByText>
         </StandByInfo>
-        <StandByButton>면접 시작</StandByButton>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <StandByButton>면접 시작</StandByButton>
+        </div>
       </StandByBackground>
     </div>
   );
