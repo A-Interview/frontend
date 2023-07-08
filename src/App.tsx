@@ -8,6 +8,7 @@ import GlobalStyle from "./style/GlobalStyle";
 import WatingPage from "./pages/WatingPage";
 import InterviewResultPage from "./pages/InterviewResultPage";
 import MyPage from "./pages/MyPage";
+import InterviewProgressPage from "./pages/InterviewProgressPage";
 
 function App(): JSX.Element {
   return (
@@ -19,6 +20,7 @@ function App(): JSX.Element {
         <Route path="/wating-room" element={<WatingPage />} />
         <Route path="/interview-result" element={<InterviewResultPage />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/interview-progress" element={<InterviewProgressPage />} />
       </Routes>
     </>
   );
