@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-// import { ReactComponent as Blurry } from "../assets/img/Blurry.svg";
+import { ReactComponent as Blurry } from "../assets/img/Blurry.svg";
 import StandByArch from "../assets/img/StandByArch.png";
 
 const BackWard = styled.div`
@@ -17,7 +17,7 @@ const BackWard = styled.div`
   top: 1.5rem;
 `;
 const StandByBackground = styled.div`
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   background: #060434;
   position: relative;
@@ -116,9 +116,11 @@ const StandBy = (): JSX.Element => {
         <StandByInfo>
           <div style={{ position: "relative" }}>
             <StandByBlurry />
-            {/* <div style={{ position: "absolute", top: "5%", left: "5%" }}>
-              <Blurry />
-            </div> */}
+            {
+              <div style={{ position: "absolute", top: "5%", left: "5%" }}>
+                <Blurry />
+              </div>
+            }
           </div>
 
           <StandByArchImg src={StandByArch} />
