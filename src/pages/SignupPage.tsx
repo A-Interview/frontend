@@ -29,7 +29,7 @@ const LoginStarsimg = styled.img`
 const LoginQuote = styled.p`
   color: #fff;
   text-align: center;
-  font-family: NanumSquare Neo;
+  font-family: var(--font-r);
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 400;
@@ -37,25 +37,22 @@ const LoginQuote = styled.p`
 `;
 const LoginBoxImg = styled.img`
   width: 29rem;
-  height: 35.25rem;
+  height: 32.25rem;
   margin-left: 6rem;
 `;
 const LoginTitle = styled.p`
   display: flex;
   text-align: center;
-  //width: 7.5625rem;
-  height: 2.1875rem;
-  //flex-direction: column;
+  height: 1rem;
   flex-shrink: 0;
   color: #fff;
-  font-family: NanumSquare Neo OTF;
+  font-family: var(--font-r);
   font-size: 1.5625rem;
   font-style: normal;
   font-weight: 900;
   line-height: 140.625%;
   margin-top: 4rem;
   margin-bottom: 1rem;
-  //margin-left: 11rem;
 `;
 const Form = styled.form`
   display: flex;
@@ -64,52 +61,16 @@ const Form = styled.form`
   align-items: center;
   width: 30rem;
 `;
-const Input1 = styled.div`
+const Input = styled.input`
   width: 22.74931rem;
-  height: 4.55425rem;
+  height: 3.5rem;
   flex-shrink: 0;
   border-radius: 1.625rem;
   border: 1px solid #000;
   background: #fff;
-  //margin-left: 3.5rem;
-  //margin-top: 10rem;
   color: rgba(0, 0, 0, 0.5);
-  font-family: Roboto;
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 350%;
-  padding-left: 20px;
-`;
-const Input2 = styled.div`
-  width: 22.74931rem;
-  height: 4.55425rem;
-  flex-shrink: 0;
-  border-radius: 1.625rem;
-  border: 1px solid #000;
-  background: #fff;
-  //margin-left: 3.5rem;
-  //margin-top: 1rem;
-  color: rgba(0, 0, 0, 0.5);
-  font-family: Roboto;
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 350%;
-  padding-left: 20px;
-`;
-const Input3 = styled.div`
-  width: 22.74931rem;
-  height: 4.55425rem;
-  flex-shrink: 0;
-  border-radius: 1.625rem;
-  border: 1px solid #000;
-  background: #fff;
-  //margin-left: 3.5rem;
-  //margin-top: 1rem;
-  color: rgba(0, 0, 0, 0.5);
-  font-family: Roboto;
-  font-size: 1.25rem;
+  font-family: var(--font-r);
+  font-size: 1rem;
   font-style: normal;
   font-weight: 400;
   line-height: 350%;
@@ -139,13 +100,9 @@ const Account = styled.div`
   color: white;
   line-height: normal;
   text-decoration-line: underline;
-  //display: flex;
   width: 26.25rem;
   height: 4.25rem;
-  //flex-direction: column;
-  //justify-content: center;
   flex-shrink: 0;
-  //margin-left: 1.5rem;
 `;
 const SignupPage = (): JSX.Element => {
   return (
@@ -215,9 +172,9 @@ const SignupPage = (): JSX.Element => {
             >
               <LoginTitle>회원가입</LoginTitle>
               <Form>
-                <Input1>이메일 입력</Input1>
-                <Input2>비밀번호 입력</Input2>
-                <Input3>비밀번호 재입력</Input3>
+                <Input placeholder="아이디를 입력해주세요." />
+                <Input placeholder="비밀번호를 입력해주세요." />
+                <Input placeholder="비밀번호를 한번 더 입력해주세요." />
               </Form>
               <Button
                 type="submit"
