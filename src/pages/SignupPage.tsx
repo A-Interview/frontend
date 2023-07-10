@@ -43,9 +43,7 @@ const LoginBoxImg = styled.img`
 const LoginTitle = styled.p`
   display: flex;
   text-align: center;
-  //width: 7.5625rem;
-  height: 2.1875rem;
-  //flex-direction: column;
+  height: 1rem;
   flex-shrink: 0;
   color: #fff;
   font-family: var(--font-r);
@@ -55,12 +53,11 @@ const LoginTitle = styled.p`
   line-height: 140.625%;
   margin-top: 4rem;
   margin-bottom: 1rem;
-  //margin-left: 11rem;
 `;
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
   align-items: center;
   width: 30rem;
 `;
@@ -93,7 +90,6 @@ const Button = styled.button`
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
-  margin-top: 1rem;
 `;
 const Account = styled.div`
   text-align: center;
@@ -104,15 +100,11 @@ const Account = styled.div`
   color: white;
   line-height: normal;
   text-decoration-line: underline;
-  //display: flex;
   width: 26.25rem;
   height: 4.25rem;
-  //flex-direction: column;
-  //justify-content: center;
   flex-shrink: 0;
-  //margin-left: 1.5rem;
 `;
-const LoginPage = (): JSX.Element => {
+const SignupPage = (): JSX.Element => {
   return (
     <>
       <ProgressBackground
@@ -178,19 +170,20 @@ const LoginPage = (): JSX.Element => {
                 left: "5.5rem",
               }}
             >
-              <LoginTitle>로그인</LoginTitle>
+              <LoginTitle>회원가입</LoginTitle>
               <Form>
-                <Input placeholder="아이디 입력" />
-                <Input placeholder="비밀번호 입력" />
+                <Input placeholder="아이디를 입력해주세요." />
+                <Input placeholder="비밀번호를 입력해주세요." />
+                <Input placeholder="비밀번호를 한번 더 입력해주세요." />
               </Form>
               <Button
                 type="submit"
                 // onClick={handleSubmit}
               >
-                로그인
+                가입하기
               </Button>
-              <Link to="/signup">
-                <Account>계정이 없으신가요?</Account>
+              <Link to="/login">
+                <Account>계정이 이미 있으신가요?</Account>
               </Link>
             </div>
           </div>
@@ -199,4 +192,4 @@ const LoginPage = (): JSX.Element => {
     </>
   );
 };
-export default LoginPage;
+export default SignupPage;

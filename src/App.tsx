@@ -10,7 +10,7 @@ import InterviewResultPage from "./pages/InterviewResultPage";
 import MyPage from "./pages/MyPage";
 import InterviewProgressPage from "./pages/InterviewProgressPage";
 import LoginPage from "./pages/LoginPage";
-import LoginBox from "./components/LoginBox";
+import SignupPage from "./pages/SignupPage";
 
 function App(): JSX.Element {
   return (
@@ -24,7 +24,7 @@ function App(): JSX.Element {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/interview-progress" element={<InterviewProgressPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/loginbox" element={<LoginBox />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Routes>
     </>
   );
