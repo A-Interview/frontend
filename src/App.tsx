@@ -7,6 +7,10 @@ import GlobalStyle from "./style/GlobalStyle";
 
 import WatingPage from "./pages/WatingPage";
 import InterviewResultPage from "./pages/InterviewResultPage";
+import MyPage from "./pages/MyPage";
+import InterviewProgressPage from "./pages/InterviewProgressPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 
 function App(): JSX.Element {
   return (
@@ -17,6 +21,10 @@ function App(): JSX.Element {
         <Route path="/standby" element={<StandBy />} />
         <Route path="/wating-room" element={<WatingPage />} />
         <Route path="/interview-result" element={<InterviewResultPage />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/interview-progress" element={<InterviewProgressPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Routes>
     </>
   );
