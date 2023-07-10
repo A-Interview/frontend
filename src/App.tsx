@@ -7,6 +7,7 @@ import GlobalStyle from "./style/GlobalStyle";
 
 import WatingPage from "./pages/WatingPage";
 import InterviewResultPage from "./pages/InterviewResultPage";
+import MyPage from "./pages/MyPage";
 import InterviewProgressPage from "./pages/InterviewProgressPage";
 import LoginPage from "./pages/LoginPage";
 import LoginBox from "./components/LoginBox";
@@ -20,6 +21,7 @@ function App(): JSX.Element {
         <Route path="/standby" element={<StandBy />} />
         <Route path="/wating-room" element={<WatingPage />} />
         <Route path="/interview-result" element={<InterviewResultPage />} />
+        <Route path="/mypage" element={<MyPage />} />
         <Route path="/interview-progress" element={<InterviewProgressPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/loginbox" element={<LoginBox />} />
