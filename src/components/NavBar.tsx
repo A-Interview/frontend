@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const NavBarBackGround = styled.div`
   display: flex;
@@ -93,7 +94,15 @@ const NavBar = (): JSX.Element => {
         <NavItem1 href="MyPage">마이페이지</NavItem1>
         <NavItem2 href="Link1">링크 1</NavItem2>
         <NavItem3 href="Link2">링크 2</NavItem3>
-        <LoginButton>로그인</LoginButton>
+        <Link
+          to="/login"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <LoginButton>로그인</LoginButton>
+        </Link>
       </TitleInform>
     </NavBarBackGround>
   );
