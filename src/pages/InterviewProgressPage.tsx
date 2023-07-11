@@ -26,6 +26,8 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
+  cursor: pointer;
+  z-index: 1;
 `;
 
 const ProgressBox1 = styled.div`
@@ -147,7 +149,7 @@ const ProgressNextButtonBox = styled.button`
 
 const ProgressNextButtonText = styled.p`
   display: flex;
-  width: 8.75rem;
+  width: 5.75rem;
   flex-direction: column;
   justify-content: center;
   flex-shrink: 0;
@@ -158,6 +160,7 @@ const ProgressNextButtonText = styled.p`
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
+  cursor: pointer;
 `;
 
 const InterviewProgressPage = (): JSX.Element => {

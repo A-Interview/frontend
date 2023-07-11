@@ -24,6 +24,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 5rem;
+  cursor: pointer;
 `;
 
 const Background = styled.div`

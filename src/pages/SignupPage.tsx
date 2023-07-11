@@ -21,6 +21,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
+  cursor: pointer;
 `;
 const LoginStarsimg = styled.img`
   width: 72.78869rem;
@@ -90,6 +91,7 @@ const Button = styled.button`
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
+  cursor: pointer;
 `;
 const Account = styled.div`
   text-align: center;
@@ -103,6 +105,7 @@ const Account = styled.div`
   width: 26.25rem;
   height: 4.25rem;
   flex-shrink: 0;
+  cursor: pointer;
 `;
 const SignupPage = (): JSX.Element => {
   return (

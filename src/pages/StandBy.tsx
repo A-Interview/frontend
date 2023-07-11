@@ -2,6 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import { ReactComponent as Blurry } from "../assets/img/Blurry.svg";
 import StandByArch from "../assets/img/StandByArch.png";
+import { Link } from "react-router-dom";
 
 const BackWard = styled.div`
   display: inline-flex;
@@ -15,6 +16,9 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
+  cursor: pointer;
+
+  z-index: 1;
 `;
 const StandByBackground = styled.div`
   width: 100vw;
@@ -77,7 +81,6 @@ const StandByButton = styled.button`
   flex-shrink: 0;
   border-radius: 5rem;
   box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
-
   color: #fff;
   text-align: center;
   font-family: var(--font-r);
@@ -87,11 +90,11 @@ const StandByButton = styled.button`
   line-height: 134.766%;
   position: absolute;
   bottom: 20%;
+  left:37%;
   margin-left: auto;
   margin-right: auto;
   background: transparent;
-
-  
+  cursor: pointer;
 }
 `;
 
@@ -117,7 +120,7 @@ const StandBy = (): JSX.Element => {
           <div style={{ position: "relative" }}>
             <StandByBlurry />
             {
-              <div style={{ position: "absolute", top: "5%", left: "5%" }}>
+              <div style={{ position: "absolute", top: "5%", left: "-12%" }}>
                 <Blurry />
               </div>
             }
@@ -137,7 +140,9 @@ const StandBy = (): JSX.Element => {
             width: "100%",
           }}
         >
-          <StandByButton>면접 시작</StandByButton>
+          <Link to="/interview-progress">
+            <StandByButton>면접 시작</StandByButton>
+          </Link>
         </div>
       </StandByBackground>
     </div>
