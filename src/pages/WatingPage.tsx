@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import FileAddImage from "../assets/img/FileAddImage.png";
+import { Link, useNavigate } from "react-router-dom";
 
 const Background = styled.div`
   background: #060434;
@@ -89,10 +90,12 @@ const FileAddButton = styled.div`
   width: 45%;
   display: flex;
   align-items: center;
+  cursor: pointer;
 `;
 
 const FileAddImg = styled.img`
   margin-left: 1rem;
+  cursor: pointer;
 `;
 
 const Text = styled.p`
@@ -104,6 +107,7 @@ const Text = styled.p`
   font-weight: 700;
   line-height: 127.075%;
   margin: auto;
+  cursor: pointer;
 `;
 
 const InfoFirst = styled.p`
@@ -149,6 +153,8 @@ const QuestionCreate = styled.button`
   line-height: 134.766%;
   position: fixed;
   bottom: 2.5rem;
+  right: 40%;
+  cursor: pointer;
 `;
 
 const BackWard = styled.div`
@@ -163,11 +169,17 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
+  cursor: pointer;
 `;
 const WatingPage = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  const handleGoBack = (): any => {
+    navigate(-1); // 뒤로가기
+  };
   return (
     <>
-      <BackWard>
+      <BackWard onClick={handleGoBack}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -273,8 +285,9 @@ const WatingPage = (): JSX.Element => {
             </div>
           </div>
         </div>
-
-        <QuestionCreate>면접 생성</QuestionCreate>
+        <Link to="/StandBy">
+          <QuestionCreate>면접 생성</QuestionCreate>
+        </Link>
       </Background>
     </>
   );

@@ -7,6 +7,7 @@ import ProgressTimerBox from "../assets/img/ProgressTimerBox.png";
 import ProgressTimerBox2 from "../assets/img/ProgressTimer2Box.png";
 import ProgressRobot from "../assets/img/ProgressRobot.gif";
 import ProgressTimer2 from "../assets/img/ProgressTimer2.png";
+import { useNavigate } from "react-router";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -26,6 +27,8 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
+  cursor: pointer;
+  z-index: 1;
 `;
 
 const ProgressBox1 = styled.div`
@@ -147,7 +150,7 @@ const ProgressNextButtonBox = styled.button`
 
 const ProgressNextButtonText = styled.p`
   display: flex;
-  width: 8.75rem;
+  width: 5.75rem;
   flex-direction: column;
   justify-content: center;
   flex-shrink: 0;
@@ -158,13 +161,19 @@ const ProgressNextButtonText = styled.p`
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
+  cursor: pointer;
 `;
 
 const InterviewProgressPage = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  const handleGoBack = (): any => {
+    navigate(-1); // 뒤로가기
+  };
   return (
     <>
       <ProgressBackground>
-        <BackWard>
+        <BackWard onClick={handleGoBack}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

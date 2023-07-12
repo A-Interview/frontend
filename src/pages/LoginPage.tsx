@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const ProgressBackground = styled.div`
   width: 100vw;
   height: 100vh;
@@ -21,6 +21,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
+  cursor: pointer;
 `;
 const LoginStarsimg = styled.img`
   width: 72.78869rem;
@@ -43,9 +44,7 @@ const LoginBoxImg = styled.img`
 const LoginTitle = styled.p`
   display: flex;
   text-align: center;
-  //width: 7.5625rem;
   height: 2.1875rem;
-  //flex-direction: column;
   flex-shrink: 0;
   color: #fff;
   font-family: var(--font-r);
@@ -55,7 +54,6 @@ const LoginTitle = styled.p`
   line-height: 140.625%;
   margin-top: 4rem;
   margin-bottom: 1rem;
-  //margin-left: 11rem;
 `;
 const Form = styled.form`
   display: flex;
@@ -94,6 +92,7 @@ const Button = styled.button`
   font-weight: 800;
   line-height: 134.766%;
   margin-top: 1rem;
+  cursor: pointer;
 `;
 const Account = styled.div`
   text-align: center;
@@ -104,15 +103,19 @@ const Account = styled.div`
   color: white;
   line-height: normal;
   text-decoration-line: underline;
-  //display: flex;
   width: 26.25rem;
   height: 4.25rem;
-  //flex-direction: column;
-  //justify-content: center;
   flex-shrink: 0;
-  //margin-left: 1.5rem;
+
+  cursor: pointer;
 `;
+
 const LoginPage = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  const handleGoBack = (): any => {
+    navigate(-1); // 뒤로가기
+  };
   return (
     <>
       <ProgressBackground
@@ -121,7 +124,7 @@ const LoginPage = (): JSX.Element => {
           justifyContent: "center",
         }}
       >
-        <BackWard>
+        <BackWard onClick={handleGoBack}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -135,6 +138,7 @@ const LoginPage = (): JSX.Element => {
             />
           </svg>
         </BackWard>
+
         <div
           style={{
             display: "flex",

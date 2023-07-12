@@ -4,6 +4,7 @@ import { styled } from "styled-components";
 import MyPageImage1 from "../assets/img/MyPageImage1.png";
 import MyPageImage2 from "../assets/img/MyPageImage2.png";
 import MyPageImage3 from "../assets/img/MyPageImage3.png";
+import { useNavigate } from "react-router";
 
 const MyPageContainer = styled.div`
   background: #01001a;
@@ -24,6 +25,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 5rem;
+  cursor: pointer;
 `;
 
 const Background = styled.div`
@@ -184,9 +186,14 @@ const ResultBox = styled.div`
 `;
 
 const MyPage = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  const handleGoBack = (): any => {
+    navigate(-1); // 뒤로가기
+  };
   return (
     <MyPageContainer>
-      <BackWard>
+      <BackWard onClick={handleGoBack}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"

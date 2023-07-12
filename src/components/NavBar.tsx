@@ -14,15 +14,16 @@ const NavBarBackGround = styled.div`
   padding-left: 2em;
 `;
 
-const NavBarTitle = styled.h1`
+const NavBarTitle = styled.div`
   color: #fff;
   font-size: 1.3125rem;
-  font-family: NanumSquare Neo OTF;
+  font-family: var(--font-e);
   font-style: normal;
   font-weight: 700;
   line-height: normal;
   text-transform: uppercase;
   overflow: visible;
+  cursor: pointer;
 `;
 
 const TitleInform = styled.div`
@@ -30,7 +31,7 @@ const TitleInform = styled.div`
   flex-direction: row;
   color: #fff;
   font-size: 1.125rem;
-  font-family: NanumSquare Neo OTF;
+  font-family: var(--font-r);
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -45,6 +46,7 @@ const NavItem1 = styled.a`
   font-weight: 400;
   line-height: normal;
   text-decoration-line: none;
+  cursor: pointer;
 `;
 const NavItem2 = styled.a`
   margin: auto;
@@ -55,6 +57,7 @@ const NavItem2 = styled.a`
   font-weight: 400;
   line-height: normal;
   text-decoration-line: none;
+  cursor: pointer;
 `;
 const NavItem3 = styled.a`
   margin: auto;
@@ -65,6 +68,7 @@ const NavItem3 = styled.a`
   font-weight: 400;
   line-height: normal;
   text-decoration-line: none;
+  cursor: pointer;
 `;
 
 const LoginButton = styled.button`
@@ -84,16 +88,26 @@ const LoginButton = styled.button`
   line-height: 134.766%;
   margin: auto;
   background: transparent;
+  cursor: pointer;
 `;
 
 const NavBar = (): JSX.Element => {
   return (
     <NavBarBackGround>
-      <NavBarTitle>A-Interview</NavBarTitle>
+      <Link
+        to="/"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          textDecoration: "none",
+        }}
+      >
+        <NavBarTitle>A-Interview</NavBarTitle>
+      </Link>
       <TitleInform>
         <NavItem1 href="MyPage">마이페이지</NavItem1>
-        <NavItem2 href="Link1">링크 1</NavItem2>
-        <NavItem3 href="Link2">링크 2</NavItem3>
+        <NavItem2 href="/">링크 1</NavItem2>
+        <NavItem3 href="/">링크 2</NavItem3>
         <Link
           to="/login"
           style={{
