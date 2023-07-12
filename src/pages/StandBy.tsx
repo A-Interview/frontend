@@ -48,10 +48,12 @@ const StandByBlurry = styled.svg`
 `;
 
 const StandByArchImg = styled.img`
-  width: 100%;
-  height: 40.75rem;
+  width: 105%;
+  height: auto;
+  display: flex;
   position: absolute;
   top: 10rem;
+  right: -41px;
   align-items: center;
 `;
 
@@ -90,12 +92,11 @@ const StandByButton = styled.button`
   line-height: 134.766%;
   position: absolute;
   bottom: 20%;
-  left:37%;
+  left: 37%;
   margin-left: auto;
   margin-right: auto;
   background: transparent;
   cursor: pointer;
-}
 `;
 
 const StandBy = (): JSX.Element => {
