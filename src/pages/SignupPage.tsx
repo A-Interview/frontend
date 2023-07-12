@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const ProgressBackground = styled.div`
   width: 100vw;
   height: 100vh;
@@ -108,6 +108,11 @@ const Account = styled.div`
   cursor: pointer;
 `;
 const SignupPage = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  const handleGoBack = (): any => {
+    navigate(-1); // 뒤로가기
+  };
   return (
     <>
       <ProgressBackground
@@ -116,7 +121,7 @@ const SignupPage = (): JSX.Element => {
           justifyContent: "center",
         }}
       >
-        <BackWard>
+        <BackWard onClick={handleGoBack}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

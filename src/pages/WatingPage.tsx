@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import FileAddImage from "../assets/img/FileAddImage.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Background = styled.div`
   background: #060434;
@@ -172,9 +172,14 @@ const BackWard = styled.div`
   cursor: pointer;
 `;
 const WatingPage = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  const handleGoBack = (): any => {
+    navigate(-1); // 뒤로가기
+  };
   return (
     <>
-      <BackWard>
+      <BackWard onClick={handleGoBack}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
