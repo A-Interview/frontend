@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState, type ChangeEvent } from "react";
 import { styled } from "styled-components";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { userState } from "../recoil/atom";
+import axios from "axios";
+
 const ProgressBackground = styled.div`
   width: 100vw;
   height: 100vh;
@@ -109,9 +113,47 @@ const Account = styled.div`
 `;
 const SignupPage = (): JSX.Element => {
   const navigate = useNavigate();
+  const [email, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPasswordcheck] = useState("");
+  const setUser = useSetRecoilState(userState);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
+  };
+  const handleSignUp = (): void => {
+    setUser({
+      email,
+      password,
+      password2,
+    });
+    if (password === password2) {
+      window.alert("똑같아요!!!!!!!!!!!!!");
+      axios
+        .post("/api/users/register/", { email, password })
+        .then((response) => {
+          window.alert("회원가입에 성공하였습니다. 어서오세요!");
+        })
+        .catch((error: Error) => {
+          window.alert("회원가입에 실패하였습니다.");
+          console.error(error);
+        });
+    } else {
+      window.alert("비밀번호를 다시 확인해주세요..");
+    }
+  };
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setId(e.target.value);
+  };
+
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setPassword(e.target.value);
+  };
+
+  const handlePasswordCheckChange = (
+    e: ChangeEvent<HTMLInputElement>
+  ): void => {
+    setPasswordcheck(e.target.value);
   };
   return (
     <>
@@ -180,14 +222,26 @@ const SignupPage = (): JSX.Element => {
             >
               <LoginTitle>회원가입</LoginTitle>
               <Form>
-                <Input placeholder="아이디를 입력해주세요." />
-                <Input placeholder="비밀번호를 입력해주세요." />
-                <Input placeholder="비밀번호를 한번 더 입력해주세요." />
+                <Input
+                  placeholder="아이디를 입력해주세요."
+                  type="id"
+                  value={email}
+                  onChange={handleEmailChange}
+                />
+                <Input
+                  placeholder="비밀번호를 입력해주세요."
+                  type="password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                />
+                <Input
+                  placeholder="비밀번호를 한번 더 입력해주세요."
+                  type="password"
+                  value={password2}
+                  onChange={handlePasswordCheckChange}
+                />
               </Form>
-              <Button
-                type="submit"
-                // onClick={handleSubmit}
-              >
+              <Button type="submit" onClick={handleSignUp}>
                 가입하기
               </Button>
               <Link to="/login">
