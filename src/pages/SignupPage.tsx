@@ -1,16 +1,19 @@
-import React, { useState, type ChangeEvent } from "react";
+import React, { useState, type ChangeEvent, type FormEvent } from "react";
 import { styled } from "styled-components";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
 import { userState } from "../recoil/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
+import { signupState } from "../state/Atom";
 
 const ProgressBackground = styled.div`
   width: 100vw;
   height: 100vh;
   background: #060434;
+  display: flex;
+  justify-content: center;
   position: relative;
 `;
 const BackWard = styled.div`
@@ -43,7 +46,6 @@ const LoginQuote = styled.p`
 const LoginBoxImg = styled.img`
   width: 29rem;
   height: 32.25rem;
-  margin-left: 6rem;
 `;
 const LoginTitle = styled.p`
   display: flex;
@@ -56,13 +58,13 @@ const LoginTitle = styled.p`
   font-style: normal;
   font-weight: 900;
   line-height: 140.625%;
-  margin-top: 4rem;
+  margin-top: 2.5rem;
   margin-bottom: 1rem;
 `;
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.7rem;
   align-items: center;
   width: 30rem;
 `;
@@ -95,6 +97,7 @@ const Button = styled.button`
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
+  margin-top: 0.5rem;
   cursor: pointer;
 `;
 const Account = styled.div`
@@ -112,13 +115,47 @@ const Account = styled.div`
   cursor: pointer;
 `;
 const SignupPage = (): JSX.Element => {
+  const [user, setUser] = useRecoilState(signupState);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
+  const setSignupState = useSetRecoilState<boolean>(signupState);
+
   const navigate = useNavigate();
   const [email, setId] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPasswordcheck] = useState("");
   const setUser = useSetRecoilState(userState);
 
-  const handleGoBack = (): any => {
+  const handleSignUp = async (): Promise<void> => {
+    try {
+      const response = await axios.post("/api/users/register/", {
+        username,
+        email,
+        password,
+        password2,
+      });
+
+      setUser(response.data.user);
+      setSignupState(true);
+
+      console.log("회원가입 성공", user);
+      console.log("가입된 사용자:", response.data.user);
+    } catch (error) {
+      console.log("회원가입 실패:", error);
+    }
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    try {
+      await handleSignUp();
+    } catch (error) {
+      console.log("회원가입 실패:", error);
+    }
+  };
+  const handleGoBack = (): void => {
     navigate(-1); // 뒤로가기
   };
   const handleSignUp = (): void => {
@@ -157,12 +194,7 @@ const SignupPage = (): JSX.Element => {
   };
   return (
     <>
-      <ProgressBackground
-        style={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+      <ProgressBackground>
         <BackWard onClick={handleGoBack}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -206,6 +238,7 @@ const SignupPage = (): JSX.Element => {
           <div
             style={{
               display: "flex",
+              justifyContent: "center",
               position: "relative",
             }}
           >
@@ -216,34 +249,53 @@ const SignupPage = (): JSX.Element => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: "2rem",
-                left: "5.5rem",
+                gap: "1.5rem",
               }}
             >
               <LoginTitle>회원가입</LoginTitle>
-              <Form>
+              <Form
+                onSubmit={
+                  onSubmit as (e: React.FormEvent<HTMLFormElement>) => void
+                }
+              >
                 <Input
-                  placeholder="아이디를 입력해주세요."
-                  type="id"
+                  type="text"
+                  name="id"
+                  value={username}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setUsername(e.currentTarget.value);
+                  }}
+                  placeholder="사용자 이름을 입력해주세요."
+                />
+                <Input
+                  type="text"
+                  name="email"
                   value={email}
-                  onChange={handleEmailChange}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setEmail(e.currentTarget.value);
+                  }}
+                  placeholder="이메일을 입력해주세요."
                 />
                 <Input
-                  placeholder="비밀번호를 입력해주세요."
                   type="password"
+                  name="password"
                   value={password}
-                  onChange={handlePasswordChange}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setPassword(e.currentTarget.value);
+                  }}
+                  placeholder="비밀번호를 입력해주세요."
                 />
                 <Input
-                  placeholder="비밀번호를 한번 더 입력해주세요."
                   type="password"
+                  name="password2"
                   value={password2}
-                  onChange={handlePasswordCheckChange}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setPassword2(e.currentTarget.value);
+                  }}
+                  placeholder="비밀번호를 한번 더 입력해주세요."
                 />
+                <Button type="submit">가입하기</Button>
               </Form>
-              <Button type="submit" onClick={handleSignUp}>
-                가입하기
-              </Button>
               <Link to="/login">
                 <Account>계정이 이미 있으신가요?</Account>
               </Link>
