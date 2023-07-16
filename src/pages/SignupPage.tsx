@@ -3,7 +3,6 @@ import { styled } from "styled-components";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
-import { userState } from "../recoil/atom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
 import { signupState } from "../state/Atom";
@@ -123,10 +122,6 @@ const SignupPage = (): JSX.Element => {
   const setSignupState = useSetRecoilState<boolean>(signupState);
 
   const navigate = useNavigate();
-  const [email, setId] = useState("");
-  const [password, setPassword] = useState("");
-  const [password2, setPasswordcheck] = useState("");
-  const setUser = useSetRecoilState(userState);
 
   const handleSignUp = async (): Promise<void> => {
     try {
@@ -158,40 +153,7 @@ const SignupPage = (): JSX.Element => {
   const handleGoBack = (): void => {
     navigate(-1); // 뒤로가기
   };
-  const handleSignUp = (): void => {
-    setUser({
-      email,
-      password,
-      password2,
-    });
-    if (password === password2) {
-      window.alert("똑같아요!!!!!!!!!!!!!");
-      axios
-        .post("/api/users/register/", { email, password })
-        .then((response) => {
-          window.alert("회원가입에 성공하였습니다. 어서오세요!");
-        })
-        .catch((error: Error) => {
-          window.alert("회원가입에 실패하였습니다.");
-          console.error(error);
-        });
-    } else {
-      window.alert("비밀번호를 다시 확인해주세요..");
-    }
-  };
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setId(e.target.value);
-  };
 
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setPassword(e.target.value);
-  };
-
-  const handlePasswordCheckChange = (
-    e: ChangeEvent<HTMLInputElement>
-  ): void => {
-    setPasswordcheck(e.target.value);
-  };
   return (
     <>
       <ProgressBackground>
