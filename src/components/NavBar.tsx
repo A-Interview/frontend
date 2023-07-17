@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const NavBarBackGround = styled.div`
   display: flex;
@@ -71,7 +72,7 @@ const NavItem3 = styled.a`
   cursor: pointer;
 `;
 
-const LoginButton = styled.button`
+const LoginButton = styled(motion.button)`
   width: 8.75rem;
   height: 2.5rem;
   flex-shrink: 0;
@@ -115,7 +116,13 @@ const NavBar = (): JSX.Element => {
             justifyContent: "center",
           }}
         >
-          <LoginButton>로그인</LoginButton>
+          <LoginButton
+            whileHover={{ scale: 0.7 }}
+            whileTap={{ scale: 0.6 }}
+            transition={{ type: "spring", stiffness: 200, damping: 10 }}
+          >
+            로그인
+          </LoginButton>
         </Link>
       </TitleInform>
     </NavBarBackGround>
