@@ -120,7 +120,8 @@ const LoginPage = (): JSX.Element => {
   const setJwtState = useSetRecoilState(jwtState);
 
   const navigate = useNavigate();
-  const handleSignUp = async (): Promise<void> => {
+
+  const handleLogin = async (): Promise<void> => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL, {
         email,
@@ -139,6 +140,7 @@ const LoginPage = (): JSX.Element => {
         response.data.access,
         response.data.refresh
       );
+      navigate("/");
     } catch (error) {
       console.log("로그인 실패:", error);
     }
@@ -147,7 +149,7 @@ const LoginPage = (): JSX.Element => {
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     try {
-      await handleSignUp();
+      await handleLogin();
     } catch (error) {
       console.log("회원가입 실패:", error);
     }

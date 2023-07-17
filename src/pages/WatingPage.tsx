@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import FileAddImage from "../assets/img/FileAddImage.png";
 import { Link, useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { signupState } from "../state/Atom";
 
 const Background = styled.div`
   background: #060434;
@@ -43,6 +45,7 @@ const RightContainer = styled.div`
   background: url(${WatingPageImage2}), transparent 50% / cover no-repeat;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   filter: blur(1.5px);
+  background-size: cover;
 `;
 
 const RequestText = styled.p`
@@ -155,6 +158,7 @@ const QuestionCreate = styled.button`
   bottom: 2.5rem;
   right: 40%;
   cursor: pointer;
+  box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
 
 const BackWard = styled.div`
@@ -173,7 +177,13 @@ const BackWard = styled.div`
 `;
 const WatingPage = (): JSX.Element => {
   const navigate = useNavigate();
-
+  const signupnow = useRecoilValue(signupState);
+  useEffect(() => {
+    console.log(signupnow);
+    if (!signupnow) {
+      navigate("/login");
+    }
+  }, []);
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };

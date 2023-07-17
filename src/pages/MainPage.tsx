@@ -1,4 +1,6 @@
 import React from "react";
+import { motion, type Variants } from "framer-motion";
+import "animate.css";
 import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import MainImage1 from "../assets/img/MainPageImage1.png";
@@ -19,7 +21,7 @@ const MainPageBackGround = styled.div`
   flex-direction: row;
 `;
 
-const MainPageImage = styled.img`
+const MainPageImage = styled(motion.img)`
   width: 40.4375rem;
   height: 34.5625rem;
 `;
@@ -59,7 +61,7 @@ const TitleSubContent = styled.p`
   line-height: 140.625%;
 `;
 
-const StartButton = styled.button`
+const StartButton = styled(motion.button)`
   border-radius: 0.5625rem;
   border: 1px solid #fff;
   box-shadow: 0px 3px 8px 0px #000;
@@ -79,12 +81,30 @@ const StartButton = styled.button`
   cursor: pointer;
 `;
 
+const variants: Variants = {
+  hidden: {
+    opacity: 0.2,
+    y: 15,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 0.2,
+      duration: 0.8,
+      repeat: Infinity,
+      repeatType: "reverse",
+    },
+  },
+};
+
 const MainPageBackGround2 = styled.img`
   position: absolute;
   bottom: 0px;
   width: 100vw;
   height: 25.8125rem;
 `;
+
 const MainPage = (): JSX.Element => {
   return (
     <div>
@@ -100,10 +120,21 @@ const MainPage = (): JSX.Element => {
           </TitleSubContent>
 
           <Link to="/wating-room">
-            <StartButton>면접 시작</StartButton>
+            <StartButton
+              whileHover={{ scale: 1.3 }}
+              whileTap={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 20 }}
+            >
+              면접 시작
+            </StartButton>
           </Link>
         </TitleInfo>
-        <MainPageImage src={MainImage1} />
+        <MainPageImage
+          src={MainImage1}
+          initial="hidden"
+          animate="visible"
+          variants={variants}
+        />
         <MainPageBackGround2 src={MainImage2} />
       </MainPageBackGround>
     </div>
