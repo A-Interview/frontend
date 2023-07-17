@@ -43,6 +43,7 @@ const RightContainer = styled.div`
   background: url(${WatingPageImage2}), transparent 50% / cover no-repeat;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   filter: blur(1.5px);
+  background-size: cover;
 `;
 
 const RequestText = styled.p`
@@ -155,6 +156,7 @@ const QuestionCreate = styled.button`
   bottom: 2.5rem;
   right: 40%;
   cursor: pointer;
+  box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
 
 const BackWard = styled.div`

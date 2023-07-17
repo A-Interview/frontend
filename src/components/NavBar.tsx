@@ -117,8 +117,8 @@ const NavBar = (): JSX.Element => {
           }}
         >
           <LoginButton
-            whileHover={{ scale: 0.7 }}
-            whileTap={{ scale: 0.6 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
           >
             로그인

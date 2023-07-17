@@ -1,5 +1,6 @@
 import React from "react";
 import { motion, type Variants } from "framer-motion";
+import "animate.css";
 import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import MainImage1 from "../assets/img/MainPageImage1.png";
