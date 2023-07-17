@@ -120,6 +120,7 @@ const LoginPage = (): JSX.Element => {
   const setJwtState = useSetRecoilState(jwtState);
 
   const navigate = useNavigate();
+
   const handleSignUp = async (): Promise<void> => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL, {
@@ -139,6 +140,7 @@ const LoginPage = (): JSX.Element => {
         response.data.access,
         response.data.refresh
       );
+      navigate("/");
     } catch (error) {
       console.log("로그인 실패:", error);
     }

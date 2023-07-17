@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { signupState } from "../state/Atom";
 
 const NavBarBackGround = styled.div`
   display: flex;
@@ -92,6 +94,7 @@ const LoginButton = styled.button`
 `;
 
 const NavBar = (): JSX.Element => {
+  const signupnow = useRecoilValue(signupState);
   return (
     <NavBarBackGround>
       <Link
@@ -115,7 +118,11 @@ const NavBar = (): JSX.Element => {
             justifyContent: "center",
           }}
         >
-          <LoginButton>로그인</LoginButton>
+          {signupnow ? (
+            <LoginButton>로그 아웃</LoginButton>
+          ) : (
+            <LoginButton>로그인</LoginButton>
+          )}
         </Link>
       </TitleInform>
     </NavBarBackGround>
