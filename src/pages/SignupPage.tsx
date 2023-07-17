@@ -5,8 +5,7 @@ import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
-import { signupState } from "../state/Atom";
-
+import { signupState, jwtState } from "../state/Atom";
 const ProgressBackground = styled.div`
   width: 100vw;
   height: 100vh;
@@ -120,28 +119,28 @@ const SignupPage = (): JSX.Element => {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const setSignupState = useSetRecoilState<boolean>(signupState);
-
+  const [jwt, setJwtState] = useRecoilState(jwtState);
   const navigate = useNavigate();
-
   const handleSignUp = async (): Promise<void> => {
     try {
-      const response = await axios.post("/api/users/register/", {
+      const response = await axios.post(process.env.REACT_APP_API_URL_REG, {
         username,
         email,
         password,
         password2,
       });
-
       setUser(response.data.user);
       setSignupState(true);
-
-      console.log("회원가입 성공", user);
+      setJwtState({
+        access_token: response.data.access,
+        refresh_token: response.data.refresh,
+      });
+      console.log("회원가입 성공", user, jwt);
       console.log("가입된 사용자:", response.data.user);
     } catch (error) {
       console.log("회원가입 실패:", error);
     }
   };
-
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     try {
@@ -153,7 +152,6 @@ const SignupPage = (): JSX.Element => {
   const handleGoBack = (): void => {
     navigate(-1); // 뒤로가기
   };
-
   return (
     <>
       <ProgressBackground>
