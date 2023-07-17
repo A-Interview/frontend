@@ -1,7 +1,11 @@
-import React from "react";
+import React, { type FormEvent } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useRecoilState } from "recoil";
+import { signupState, jwtState } from "../state/Atom";
+
+import axios from "axios";
 
 const NavBarBackGround = styled.div`
   display: flex;
@@ -38,7 +42,7 @@ const TitleInform = styled.div`
   line-height: normal;
   gap: 2rem;
 `;
-const NavItem1 = styled.a`
+const NavItem1 = styled.div`
   margin: auto;
   font-family: var(--font-r);
   color: #fff;
@@ -48,6 +52,7 @@ const NavItem1 = styled.a`
   line-height: normal;
   text-decoration-line: none;
   cursor: pointer;
+  overflow: visible;
 `;
 const NavItem2 = styled.a`
   margin: auto;
@@ -93,6 +98,31 @@ const LoginButton = styled(motion.button)`
 `;
 
 const NavBar = (): JSX.Element => {
+  // 로그아웃 처리
+  const [signupnow, setSignupState] = useRecoilState(signupState);
+  const [jwt, setJwtState] = useRecoilState(jwtState);
+  const handleLogout = async (): Promise<void> => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_API_URL_OUT, {
+        refresh: jwt.refresh_token,
+      });
+
+      setSignupState(false);
+
+      console.log("로그아웃 성공", signupnow);
+      setJwtState(response.data.refresh);
+    } catch (error) {
+      console.log("로그아웃 실패:", error);
+    }
+  };
+  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    try {
+      await handleLogout();
+    } catch (error) {
+      console.log("로그아웃 실패:", error);
+    }
+  };
   return (
     <NavBarBackGround>
       <Link
@@ -106,24 +136,52 @@ const NavBar = (): JSX.Element => {
         <NavBarTitle>A-Interview</NavBarTitle>
       </Link>
       <TitleInform>
-        <NavItem1 href="MyPage">마이페이지</NavItem1>
+        <Link
+          to="/Mypage"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            textDecoration: "none",
+          }}
+        >
+          <NavItem1>마이페이지</NavItem1>
+        </Link>
         <NavItem2 href="/">링크 1</NavItem2>
         <NavItem3 href="/">링크 2</NavItem3>
-        <Link
-          to="/login"
+        <form
+          onSubmit={onSubmit as (e: React.FormEvent<HTMLFormElement>) => void}
           style={{
             display: "flex",
             justifyContent: "center",
           }}
         >
-          <LoginButton
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 1.1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 10 }}
-          >
-            로그인
-          </LoginButton>
-        </Link>
+          {signupnow ? (
+            <LoginButton
+              type="submit"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 10 }}
+            >
+              로그 아웃
+            </LoginButton>
+          ) : (
+            <Link
+              to="/login"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <LoginButton
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 10 }}
+              >
+                로그인
+              </LoginButton>
+            </Link>
+          )}
+        </form>
       </TitleInform>
     </NavBarBackGround>
   );

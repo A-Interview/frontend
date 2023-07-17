@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import FileAddImage from "../assets/img/FileAddImage.png";
 import { Link, useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { signupState } from "../state/Atom";
 
 const Background = styled.div`
   background: #060434;
@@ -175,7 +177,13 @@ const BackWard = styled.div`
 `;
 const WatingPage = (): JSX.Element => {
   const navigate = useNavigate();
-
+  const signupnow = useRecoilValue(signupState);
+  useEffect(() => {
+    console.log(signupnow);
+    if (!signupnow) {
+      navigate("/login");
+    }
+  }, []);
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
