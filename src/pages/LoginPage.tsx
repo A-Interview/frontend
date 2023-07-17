@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState, type ChangeEvent, type FormEvent } from "react";
 import { styled } from "styled-components";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
+import { useSetRecoilState, useRecoilState } from "recoil";
+import axios from "axios";
+import { signupState, jwtState } from "../state/Atom";
 const ProgressBackground = styled.div`
   width: 100vw;
   height: 100vh;
@@ -111,8 +114,44 @@ const Account = styled.div`
 `;
 
 const LoginPage = (): JSX.Element => {
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [signupnow, setSignupState] = useRecoilState(signupState);
+  const setJwtState = useSetRecoilState(jwtState);
 
+  const navigate = useNavigate();
+  const handleSignUp = async (): Promise<void> => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_API_URL, {
+        email,
+        password,
+      });
+
+      setSignupState(true);
+      setJwtState({
+        access_token: response.data.access,
+        refresh_token: response.data.refresh,
+      });
+
+      console.log("로그인 성공", signupnow);
+      console.log(
+        "가입된 사용자의 토큰:",
+        response.data.access,
+        response.data.refresh
+      );
+    } catch (error) {
+      console.log("로그인 실패:", error);
+    }
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    try {
+      await handleSignUp();
+    } catch (error) {
+      console.log("회원가입 실패:", error);
+    }
+  };
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
@@ -183,16 +222,31 @@ const LoginPage = (): JSX.Element => {
               }}
             >
               <LoginTitle>로그인</LoginTitle>
-              <Form>
-                <Input placeholder="아이디 입력" />
-                <Input placeholder="비밀번호 입력" />
-              </Form>
-              <Button
-                type="submit"
-                // onClick={handleSubmit}
+              <Form
+                onSubmit={
+                  onSubmit as (e: React.FormEvent<HTMLFormElement>) => void
+                }
               >
-                로그인
-              </Button>
+                <Input
+                  type="text"
+                  name="email"
+                  value={email}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setEmail(e.currentTarget.value);
+                  }}
+                  placeholder="이메일을 입력해주세요."
+                />
+                <Input
+                  type="password"
+                  name="password"
+                  value={password}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setPassword(e.currentTarget.value);
+                  }}
+                  placeholder="비밀번호를 입력해주세요."
+                />
+                <Button type="submit">로그인</Button>
+              </Form>
               <Link to="/signup">
                 <Account>계정이 없으신가요?</Account>
               </Link>

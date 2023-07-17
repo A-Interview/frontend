@@ -5,7 +5,7 @@ import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
-import { signupState } from "../state/Atom";
+import { signupState, jwtState } from "../state/Atom";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -120,6 +120,7 @@ const SignupPage = (): JSX.Element => {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const setSignupState = useSetRecoilState<boolean>(signupState);
+  const setJwtState = useSetRecoilState(jwtState);
 
   const navigate = useNavigate();
 
@@ -134,6 +135,10 @@ const SignupPage = (): JSX.Element => {
 
       setUser(response.data.user);
       setSignupState(true);
+      setJwtState({
+        access_token: response.data.access_token,
+        refresh_token: response.data.refresh_token,
+      });
 
       console.log("회원가입 성공", user);
       console.log("가입된 사용자:", response.data.user);
