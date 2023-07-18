@@ -123,7 +123,8 @@ const LoginPage = (): JSX.Element => {
   const setJwtState = useSetRecoilState(jwtState);
 
   const navigate = useNavigate();
-
+  // fadeOut 상태 추가
+  const [fadeOut, setFadeOut] = useState(false);
   const handleLogin = async (): Promise<void> => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL, {
@@ -143,7 +144,8 @@ const LoginPage = (): JSX.Element => {
         response.data.access,
         response.data.refresh
       );
-      navigate("/");
+      // 로그인 성공 후 fadeOut 상태 변경
+      setFadeOut(true);
     } catch (error) {
       console.log("로그인 실패:", error);
     }
@@ -173,6 +175,7 @@ const LoginPage = (): JSX.Element => {
         toast.addEventListener("mouseleave", Swal.resumeTimer);
       },
     });
+    navigate("/");
   };
 
   const handleGoBack = (): any => {
@@ -289,6 +292,34 @@ const LoginPage = (): JSX.Element => {
             </div>
           </div>
         </div>
+        <motion.div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(6, 4, 52, 0.95)",
+            zIndex: 999,
+          }}
+          initial={{ opacity: 0, visibility: "hidden" }}
+          animate={{
+            opacity: fadeOut ? 1 : 0,
+            visibility: fadeOut ? "visible" : "hidden",
+            transition: { duration: 0.8 },
+          }}
+          exit={{
+            opacity: 0,
+            visibility: "hidden",
+            transition: { duration: 0.5 },
+          }}
+        >
+          {/* 로그인 중에 보여줄 컨텐츠 (로딩 스피너 등) */}
+          <h2 style={{ color: "#fff" }}>로그인 중...</h2>
+        </motion.div>
       </ProgressBackground>
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { motion } from "framer-motion";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { signupState } from "../state/Atom";
 
-const Background = styled.div`
+const Background = styled(motion.div)`
   background: #060434;
   width: 100vw;
   height: 100vh;
@@ -174,11 +174,24 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
-  cursor: pointer;
+  cursor: w-resize;
 `;
 const WatingPage = (): JSX.Element => {
+  const [fadeOut, setFadeOut] = useState(false);
   const navigate = useNavigate();
   const signupnow = useRecoilValue(signupState);
+  // onAnimationComplete 콜백 함수
+  const handleAnimationComplete = (): void => {
+    if (fadeOut) {
+      // 애니메이션이 완료된 후 면접 생성 페이지에서 다음 페이지로 이동
+      navigate("/StandBy");
+    }
+  };
+
+  const handleInterviewCreate = (): void => {
+    // 면접 생성 버튼 클릭 시 서서히 사라지는 효과 적용
+    setFadeOut(true);
+  };
   useEffect(() => {
     console.log(signupnow);
     if (!signupnow) {
@@ -204,7 +217,15 @@ const WatingPage = (): JSX.Element => {
           />
         </svg>
       </BackWard>
-      <Background>
+      <Background
+        initial={{ opacity: 1 }} /* 초기 값은 불투명(1)로 설정 */
+        animate={{
+          opacity: fadeOut ? 0 : 1,
+        }} /* fadeOut이 true인 경우 불투명도를 0으로 서서히 변경 */
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.8 }}
+        onAnimationComplete={handleAnimationComplete}
+      >
         <WatingPageImage1 src={WatingPageImage} />
         <div style={{ display: "flex", gap: "6.2rem" }}>
           <OptionalContainer>
@@ -302,10 +323,41 @@ const WatingPage = (): JSX.Element => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}
+            onClick={handleInterviewCreate}
           >
             면접 생성
           </QuestionCreate>
         </Link>
+        <motion.div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(6, 4, 52, 0.95)",
+            zIndex: 999,
+            pointerEvents: fadeOut ? "auto" : "none", // fadeOut이 true일 때는 이벤트를 받도록, 아닐 때는 이벤트 무시
+          }}
+          initial={{ opacity: 0, visibility: "hidden" }}
+          animate={{
+            opacity: fadeOut ? 1 : 0,
+            visibility: fadeOut ? "visible" : "hidden",
+            transition: { duration: 2 },
+          }}
+          exit={{
+            opacity: 0,
+            visibility: "hidden",
+            transition: { duration: 2 },
+          }}
+          onAnimationComplete={handleAnimationComplete}
+        >
+          {/* 로그인 중에 보여줄 컨텐츠 (로딩 스피너 등) */}
+          <h2 style={{ color: "#fff" }}>면접 생성 중...</h2>
+        </motion.div>
       </Background>
     </>
   );
