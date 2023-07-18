@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import FileAddImage from "../assets/img/FileAddImage.png";
 
+import { useDropzone } from "react-dropzone";
+
 const Text = styled.text`
   color: #f4f6f6;
   text-align: left;
@@ -69,13 +71,8 @@ const ModalView = styled.div.attrs((props) => ({
   flex-direction: column;
   border-radius: 20px;
   width: 500px;
-  heigth: 200px;
+  height: 200px;
   background-color: #ffffff;
-  > div.desc {
-    margin: 50px;
-    font-size: 20px;
-    color: purple;
-  }
 `;
 
 const SelfIntroContainer = styled.div`
@@ -99,8 +96,20 @@ const FileAddButton = styled.div`
   align-items: center;
   cursor: pointer;
 `;
+const FileUploadModal = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  > div.desc {
+    margin: 50px;
+    font-size: 20px;
+    color: purple;
+  }
+`;
+
 const Modal = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const openModalHandler = (): void => {
     // isOpen의 상태를 변경하는 메소드를 구현
@@ -108,6 +117,15 @@ const Modal = (): JSX.Element => {
     setIsOpen(!isOpen);
   };
 
+  const handleDrop = (acceptedFiles: File[]): void => {
+    if (acceptedFiles.length > 0) {
+      setUploadedFile(acceptedFiles[0]);
+    }
+  };
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: handleDrop,
+    multiple: false, // 단일 파일 업로드를 위해 multiple을 false로 설정
+  });
   return (
     <>
       <ModalContainer>
@@ -131,8 +149,30 @@ const Modal = (): JSX.Element => {
                 e.stopPropagation();
               }}
             >
-              <ExitBtn onClick={openModalHandler}>x</ExitBtn>
-              <div className="desc">HELLO FEJIGU!</div>
+              <FileUploadModal>
+                <ExitBtn onClick={openModalHandler}>x</ExitBtn>
+                <div className="desc">파일을 업로드해주세요!</div>
+                <div
+                  {...getRootProps()}
+                  className={`dropzone ${
+                    typeof isDragActive === "boolean" && isDragActive
+                      ? "active"
+                      : ""
+                  }`}
+                >
+                  <input {...getInputProps()} />
+                  {typeof isDragActive === "boolean" && isDragActive ? (
+                    <p>파일을 여기에 드롭하세요.</p>
+                  ) : (
+                    <p>
+                      파일을 드래그 앤 드롭하거나 클릭하여 파일을 선택하세요.
+                    </p>
+                  )}
+                </div>
+                {uploadedFile != null && (
+                  <p>업로드된 파일: {uploadedFile.name}</p>
+                )}
+              </FileUploadModal>
             </ModalView>
           </ModalBackdrop>
         ) : null}

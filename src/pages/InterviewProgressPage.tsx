@@ -1,10 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { styled } from "styled-components";
-import ProgressImage from "../assets/img/ProgressImage.png";
-import ProgressFace from "../assets/img/ProgressFace.png";
-import ProgressRobotBox from "../assets/img/ProgressRobotBox.png";
-import ProgressTimerBox from "../assets/img/ProgressTimerBox.png";
-import ProgressTimerBox2 from "../assets/img/ProgressTimer2Box.png";
 import ProgressRobot from "../assets/img/ProgressRobot.gif";
 import ProgressTimer2 from "../assets/img/ProgressTimer2.png";
 import { useNavigate } from "react-router";
@@ -34,20 +29,19 @@ const BackWard = styled.div`
 `;
 
 const ProgressBox1 = styled.div`
-  width: 72.25rem;
-  height: 12.625rem;
+  width: 100%;
+  height: 100%;
   flex-shrink: 0;
-  fill: rgba(242, 242, 242, 0.15);
+  background: rgba(242, 242, 242, 0.15);
   stroke-width: 1px;
   stroke: rgba(255, 255, 255, 0.43);
-  margin-top: 5rem;
-  background: url(${ProgressImage});
+  flex: 1;
+  border-radius: 2rem;
 `;
 
 const ProgressBox2 = styled.div`
-  width: 57.4375rem;
-  height: 32.4375rem;
-  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
   border-radius: 2.75rem;
   background: rgba(255, 255, 255, 0.14);
   box-shadow: 0px 8px 6px 0px rgba(0, 0, 0, 0.05),
@@ -57,6 +51,9 @@ const ProgressBox2 = styled.div`
 `;
 
 const ProgressBox3 = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   width: 13.8125rem;
   height: 32.4375rem;
   flex-shrink: 0;
@@ -66,12 +63,15 @@ const ProgressBox3 = styled.div`
     0px 1px 1px 0px rgba(255, 255, 255, 0.15) inset,
     0px -1px 1px 0px rgba(255, 255, 255, 0.15) inset;
   backdrop-filter: blur(50px);
+  padding: 1rem;
+  padding-left: 1.9rem;
+  padding-right: 1.9rem;
 `;
 
-const ProgressQuestionText = styled.p`
+const ProgressQuestionText = styled.div`
   display: flex;
-  width: 38.3125rem;
-  height: 2.625rem;
+  width: 100%;
+  height: 100%;
   flex-direction: column;
   color: #fff;
   text-align: center;
@@ -80,22 +80,27 @@ const ProgressQuestionText = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  justify-content: center;
+  align-items: center;
 `;
 
-const ProgressImage2 = styled.img`
+const ProgressVideo = styled.video`
   width: 51.9375rem;
   height: 27.375rem;
   flex-shrink: 0;
   border-radius: 3.03713rem;
-  background: url(<path-to-image>), lightgray 50% / cover no-repeat, #fff;
   box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
 `;
 
-const ProgressRobotStateBox = styled.img`
-  width: 11rem;
-  height: 9.875rem;
+const ProgressRobotStateBox = styled.div`
+  width: 100%;
   flex-shrink: 0;
-  fill: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 2.75rem;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  aspect-ratio: 1/1;
 `;
 
 const ProgressRobotState = styled.img`
@@ -103,16 +108,10 @@ const ProgressRobotState = styled.img`
   height: 7.5rem;
   flex-shrink: 0;
 `;
-const ProgressTimerStateBox = styled.img`
-  width: 11rem;
-  height: 3.875rem;
-  flex-shrink: 0;
-`;
 
 const ProgressTimerState = styled.p`
   display: flex;
-  width: 8.1875rem;
-  height: 1.8125rem;
+  width: 100%;
   flex-direction: column;
   flex-shrink: 0;
   color: #fff;
@@ -121,13 +120,6 @@ const ProgressTimerState = styled.p`
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: normal;
-`;
-
-const ProgressTimer2StateBox = styled.img`
-  width: 11rem;
-  height: 8.8125rem;
-  flex-shrink: 0;
 `;
 
 const ProgressTimer2State = styled.img`
@@ -136,34 +128,53 @@ const ProgressTimer2State = styled.img`
   flex-shrink: 0;
 `;
 
-const ProgressNextButtonBox = styled.button`
-  width: 10.8125rem;
-  height: 3.75rem;
-  flex-shrink: 0;
-  border-radius: 2.75rem;
-  background: rgba(1, 0, 26, 0.14);
-  box-shadow: 0px 8px 6px 0px rgba(0, 0, 0, 0.05),
-    0px 1px 1px 0px rgba(255, 255, 255, 0.15) inset,
-    0px -1px 1px 0px rgba(255, 255, 255, 0.15) inset;
-  backdrop-filter: blur(50px);
-  border-radius: 1.1875rem;
-  box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
-`;
-
-const ProgressNextButtonText = styled.p`
+const ProgressNextButton = styled.button`
   display: flex;
-  width: 5.75rem;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   justify-content: center;
   flex-shrink: 0;
   color: #59d4a9;
-  text-align: center;
   font-family: var(--font-r);
   font-size: 1.375rem;
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
   cursor: pointer;
+  border-radius: 2rem;
+  box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
+  background: transparent;
+`;
+
+const ProgressTimerBox = styled.div`
+  border-radius: 2.75rem;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0px 8px 6px 0px rgba(0, 0, 0, 0.05),
+    0px 1px 1px 0px rgba(255, 255, 255, 0.15) inset,
+    0px -1px 1px 0px rgba(255, 255, 255, 0.15) inset;
+  backdrop-filter: blur(50px);
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+
+const ProgressCountDown = styled.div`
+  border-radius: 2.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 8px 6px 0px rgba(0, 0, 0, 0.05),
+    0px 1px 1px 0px rgba(255, 255, 255, 0.15) inset,
+    0px -1px 1px 0px rgba(255, 255, 255, 0.15) inset;
+  backdrop-filter: blur(50px);
+  width: 100%;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const InterviewProgressPage = (): JSX.Element => {
@@ -179,6 +190,23 @@ const InterviewProgressPage = (): JSX.Element => {
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const startVideo = (): void => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        if (videoRef?.current != null) {
+          videoRef.current.srcObject = stream;
+        }
+      })
+      .catch((error) => {
+        console.error("Error accessing camera:", error);
+        // Handle the error case here
+      });
+  };
+
   return (
     <>
       <ProgressBackground>
@@ -201,39 +229,33 @@ const InterviewProgressPage = (): JSX.Element => {
             display: "flex",
             flexDirection: "column",
             gap: "2rem",
+            paddingLeft: "6rem",
+            paddingRight: "6rem",
+            paddingTop: "3rem",
+            paddingBottom: "3rem",
+            height: "100%",
           }}
         >
-          <div
+          <ProgressBox1
             style={{
               display: "flex",
               justifyContent: "center",
-              gap: "2rem",
-              position: "relative",
+              alignItems: "center",
+              padding: "2rem",
             }}
           >
-            <ProgressBox1
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                }}
-              >
-                <ProgressQuestionText>
-                  간단하게 자기소개해주세요.
-                </ProgressQuestionText>
-              </div>
-            </ProgressBox1>
-          </div>
+            <ProgressQuestionText>
+              <div>간단하게 자기소개해주세요.</div>
+            </ProgressQuestionText>
+          </ProgressBox1>
+
+          {/* 하단 부분 */}
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               gap: "2rem",
+              flex: "2",
             }}
           >
             <ProgressBox2
@@ -244,105 +266,42 @@ const InterviewProgressPage = (): JSX.Element => {
                 alignItems: "center",
               }}
             >
-              <div
-                style={{
-                  position: "absolute",
-                }}
-              >
-                <ProgressImage2 src={ProgressFace} />
-              </div>
+              <ProgressVideo autoPlay ref={videoRef} />
+              <button onClick={startVideo}>카메라 키기</button>
             </ProgressBox2>
-            <ProgressBox3
-              style={{
-                display: "flex",
-                position: "relative",
-                justifyContent: "center",
-              }}
-            >
+            {/* 하단 오른쪽 박스 */}
+            <ProgressBox3>
+              <ProgressRobotStateBox>
+                <ProgressRobotState src={ProgressRobot} />
+              </ProgressRobotStateBox>
+
+              <ProgressTimerBox>
+                <ProgressTimerState>진행 시간: 0분 32초</ProgressTimerState>
+              </ProgressTimerBox>
+
               <div
                 style={{
-                  position: "absolute",
-                  top: "1.5rem",
                   display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
+                  position: "relative",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    position: "relative",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ProgressRobotStateBox src={ProgressRobotBox} />
+                <ProgressCountDown>
                   <div
                     style={{
                       position: "absolute",
                       display: "flex",
-                      top: "0.5rem",
-                    }}
-                  >
-                    <ProgressRobotState src={ProgressRobot} />
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    position: "relative",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ProgressTimerStateBox src={ProgressTimerBox} />
-                  <div
-                    style={{
-                      position: "absolute",
-                      display: "flex",
-                    }}
-                  >
-                    <ProgressTimerState>진행 시간: 0분 32초</ProgressTimerState>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    position: "relative",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ProgressTimer2StateBox src={ProgressTimerBox2} />
-                  <div
-                    style={{
-                      position: "absolute",
-                      display: "flex",
-                      top: "0.5rem",
                     }}
                   >
                     <ProgressTimer2State src={ProgressTimer2} />
                   </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    position: "relative",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ProgressNextButtonBox />
-                  <div
-                    style={{
-                      position: "absolute",
-                      display: "flex",
-                    }}
-                  >
-                    <ProgressNextButtonText>다음 질문</ProgressNextButtonText>
-                  </div>
-                </div>
+                </ProgressCountDown>
               </div>
+
+              <ProgressNextButton>
+                <p>다음 질문</p>
+              </ProgressNextButton>
             </ProgressBox3>
           </div>
         </div>
