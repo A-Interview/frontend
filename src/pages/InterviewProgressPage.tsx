@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import ProgressImage from "../assets/img/ProgressImage.png";
 import ProgressFace from "../assets/img/ProgressFace.png";
@@ -8,6 +8,8 @@ import ProgressTimerBox2 from "../assets/img/ProgressTimer2Box.png";
 import ProgressRobot from "../assets/img/ProgressRobot.gif";
 import ProgressTimer2 from "../assets/img/ProgressTimer2.png";
 import { useNavigate } from "react-router";
+import { useRecoilValue } from "recoil";
+import { signupState } from "../state/Atom";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -166,6 +168,13 @@ const ProgressNextButtonText = styled.p`
 
 const InterviewProgressPage = (): JSX.Element => {
   const navigate = useNavigate();
+  const signupnow = useRecoilValue(signupState);
+  useEffect(() => {
+    console.log(signupnow);
+    if (!signupnow) {
+      navigate("/login");
+    }
+  }, []);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기

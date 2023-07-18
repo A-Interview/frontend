@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
-import FileAddImage from "../assets/img/FileAddImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { signupState } from "../state/Atom";
+import Modal from "../components/Modal";
 
 const Background = styled.div`
   background: #060434;
@@ -76,41 +76,6 @@ const Input = styled.input`
   line-height: 127.075%;
   font-family: var(--font-r);
   border-radius: 0.8rem;
-`;
-
-const SelfIntroContainer = styled.div`
-  display: flex;
-  width: 100%;
-  height: 2.5rem;
-  justify-content: space-between;
-  margin-top: 1rem;
-`;
-
-const FileAddButton = styled.div`
-  border-radius: 0.9375rem;
-  border: 1px solid #76878d;
-  background: rgba(0, 0, 0, 0.14);
-  width: 45%;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const FileAddImg = styled.img`
-  margin-left: 1rem;
-  cursor: pointer;
-`;
-
-const Text = styled.p`
-  color: #f4f6f6;
-  text-align: left;
-  font-family: var(--font-l);
-  font-size: 0.8rem;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 127.075%;
-  margin: auto;
-  cursor: pointer;
 `;
 
 const InfoFirst = styled.p`
@@ -257,15 +222,7 @@ const WatingPage = (): JSX.Element => {
                 <span style={{ color: "#56BD66" }}>자기소개서 파일</span>을
                 첨부해주세요!
               </RequestText>
-              <SelfIntroContainer>
-                <FileAddButton>
-                  <FileAddImg src={FileAddImage} />
-                  <Text>파일 첨부하기</Text>
-                </FileAddButton>
-                <FileAddButton style={{ justifyContent: "center" }}>
-                  <Text>파일 경로 정보</Text>
-                </FileAddButton>
-              </SelfIntroContainer>
+              <Modal></Modal>
             </div>
           </OptionalContainer>
 
