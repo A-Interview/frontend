@@ -119,7 +119,10 @@ const MainPage = (): JSX.Element => {
             Commencez dès maintenant le meilleur service dentretien dembauche.
           </TitleSubContent>
 
-          <Link to="/wating-room">
+          <Link
+            to="/wating-room"
+            style={{ display: "flex", textDecoration: "none" }}
+          >
             <StartButton
               whileHover={{ scale: 1.3 }}
               whileTap={{ scale: 1.1 }}
