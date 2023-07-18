@@ -31,7 +31,7 @@ const TitleInfo = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled.p`
+const Title = styled(motion.p)`
   color: rgba(255, 255, 255, 0.83);
   text-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   font-size: 5rem;
@@ -43,7 +43,7 @@ const Title = styled.p`
   font-family: var(--font-b);
 `;
 
-const TitleContent = styled.p`
+const TitleContent = styled(motion.p)`
   color: #fff;
   font-size: 1.25rem;
   font-family: var(--font-r);
@@ -52,7 +52,7 @@ const TitleContent = styled.p`
   line-height: 140.625%;
 `;
 
-const TitleSubContent = styled.p`
+const TitleSubContent = styled(motion.p)`
   color: #fff;
   font-size: 1rem;
   font-family: var(--font-r);
@@ -111,13 +111,31 @@ const MainPage = (): JSX.Element => {
       <NavBar></NavBar>
       <MainPageBackGround>
         <TitleInfo>
-          <Title>A-Interview</Title>
-          <TitleContent>
-            최고의 ai 면접 서비스 지금 당장 시작하세요.
-          </TitleContent>
-          <TitleSubContent>
-            Commencez dès maintenant le meilleur service dentretien dembauche.
-          </TitleSubContent>
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <Title>A-Interview</Title>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <TitleContent>
+              최고의 ai 면접 서비스 지금 당장 시작하세요.
+            </TitleContent>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <TitleSubContent>
+              Commencez dès maintenant le meilleur service dentretien dembauche.
+            </TitleSubContent>
+          </motion.div>
 
           <Link to="/wating-room">
             <StartButton

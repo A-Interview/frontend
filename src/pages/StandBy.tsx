@@ -1,5 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
+import { motion } from "framer-motion";
 import { ReactComponent as Blurry } from "../assets/img/Blurry.svg";
 import StandByArch from "../assets/img/StandByArch.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,7 +17,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
-  cursor: pointer;
+  cursor: w-resize;
 
   z-index: 1;
 `;
@@ -33,21 +34,21 @@ const StandByInfo = styled.div`
   position: relative;
 `;
 
-const StandByBlurry = styled.svg`
+const StandByBlurry = styled(motion.svg)`
   fill: radial-gradient(
     50% 50% at 50% 50%,
     rgba(170, 211, 198, 0.69) 0%,
     rgba(116, 159, 177, 0) 100%
   );
-  opacity: 1;
+  opacity: 0;
   width: 80rem;
   height: 40rem;
-  transform: rotate(0deg);
+  //transform: rotate(0deg);
   display: flex;
   position: absolute;
 `;
 
-const StandByArchImg = styled.img`
+const StandByArchImg = styled(motion.img)`
   width: 105%;
   height: auto;
   display: flex;
@@ -77,7 +78,7 @@ const StandByText = styled.p`
   }
 `;
 
-const StandByButton = styled.button`
+const StandByButton = styled(motion.button)`
   width: 21.5625rem;
   height: 5.75rem;
   flex-shrink: 0;
@@ -86,7 +87,7 @@ const StandByButton = styled.button`
   color: #fff;
   text-align: center;
   font-family: var(--font-r);
-  font-size: 1.375rem;
+  font-size: 1.8rem;
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
@@ -96,7 +97,7 @@ const StandByButton = styled.button`
   margin-left: auto;
   margin-right: auto;
   background: transparent;
-  cursor: pointer;
+  cursor: progress;
 `;
 
 const StandBy = (): JSX.Element => {
@@ -105,6 +106,7 @@ const StandBy = (): JSX.Element => {
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
+
   return (
     <div>
       <StandByBackground>
@@ -124,15 +126,14 @@ const StandBy = (): JSX.Element => {
         </BackWard>
         <StandByInfo>
           <div style={{ position: "relative" }}>
-            <StandByBlurry />
+            <StandByBlurry></StandByBlurry>
             {
               <div style={{ position: "absolute", top: "5%", left: "-12%" }}>
                 <Blurry />
               </div>
             }
           </div>
-
-          <StandByArchImg src={StandByArch} />
+          <StandByArchImg src={StandByArch}></StandByArchImg>
           <StandByText>
             <span style={{ color: "#86e7b8" }}>면접</span>은 주변 소음이 없는
             곳에서 진행해야 합니다. 긴장을 풀어주시고, 준비되면 시작하세요.
@@ -147,7 +148,14 @@ const StandBy = (): JSX.Element => {
           }}
         >
           <Link to="/interview-progress">
-            <StandByButton>면접 시작</StandByButton>
+            <StandByButton
+              type="submit"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 20 }}
+            >
+              면접 시작
+            </StandByButton>
           </Link>
         </div>
       </StandByBackground>

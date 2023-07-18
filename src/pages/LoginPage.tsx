@@ -1,4 +1,5 @@
 import React, { useState, type ChangeEvent, type FormEvent } from "react";
+import { motion } from "framer-motion";
 import { styled } from "styled-components";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
@@ -6,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSetRecoilState, useRecoilState } from "recoil";
 import axios from "axios";
 import { signupState, jwtState } from "../state/Atom";
+import Swal from "sweetalert2";
+
 const ProgressBackground = styled.div`
   width: 100vw;
   height: 100vh;
@@ -80,7 +83,7 @@ const Input = styled.input`
   line-height: 350%;
   padding-left: 20px;
 `;
-const Button = styled.button`
+const Button = styled(motion.button)`
   width: 22.75rem;
   height: 3.4375rem;
   flex-shrink: 0;
@@ -97,7 +100,7 @@ const Button = styled.button`
   margin-top: 1rem;
   cursor: pointer;
 `;
-const Account = styled.div`
+const Account = styled(motion.address)`
   text-align: center;
   font-family: var(--font-r);
   font-size: 1rem;
@@ -150,10 +153,28 @@ const LoginPage = (): JSX.Element => {
     e.preventDefault();
     try {
       await handleLogin();
+      await showToast();
     } catch (error) {
       console.log("회원가입 실패:", error);
     }
   };
+  // 토스트 보여주는 함수
+  const showToast = async (): Promise<void> => {
+    await Swal.fire({
+      icon: "success",
+      title: "로그인 성공",
+      toast: true,
+      position: "center",
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+  };
+
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
@@ -247,10 +268,23 @@ const LoginPage = (): JSX.Element => {
                   }}
                   placeholder="비밀번호를 입력해주세요."
                 />
-                <Button type="submit">로그인</Button>
+                <Button
+                  type="submit"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                >
+                  로그인
+                </Button>
               </Form>
               <Link to="/signup">
-                <Account>계정이 없으신가요?</Account>
+                <Account
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                >
+                  계정이 없으신가요?
+                </Account>
               </Link>
             </div>
           </div>

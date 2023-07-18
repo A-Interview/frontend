@@ -1,5 +1,6 @@
 import React, { useState, type ChangeEvent, type FormEvent } from "react";
 import { styled } from "styled-components";
+import { motion } from "framer-motion";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -26,7 +27,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
-  cursor: pointer;
+  cursor: w-resize;
 `;
 const LoginStarsimg = styled.img`
   width: 72.78869rem;
@@ -81,7 +82,7 @@ const Input = styled.input`
   line-height: 350%;
   padding-left: 20px;
 `;
-const Button = styled.button`
+const Button = styled(motion.button)`
   width: 22.75rem;
   height: 3.4375rem;
   flex-shrink: 0;
@@ -98,7 +99,7 @@ const Button = styled.button`
   margin-top: 0.5rem;
   cursor: pointer;
 `;
-const Account = styled.div`
+const Account = styled(motion.address)`
   text-align: center;
   font-family: var(--font-r);
   font-size: 1rem;
@@ -254,10 +255,23 @@ const SignupPage = (): JSX.Element => {
                   }}
                   placeholder="비밀번호를 한번 더 입력해주세요."
                 />
-                <Button type="submit">가입하기</Button>
+                <Button
+                  type="submit"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                >
+                  가입하기
+                </Button>
               </Form>
               <Link to="/login">
-                <Account>계정이 이미 있으신가요?</Account>
+                <Account
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                >
+                  계정이 이미 있으신가요?
+                </Account>
               </Link>
             </div>
           </div>

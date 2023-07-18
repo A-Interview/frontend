@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { styled } from "styled-components";
+import { motion } from "framer-motion";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import FileAddImage from "../assets/img/FileAddImage.png";
@@ -133,7 +134,7 @@ const InfoSecond = styled.p`
   line-height: 127.075%;
 `;
 
-const QuestionCreate = styled.button`
+const QuestionCreate = styled(motion.button)`
   border-radius: 2.75rem;
   background: rgba(1, 0, 26, 0.14);
   box-shadow: 0px 8px 6px 0px rgba(0, 0, 0, 0.05),
@@ -296,7 +297,14 @@ const WatingPage = (): JSX.Element => {
           </div>
         </div>
         <Link to="/StandBy">
-          <QuestionCreate>면접 생성</QuestionCreate>
+          <QuestionCreate
+            type="submit"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 500, damping: 20 }}
+          >
+            면접 생성
+          </QuestionCreate>
         </Link>
       </Background>
     </>
