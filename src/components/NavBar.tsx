@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useRecoilState } from "recoil";
 import { signupState, jwtState } from "../state/Atom";
-
 import axios from "axios";
 
 const NavBarBackGround = styled.div`

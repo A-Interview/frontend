@@ -3,6 +3,9 @@ import { styled } from "styled-components";
 import ProgressRobot from "../assets/img/ProgressRobot.gif";
 import ProgressTimer2 from "../assets/img/ProgressTimer2.png";
 import { useNavigate } from "react-router";
+import LoadingPage from "../components/Loading";
+import { useRecoilValue } from "recoil";
+import { signupState } from "../state/Atom";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -187,6 +190,13 @@ const Count = styled.div`
 
 const InterviewProgressPage = (): JSX.Element => {
   const navigate = useNavigate();
+  const signupnow = useRecoilValue(signupState);
+  useEffect(() => {
+    console.log(signupnow);
+    if (!signupnow) {
+      navigate("/login");
+    }
+  }, []);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
@@ -472,6 +482,7 @@ const InterviewProgressPage = (): JSX.Element => {
             </ProgressBox3>
           </div>
         </div>
+        <LoadingPage></LoadingPage>
       </ProgressBackground>
     </>
   );

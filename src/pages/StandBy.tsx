@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
+import { motion } from "framer-motion";
 import { ReactComponent as Blurry } from "../assets/img/Blurry.svg";
 import StandByArch from "../assets/img/StandByArch.png";
 import { Link, useNavigate } from "react-router-dom";
+import LoadingPage from "../components/Loading";
+import { useRecoilValue } from "recoil";
+import { signupState } from "../state/Atom";
 
 const BackWard = styled.div`
   display: inline-flex;
@@ -16,7 +20,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
-  cursor: pointer;
+  cursor: w-resize;
 
   z-index: 1;
 `;
@@ -33,21 +37,21 @@ const StandByInfo = styled.div`
   position: relative;
 `;
 
-const StandByBlurry = styled.svg`
+const StandByBlurry = styled(motion.svg)`
   fill: radial-gradient(
     50% 50% at 50% 50%,
     rgba(170, 211, 198, 0.69) 0%,
     rgba(116, 159, 177, 0) 100%
   );
-  opacity: 1;
+  opacity: 0;
   width: 80rem;
   height: 40rem;
-  transform: rotate(0deg);
+  //transform: rotate(0deg);
   display: flex;
   position: absolute;
 `;
 
-const StandByArchImg = styled.img`
+const StandByArchImg = styled(motion.img)`
   width: 105%;
   height: auto;
   display: flex;
@@ -55,6 +59,7 @@ const StandByArchImg = styled.img`
   top: 10rem;
   right: -41px;
   align-items: center;
+  opacity: 0; /* 초기 투명도를 0으로 설정 */
 `;
 
 const StandByText = styled.p`
@@ -77,7 +82,7 @@ const StandByText = styled.p`
   }
 `;
 
-const StandByButton = styled.button`
+const StandByButton = styled(motion.button)`
   width: 21.5625rem;
   height: 5.75rem;
   flex-shrink: 0;
@@ -86,7 +91,7 @@ const StandByButton = styled.button`
   color: #fff;
   text-align: center;
   font-family: var(--font-r);
-  font-size: 1.375rem;
+  font-size: 1.8rem;
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
@@ -96,15 +101,35 @@ const StandByButton = styled.button`
   margin-left: auto;
   margin-right: auto;
   background: transparent;
-  cursor: pointer;
+  cursor: progress;
 `;
 
 const StandBy = (): JSX.Element => {
+  const [archImgVisible, setArchImgVisible] = useState(false);
+  const [standbyTextVisible, setStandbyTextVisible] = useState(false);
+  const [standbyButton, setStandbyButton] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setArchImgVisible(true);
+      setStandbyTextVisible(true);
+      setStandbyButton(true);
+    }, 2000); // 2초 지연
+  }, []);
+
   const navigate = useNavigate();
+  const signupnow = useRecoilValue(signupState);
+  useEffect(() => {
+    console.log(signupnow);
+    if (!signupnow) {
+      navigate("/login");
+    }
+  }, []);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
+
   return (
     <div>
       <StandByBackground>
@@ -124,18 +149,44 @@ const StandBy = (): JSX.Element => {
         </BackWard>
         <StandByInfo>
           <div style={{ position: "relative" }}>
-            <StandByBlurry />
+            <StandByBlurry
+              initial={{ opacity: 0 }} // 초기 투명도를 0으로 설정
+              animate={{
+                opacity: [1, 0, 1], // 투명도를 1, 0, 1로 반복적으로 변경
+                transition: {
+                  delay: 1, // 1초 딜레이 설정
+                  repeat: Infinity, // 무한 반복 설정
+                  duration: 0.5, // 각 반복 지속 시간 (1초)
+                },
+              }}
+            ></StandByBlurry>
             {
               <div style={{ position: "absolute", top: "5%", left: "-12%" }}>
                 <Blurry />
               </div>
             }
           </div>
-
-          <StandByArchImg src={StandByArch} />
+          <StandByArchImg
+            src={StandByArch}
+            initial={{ opacity: 0, scale: 0.8 }} // 초기 투명도를 0으로 설정, 초기 크기를 0.8로 설정
+            animate={{
+              opacity: archImgVisible ? 1 : 0, // archImgVisible이 true일 때 투명도를 1로, 아닐 때는 0으로 설정
+              scale: archImgVisible ? 1.1 : 0.8, // archImgVisible이 true일 때 크기를 1.1로, 아닐 때는 0.8로 설정
+            }}
+            transition={{ duration: 1.5 }} // 애니메이션 지속 시간 설정 (1.5초)
+          />
           <StandByText>
-            <span style={{ color: "#86e7b8" }}>면접</span>은 주변 소음이 없는
-            곳에서 진행해야 합니다. 긴장을 풀어주시고, 준비되면 시작하세요.
+            <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{
+                opacity: standbyTextVisible ? 1 : 0, // standbyTextVisible이 true일 때 투명도를 1로, 아닐 때는 0으로 설정
+                y: standbyTextVisible ? 0 : 100, // standbyTextVisible이 true일 때 y 좌표를 0으로, 아닐 때는 100으로 설정
+              }}
+              transition={{ duration: 2 }}
+            >
+              <span style={{ color: "#86e7b8" }}>면접</span>은 주변 소음이 없는
+              곳에서 진행해야 합니다. 긴장을 풀어주시고, 준비되면 시작하세요.
+            </motion.div>
           </StandByText>
         </StandByInfo>
         <div
@@ -147,9 +198,25 @@ const StandBy = (): JSX.Element => {
           }}
         >
           <Link to="/interview-progress">
-            <StandByButton>면접 시작</StandByButton>
+            <StandByButton
+              type="submit"
+              initial={{ opacity: 0, y: 80 }} // 초기 투명도를 0으로 설정, 초기 y값을 80으로 설정하여 버튼이 아래에서 시작하도록 설정
+              animate={{
+                opacity: standbyButton ? 1 : 0,
+                y: standbyTextVisible ? 0 : 100,
+              }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 1.1 }}
+              transition={{
+                opacity: { duration: 0.3, delay: 0.5 }, // opacity에는 0.3초의 트랜지션과 0.3초의 딜레이 적용
+                y: { duration: 2 }, // y에는 2초의 트랜지션 적용
+              }}
+            >
+              면접 시작
+            </StandByButton>
           </Link>
         </div>
+        <LoadingPage></LoadingPage>
       </StandByBackground>
     </div>
   );

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import "animate.css";
 import NavBar from "../components/NavBar";
+import LoadingPage from "../components/Loading";
 import { styled } from "styled-components";
 import MainImage1 from "../assets/img/MainPageImage1.png";
 import MainImage2 from "../assets/img/MainPageImage2.png";
@@ -31,7 +32,7 @@ const TitleInfo = styled.div`
   flex-direction: column;
 `;
 
-const Title = styled.p`
+const Title = styled(motion.p)`
   color: rgba(255, 255, 255, 0.83);
   text-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   font-size: 5rem;
@@ -43,7 +44,7 @@ const Title = styled.p`
   font-family: var(--font-b);
 `;
 
-const TitleContent = styled.p`
+const TitleContent = styled(motion.p)`
   color: #fff;
   font-size: 1.25rem;
   font-family: var(--font-r);
@@ -52,7 +53,7 @@ const TitleContent = styled.p`
   line-height: 140.625%;
 `;
 
-const TitleSubContent = styled.p`
+const TitleSubContent = styled(motion.p)`
   color: #fff;
   font-size: 1rem;
   font-family: var(--font-r);
@@ -106,20 +107,49 @@ const MainPageBackGround2 = styled.img`
 `;
 
 const MainPage = (): JSX.Element => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 2000);
+  }, []);
+
   return (
     <div>
       <NavBar></NavBar>
       <MainPageBackGround>
         <TitleInfo>
-          <Title>A-Interview</Title>
-          <TitleContent>
-            최고의 ai 면접 서비스 지금 당장 시작하세요.
-          </TitleContent>
-          <TitleSubContent>
-            Commencez dès maintenant le meilleur service dentretien dembauche.
-          </TitleSubContent>
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+          >
+            <Title>A-Interview</Title>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <TitleContent>
+              최고의 ai 면접 서비스 지금 당장 시작하세요.
+            </TitleContent>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <TitleSubContent>
+              Commencez dès maintenant le meilleur service dentretien dembauche.
+            </TitleSubContent>
+          </motion.div>
 
-          <Link to="/wating-room">
+          <Link
+            to="/wating-room"
+            style={{ display: "flex", textDecoration: "none" }}
+          >
             <StartButton
               whileHover={{ scale: 1.3 }}
               whileTap={{ scale: 1.1 }}
@@ -136,6 +166,7 @@ const MainPage = (): JSX.Element => {
           variants={variants}
         />
         <MainPageBackGround2 src={MainImage2} />
+        <LoadingPage></LoadingPage>
       </MainPageBackGround>
     </div>
   );

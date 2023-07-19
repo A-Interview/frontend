@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
+import { motion } from "framer-motion";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
-import FileAddImage from "../assets/img/FileAddImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { signupState } from "../state/Atom";
+import LoadingPage from "../components/Loading";
+import Modal from "../components/Modal";
 
-const Background = styled.div`
+const Background = styled(motion.div)`
   background: #060434;
   width: 100vw;
   height: 100vh;
@@ -15,13 +17,11 @@ const Background = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
 const WatingPageImage1 = styled.img`
   position: absolute;
   width: 80vw;
   height: 80vh;
 `;
-
 const OptionalContainer = styled.div`
   width: 27rem;
   height: 33.6rem;
@@ -37,7 +37,6 @@ const OptionalContainer = styled.div`
   gap: 2rem;
   padding-top: 3rem;
 `;
-
 const RightContainer = styled.div`
   width: 27rem;
   height: 33.6rem;
@@ -47,7 +46,6 @@ const RightContainer = styled.div`
   filter: blur(1.5px);
   background-size: cover;
 `;
-
 const RequestText = styled.p`
   color: #fff;
   text-align: left;
@@ -57,7 +55,6 @@ const RequestText = styled.p`
   font-weight: 400;
   line-height: 127.075%;
 `;
-
 const Input = styled.input`
   stroke-width: 1px;
   outline: 1.2px solid rgba(255, 255, 255, 0.19);
@@ -77,7 +74,6 @@ const Input = styled.input`
   font-family: var(--font-r);
   border-radius: 0.8rem;
 `;
-
 const SelfIntroContainer = styled.div`
   display: flex;
   width: 100%;
@@ -85,7 +81,6 @@ const SelfIntroContainer = styled.div`
   justify-content: space-between;
   margin-top: 1rem;
 `;
-
 const FileAddButton = styled.div`
   border-radius: 0.9375rem;
   border: 1px solid #76878d;
@@ -95,12 +90,6 @@ const FileAddButton = styled.div`
   align-items: center;
   cursor: pointer;
 `;
-
-const FileAddImg = styled.img`
-  margin-left: 1rem;
-  cursor: pointer;
-`;
-
 const Text = styled.p`
   color: #f4f6f6;
   text-align: left;
@@ -132,8 +121,7 @@ const InfoSecond = styled.p`
   font-weight: 700;
   line-height: 127.075%;
 `;
-
-const QuestionCreate = styled.button`
+const QuestionCreate = styled(motion.button)`
   border-radius: 2.75rem;
   background: rgba(1, 0, 26, 0.14);
   box-shadow: 0px 8px 6px 0px rgba(0, 0, 0, 0.05),
@@ -156,11 +144,10 @@ const QuestionCreate = styled.button`
   line-height: 134.766%;
   position: fixed;
   bottom: 2.5rem;
-  right: 40%;
+  right: 43%;
   cursor: pointer;
   box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
-
 const BackWard = styled.div`
   display: inline-flex;
   height: 2.25rem;
@@ -173,11 +160,25 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
+  cursor: w-resize;
+`;
+const ModalBtn = styled.button`
+  border-radius: 0.9375rem;
+  border: 1px solid #76878d;
+  background: rgba(0, 0, 0, 0.14);
+  width: 45%;
+  display: flex;
+  align-items: center;
   cursor: pointer;
+`;
+const ModalWrapper = styled.div`
+  position: relative;
+  z-index: 2; /* Modal을 위에 배치 */
 `;
 const WatingPage = (): JSX.Element => {
   const navigate = useNavigate();
   const signupnow = useRecoilValue(signupState);
+  const [isModalOpen, setModalOpen] = useState(false);
   useEffect(() => {
     console.log(signupnow);
     if (!signupnow) {
@@ -186,6 +187,12 @@ const WatingPage = (): JSX.Element => {
   }, []);
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
+  };
+  const openModal = (): void => {
+    setModalOpen(true);
+  };
+  const handleModalClose = (): void => {
+    setModalOpen(false);
   };
   return (
     <>
@@ -218,7 +225,7 @@ const WatingPage = (): JSX.Element => {
                 어떠한 <span style={{ color: "#56BD66" }}>직종</span>에
                 지원하시나요?
               </RequestText>
-              <Input placeholder="ex) 웹 프론트엔드 개발자" />
+              <Input placeholder="ex) IT" />
             </div>
             <div
               style={{
@@ -228,8 +235,21 @@ const WatingPage = (): JSX.Element => {
               }}
             >
               <RequestText>
-                현재 <span style={{ color: "#56BD66" }}>경력</span>은
-                어떠신가요?
+                지원하는 <span style={{ color: "#56BD66" }}>직업의 이름</span>은
+                무엇인가요?
+              </RequestText>
+              <Input placeholder="ex) 프론트앤드 웹 개발자" />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <RequestText>
+                현재 <span style={{ color: "#56BD66" }}>경력</span>은 어떻게
+                되시나요?
               </RequestText>
               <Input placeholder="ex) 신입" />
             </div>
@@ -241,33 +261,27 @@ const WatingPage = (): JSX.Element => {
               }}
             >
               <RequestText>
-                <span style={{ color: "#56BD66" }}>지원하시려는 곳</span>은
-                어디신가요?
-              </RequestText>
-              <Input placeholder="ex) IT 솔루션 이커머스" />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
-              <RequestText>
-                <span style={{ color: "#56BD66" }}>자기소개서 파일</span>을
-                첨부해주세요!
+                <span style={{ color: "#56BD66" }}>자기소개서 내용</span>을
+                작성해주세요!
               </RequestText>
               <SelfIntroContainer>
-                <FileAddButton>
-                  <FileAddImg src={FileAddImage} />
-                  <Text>파일 첨부하기</Text>
-                </FileAddButton>
+                <ModalBtn onClick={openModal}>
+                  <Text>글 입력하기</Text>
+                </ModalBtn>
                 <FileAddButton style={{ justifyContent: "center" }}>
-                  <Text>파일 경로 정보</Text>
+                  <Text>제출 여부</Text>
                 </FileAddButton>
               </SelfIntroContainer>
             </div>
           </OptionalContainer>
+          {isModalOpen && (
+            <ModalWrapper>
+              <Modal
+                isModalOpen={isModalOpen}
+                setModalOpen={handleModalClose}
+              />
+            </ModalWrapper>
+          )}
 
           <div
             style={{
@@ -290,17 +304,23 @@ const WatingPage = (): JSX.Element => {
                 여러분의 정보를 <br /> <br />
                 입력해주세요
               </InfoFirst>
-
               <InfoSecond>입력하신 내용은 AI 분석에 사용됩니다.</InfoSecond>
             </div>
           </div>
         </div>
         <Link to="/StandBy">
-          <QuestionCreate>면접 생성</QuestionCreate>
+          <QuestionCreate
+            type="submit"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 500, damping: 20 }}
+          >
+            면접 생성
+          </QuestionCreate>
         </Link>
+        <LoadingPage></LoadingPage>
       </Background>
     </>
   );
 };
-
 export default WatingPage;
