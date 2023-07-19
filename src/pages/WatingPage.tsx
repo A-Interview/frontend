@@ -231,7 +231,7 @@ const WatingPage = (): JSX.Element => {
                 어떠한 <span style={{ color: "#56BD66" }}>직종</span>에
                 지원하시나요?
               </RequestText>
-              <Input placeholder="ex) 웹 프론트엔드 개발자" />
+              <Input placeholder="ex) IT" />
             </div>
             <div
               style={{
@@ -241,23 +241,23 @@ const WatingPage = (): JSX.Element => {
               }}
             >
               <RequestText>
-                현재 <span style={{ color: "#56BD66" }}>경력</span>은
-                어떠신가요?
+                지원하는 <span style={{ color: "#56BD66" }}>직업의 이름</span>은
+                무엇인가요?
+              </RequestText>
+              <Input placeholder="ex) 프론트앤드 웹 개발자" />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <RequestText>
+                현재 <span style={{ color: "#56BD66" }}>경력</span>은 어떻게
+                되시나요?
               </RequestText>
               <Input placeholder="ex) 신입" />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
-              <RequestText>
-                <span style={{ color: "#56BD66" }}>지원하시려는 곳</span>은
-                어디신가요?
-              </RequestText>
-              <Input placeholder="ex) IT 솔루션 이커머스" />
             </div>
             <div
               style={{

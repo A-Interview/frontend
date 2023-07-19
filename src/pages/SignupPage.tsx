@@ -137,6 +137,7 @@ const SignupPage = (): JSX.Element => {
       });
       console.log("회원가입 성공", user, jwt);
       console.log("가입된 사용자:", response.data.user);
+      navigate("/login");
     } catch (error) {
       console.log("회원가입 실패:", error);
     }
