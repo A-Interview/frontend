@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
 import { signupState, jwtState } from "../state/Atom";
+import Swal from "sweetalert2";
+
 const ProgressBackground = styled.div`
   width: 100vw;
   height: 100vh;
@@ -121,7 +123,11 @@ const SignupPage = (): JSX.Element => {
   const [password2, setPassword2] = useState("");
   const setSignupState = useSetRecoilState<boolean>(signupState);
   const [jwt, setJwtState] = useRecoilState(jwtState);
+
   const navigate = useNavigate();
+  // fadeOut 상태 추가
+  const [fadeOut, setFadeOut] = useState(false);
+
   const handleSignUp = async (): Promise<void> => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL_REG, {
@@ -136,6 +142,8 @@ const SignupPage = (): JSX.Element => {
         access_token: response.data.access,
         refresh_token: response.data.refresh,
       });
+      // 로그인 성공 후 fadeOut 상태 변경
+      setFadeOut(true);
       console.log("회원가입 성공", user, jwt);
       console.log("가입된 사용자:", response.data.user);
     } catch (error) {
@@ -146,9 +154,27 @@ const SignupPage = (): JSX.Element => {
     e.preventDefault();
     try {
       await handleSignUp();
+      await showToast();
     } catch (error) {
       console.log("회원가입 실패:", error);
     }
+  };
+  // 토스트 보여주는 함수
+  const showToast = async (): Promise<void> => {
+    await Swal.fire({
+      icon: "success",
+      title: "회원가입 성공",
+      toast: true,
+      position: "center",
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+    navigate("/login");
   };
   const handleGoBack = (): void => {
     navigate(-1); // 뒤로가기
@@ -276,6 +302,35 @@ const SignupPage = (): JSX.Element => {
             </div>
           </div>
         </div>
+
+        <motion.div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(6, 4, 52, 0.95)",
+            zIndex: 999,
+          }}
+          initial={{ opacity: 0, visibility: "hidden" }}
+          animate={{
+            opacity: fadeOut ? 1 : 0,
+            visibility: fadeOut ? "visible" : "hidden",
+            transition: { duration: 0.8 },
+          }}
+          exit={{
+            opacity: 0,
+            visibility: "hidden",
+            transition: { duration: 0.5 },
+          }}
+        >
+          {/* 로그인 중에 보여줄 컨텐츠 (로딩 스피너 등) */}
+          <h2 style={{ color: "#fff" }}>로그인 중...</h2>
+        </motion.div>
       </ProgressBackground>
     </>
   );

@@ -5,6 +5,7 @@ import MyPageImage1 from "../assets/img/MyPageImage1.png";
 import MyPageImage2 from "../assets/img/MyPageImage2.png";
 import MyPageImage3 from "../assets/img/MyPageImage3.png";
 import { useNavigate } from "react-router";
+import LoadingPage from "../components/Loading";
 
 const MyPageContainer = styled.div`
   background: #01001a;
@@ -329,6 +330,7 @@ const MyPage = (): JSX.Element => {
         </Lower>
       </ContentContainer>
       <Background />
+      <LoadingPage></LoadingPage>
     </MyPageContainer>
   );
 };

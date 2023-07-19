@@ -8,6 +8,7 @@ import ProgressTimerBox2 from "../assets/img/ProgressTimer2Box.png";
 import ProgressRobot from "../assets/img/ProgressRobot.gif";
 import ProgressTimer2 from "../assets/img/ProgressTimer2.png";
 import { useNavigate } from "react-router";
+import LoadingPage from "../components/Loading";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -337,6 +338,7 @@ const InterviewProgressPage = (): JSX.Element => {
             </ProgressBox3>
           </div>
         </div>
+        <LoadingPage></LoadingPage>
       </ProgressBackground>
     </>
   );

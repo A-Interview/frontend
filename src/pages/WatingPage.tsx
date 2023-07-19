@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import { motion } from "framer-motion";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
@@ -7,6 +7,7 @@ import FileAddImage from "../assets/img/FileAddImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { signupState } from "../state/Atom";
+import LoadingPage from "../components/Loading";
 
 const Background = styled(motion.div)`
   background: #060434;
@@ -16,13 +17,11 @@ const Background = styled(motion.div)`
   justify-content: center;
   align-items: center;
 `;
-
 const WatingPageImage1 = styled.img`
   position: absolute;
   width: 80vw;
   height: 80vh;
 `;
-
 const OptionalContainer = styled.div`
   width: 27rem;
   height: 33.6rem;
@@ -38,7 +37,6 @@ const OptionalContainer = styled.div`
   gap: 2rem;
   padding-top: 3rem;
 `;
-
 const RightContainer = styled.div`
   width: 27rem;
   height: 33.6rem;
@@ -48,7 +46,6 @@ const RightContainer = styled.div`
   filter: blur(1.5px);
   background-size: cover;
 `;
-
 const RequestText = styled.p`
   color: #fff;
   text-align: left;
@@ -58,7 +55,6 @@ const RequestText = styled.p`
   font-weight: 400;
   line-height: 127.075%;
 `;
-
 const Input = styled.input`
   stroke-width: 1px;
   outline: 1.2px solid rgba(255, 255, 255, 0.19);
@@ -78,7 +74,6 @@ const Input = styled.input`
   font-family: var(--font-r);
   border-radius: 0.8rem;
 `;
-
 const SelfIntroContainer = styled.div`
   display: flex;
   width: 100%;
@@ -86,7 +81,6 @@ const SelfIntroContainer = styled.div`
   justify-content: space-between;
   margin-top: 1rem;
 `;
-
 const FileAddButton = styled.div`
   border-radius: 0.9375rem;
   border: 1px solid #76878d;
@@ -96,12 +90,10 @@ const FileAddButton = styled.div`
   align-items: center;
   cursor: pointer;
 `;
-
 const FileAddImg = styled.img`
   margin-left: 1rem;
   cursor: pointer;
 `;
-
 const Text = styled.p`
   color: #f4f6f6;
   text-align: left;
@@ -113,7 +105,6 @@ const Text = styled.p`
   margin: auto;
   cursor: pointer;
 `;
-
 const InfoFirst = styled.p`
   white-space: pre-wrap;
   color: #fff;
@@ -133,7 +124,6 @@ const InfoSecond = styled.p`
   font-weight: 700;
   line-height: 127.075%;
 `;
-
 const QuestionCreate = styled(motion.button)`
   border-radius: 2.75rem;
   background: rgba(1, 0, 26, 0.14);
@@ -161,7 +151,6 @@ const QuestionCreate = styled(motion.button)`
   cursor: pointer;
   box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
-
 const BackWard = styled.div`
   display: inline-flex;
   height: 2.25rem;
@@ -177,21 +166,9 @@ const BackWard = styled.div`
   cursor: w-resize;
 `;
 const WatingPage = (): JSX.Element => {
-  const [fadeOut, setFadeOut] = useState(false);
   const navigate = useNavigate();
   const signupnow = useRecoilValue(signupState);
-  // onAnimationComplete 콜백 함수
-  const handleAnimationComplete = (): void => {
-    if (fadeOut) {
-      // 애니메이션이 완료된 후 면접 생성 페이지에서 다음 페이지로 이동
-      navigate("/StandBy");
-    }
-  };
 
-  const handleInterviewCreate = (): void => {
-    // 면접 생성 버튼 클릭 시 서서히 사라지는 효과 적용
-    setFadeOut(true);
-  };
   useEffect(() => {
     console.log(signupnow);
     if (!signupnow) {
@@ -217,15 +194,7 @@ const WatingPage = (): JSX.Element => {
           />
         </svg>
       </BackWard>
-      <Background
-        initial={{ opacity: 1 }} /* 초기 값은 불투명(1)로 설정 */
-        animate={{
-          opacity: fadeOut ? 0 : 1,
-        }} /* fadeOut이 true인 경우 불투명도를 0으로 서서히 변경 */
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.8 }}
-        onAnimationComplete={handleAnimationComplete}
-      >
+      <Background>
         <WatingPageImage1 src={WatingPageImage} />
         <div style={{ display: "flex", gap: "6.2rem" }}>
           <OptionalContainer>
@@ -290,7 +259,6 @@ const WatingPage = (): JSX.Element => {
               </SelfIntroContainer>
             </div>
           </OptionalContainer>
-
           <div
             style={{
               display: "flex",
@@ -312,7 +280,6 @@ const WatingPage = (): JSX.Element => {
                 여러분의 정보를 <br /> <br />
                 입력해주세요
               </InfoFirst>
-
               <InfoSecond>입력하신 내용은 AI 분석에 사용됩니다.</InfoSecond>
             </div>
           </div>
@@ -323,44 +290,13 @@ const WatingPage = (): JSX.Element => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}
-            onClick={handleInterviewCreate}
           >
             면접 생성
           </QuestionCreate>
         </Link>
-        <motion.div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(6, 4, 52, 0.95)",
-            zIndex: 999,
-            pointerEvents: fadeOut ? "auto" : "none", // fadeOut이 true일 때는 이벤트를 받도록, 아닐 때는 이벤트 무시
-          }}
-          initial={{ opacity: 0, visibility: "hidden" }}
-          animate={{
-            opacity: fadeOut ? 1 : 0,
-            visibility: fadeOut ? "visible" : "hidden",
-            transition: { duration: 2 },
-          }}
-          exit={{
-            opacity: 0,
-            visibility: "hidden",
-            transition: { duration: 2 },
-          }}
-          onAnimationComplete={handleAnimationComplete}
-        >
-          {/* 로그인 중에 보여줄 컨텐츠 (로딩 스피너 등) */}
-          <h2 style={{ color: "#fff" }}>면접 생성 중...</h2>
-        </motion.div>
+        <LoadingPage></LoadingPage>
       </Background>
     </>
   );
 };
-
 export default WatingPage;

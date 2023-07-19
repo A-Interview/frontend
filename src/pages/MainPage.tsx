@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import "animate.css";
 import NavBar from "../components/NavBar";
+import LoadingPage from "../components/Loading";
 import { styled } from "styled-components";
 import MainImage1 from "../assets/img/MainPageImage1.png";
 import MainImage2 from "../assets/img/MainPageImage2.png";
@@ -106,6 +107,14 @@ const MainPageBackGround2 = styled.img`
 `;
 
 const MainPage = (): JSX.Element => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 2000);
+  }, []);
+
   return (
     <div>
       <NavBar></NavBar>
@@ -113,14 +122,14 @@ const MainPage = (): JSX.Element => {
         <TitleInfo>
           <motion.div
             initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
             <Title>A-Interview</Title>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <TitleContent>
@@ -129,7 +138,7 @@ const MainPage = (): JSX.Element => {
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <TitleSubContent>
@@ -154,6 +163,7 @@ const MainPage = (): JSX.Element => {
           variants={variants}
         />
         <MainPageBackGround2 src={MainImage2} />
+        <LoadingPage></LoadingPage>
       </MainPageBackGround>
     </div>
   );
