@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
@@ -46,6 +46,7 @@ const RightContainer = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   filter: blur(1.5px);
   background-size: cover;
+  z-index=1;
 `;
 
 const RequestText = styled.p`
@@ -121,7 +122,7 @@ const QuestionCreate = styled.button`
   line-height: 134.766%;
   position: fixed;
   bottom: 2.5rem;
-  right: 40%;
+  right: 43%;
   cursor: pointer;
   box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
@@ -140,9 +141,50 @@ const BackWard = styled.div`
   top: 1.5rem;
   cursor: pointer;
 `;
+const ModalBtn = styled.button`
+  border-radius: 0.9375rem;
+  border: 1px solid #76878d;
+  background: rgba(0, 0, 0, 0.14);
+  width: 45%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+const SelfIntroContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 2.5rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+`;
+const ModalWrapper = styled.div`
+  position: relative;
+  z-index: 2; /* Modal을 위에 배치 */
+`;
+const Text = styled.text`
+  color: #f4f6f6;
+  text-align: left;
+  font-family: var(--font-l);
+  font-size: 0.8rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 127.075%;
+  margin: auto;
+  cursor: pointer;
+`;
+const FileAddButton = styled.div`
+  border-radius: 0.9375rem;
+  border: 1px solid #76878d;
+  background: rgba(0, 0, 0, 0.14);
+  width: 45%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
 const WatingPage = (): JSX.Element => {
   const navigate = useNavigate();
   const signupnow = useRecoilValue(signupState);
+  const [isModalOpen, setModalOpen] = useState(false);
   useEffect(() => {
     console.log(signupnow);
     if (!signupnow) {
@@ -151,6 +193,12 @@ const WatingPage = (): JSX.Element => {
   }, []);
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
+  };
+  const openModal = (): void => {
+    setModalOpen(true);
+  };
+  const handleModalClose = (): void => {
+    setModalOpen(false);
   };
   return (
     <>
@@ -219,12 +267,27 @@ const WatingPage = (): JSX.Element => {
               }}
             >
               <RequestText>
-                <span style={{ color: "#56BD66" }}>자기소개서 파일</span>을
-                첨부해주세요!
+                <span style={{ color: "#56BD66" }}>자기소개서 내용</span>을
+                작성해주세요!
               </RequestText>
-              <Modal></Modal>
+              <SelfIntroContainer>
+                <ModalBtn onClick={openModal}>
+                  <Text>글 입력하기</Text>
+                </ModalBtn>
+                <FileAddButton style={{ justifyContent: "center" }}>
+                  <Text>제출 여부</Text>
+                </FileAddButton>
+              </SelfIntroContainer>
             </div>
           </OptionalContainer>
+          {isModalOpen && (
+            <ModalWrapper>
+              <Modal
+                isModalOpen={isModalOpen}
+                setModalOpen={handleModalClose}
+              />
+            </ModalWrapper>
+          )}
 
           <div
             style={{
