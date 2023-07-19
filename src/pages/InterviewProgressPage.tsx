@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { styled } from "styled-components";
 import ProgressRobot from "../assets/img/ProgressRobot.gif";
 import ProgressTimer2 from "../assets/img/ProgressTimer2.png";
@@ -9,7 +9,6 @@ const ProgressBackground = styled.div`
   height: 100vh;
   background: #060434;
 `;
-
 const BackWard = styled.div`
   display: inline-flex;
   height: 2.25rem;
@@ -175,6 +174,17 @@ const ProgressCountDown = styled.div`
   align-items: center;
 `;
 
+const Count = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-r);
+  font-size: 1.375rem;
+  font-style: normal;
+  color: white;
+`;
+
 const InterviewProgressPage = (): JSX.Element => {
   const navigate = useNavigate();
 
@@ -196,6 +206,163 @@ const InterviewProgressPage = (): JSX.Element => {
         console.error("Error accessing camera:", error);
         // Handle the error case here
       });
+  };
+
+  /* ------------------------------------------------------------------------- */
+
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [message, setMessage] = useState<string>("");
+  const [isPost, setIsPost] = useState(false);
+
+  // 초기 웹 소켓 연결 상태 확인
+  const [firstConnected, setFirstConnected] = useState(false);
+
+  const connectWebSocket = (): void => {
+    // const ws = new WebSocket("ws://localhost:8000/ws/deep-interview/");
+    // const ws = new WebSocket("ws://localhost:8000/ws/situation-interview/");
+    const ws = new WebSocket("ws://localhost:8000/ws/personality-interview/");
+
+    ws.onopen = () => {
+      console.log("WebSocket connected");
+      setSocket(ws);
+      setFirstConnected(true);
+    };
+
+    ws.onmessage = (event) => {
+      setFirstConnected(false);
+      const data = JSON.parse(event.data);
+      const message: string = data.message;
+      const finishReason: string = data.finish_reason;
+
+      if (finishReason === "stop") {
+        startRecording();
+      }
+      console.log("Received message:", message);
+
+      setMessage((m) => m + message);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket disconnected");
+      setSocket(null);
+      setFirstConnected(false);
+    };
+  };
+
+  useEffect(() => {
+    connectWebSocket();
+  }, []);
+
+  const sendMessage = (): void => {
+    if (socket != null && socket.readyState === WebSocket.OPEN) {
+      console.log("send message");
+      const data = { formId: 1, type: "withoutAudio" };
+      socket.send(JSON.stringify(data));
+    }
+  };
+
+  const sendMessageWithAudio = (): void => {
+    console.log(audioBlob);
+    // Blob 객체를 읽어 데이터 URL로 변환합니다.
+    if (audioBlob instanceof Blob) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        const base64Data = dataUrl.split(",")[1];
+        const data = { formId: 1, type: "withAudio", audioBlob: base64Data };
+        if (socket != null && audioBlob != null) {
+          socket.send(JSON.stringify(data));
+          console.log("posted");
+        }
+        setAudioBlob(null);
+      };
+      reader.readAsDataURL(audioBlob);
+    }
+    setMessage("");
+    setCount(10);
+    setIsPost(true);
+  };
+
+  const [recording, setRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  const [count, setCount] = useState(10);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [stopTrigger, setStopTrigger] = useState(false);
+  const [saveTrigger, setSaveTrigger] = useState(false);
+
+  useEffect(() => {
+    if (stopTrigger) {
+      setIsPost(false);
+      stopRecording();
+    }
+  }, [stopTrigger]);
+
+  useEffect(() => {
+    if (saveTrigger) {
+      saveRecording();
+    }
+  }, [audioChunks]);
+
+  useEffect(() => {
+    if (audioBlob != null && !isPost) {
+      sendMessageWithAudio();
+    }
+    setStopTrigger(false);
+    setSaveTrigger(false);
+  }, [audioBlob]);
+
+  console.log(recording);
+  const startRecording = (): void => {
+    countDown();
+    setTimeout(() => {
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          const mediaRecorder = new MediaRecorder(stream);
+          mediaRecorder.addEventListener("dataavailable", handleDataAvailable);
+          mediaRecorder.start();
+          mediaRecorderRef.current = mediaRecorder; // Store mediaRecorder in a ref
+          setRecording(true);
+        })
+        .catch((error) => {
+          console.error("Error accessing microphone:", error);
+        });
+      console.log("Delayed function executed.");
+    }, 10000); // 10초를 밀리초로 나타냅니다.
+  };
+
+  const countDown = (): void => {
+    let dummyCount = 10;
+    const timer = setInterval(() => {
+      if (dummyCount > 0) {
+        console.log(count);
+        setCount((prev) => prev - 1);
+        dummyCount--;
+      } else {
+        clearInterval(timer);
+        console.log("Countdown finished!");
+      }
+    }, 1000);
+  };
+
+  const stopRecording = (): void => {
+    if (mediaRecorderRef.current != null) {
+      mediaRecorderRef.current.stop(); // Access mediaRecorder from the ref
+      setRecording(false);
+      setSaveTrigger(true);
+    }
+  };
+
+  const saveRecording = (): void => {
+    const mergedBlob = new Blob(audioChunks, { type: "audio/wav" });
+    setAudioBlob(mergedBlob);
+    console.log(audioChunks);
+    setAudioChunks([]); // Clear the audioChunks array
+  };
+
+  const handleDataAvailable = (event: BlobEvent): void => {
+    setAudioChunks((prevChunks) => [...prevChunks, event.data]);
   };
 
   return (
@@ -236,7 +403,7 @@ const InterviewProgressPage = (): JSX.Element => {
             }}
           >
             <ProgressQuestionText>
-              <div>간단하게 자기소개해주세요.</div>
+              <div>{message}</div>
             </ProgressQuestionText>
           </ProgressBox1>
 
@@ -286,11 +453,20 @@ const InterviewProgressPage = (): JSX.Element => {
                     }}
                   >
                     <ProgressTimer2State src={ProgressTimer2} />
+                    <Count>{count}</Count>
                   </div>
                 </ProgressCountDown>
               </div>
 
-              <ProgressNextButton>
+              <ProgressNextButton
+                onClick={() => {
+                  if (firstConnected) {
+                    sendMessage();
+                  } else {
+                    setStopTrigger(true);
+                  }
+                }}
+              >
                 <p>다음 질문</p>
               </ProgressNextButton>
             </ProgressBox3>
