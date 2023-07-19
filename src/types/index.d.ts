@@ -9,3 +9,4 @@ declare namespace NodeJS {
     // 다른 환경 변수들도 필요한 경우 여기에 추가합니다.
   }
 }
+declare module "react-mic";

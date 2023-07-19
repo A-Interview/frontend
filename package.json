@@ -52,6 +52,8 @@
     ]
   },
   "devDependencies": {
+    "@types/react-mic": "^12.4.3",
+    "@types/socket.io-client": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
