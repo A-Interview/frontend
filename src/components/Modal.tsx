@@ -54,7 +54,6 @@ const FileUploadModal = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  >
 `;
 
 const Button = styled.button`

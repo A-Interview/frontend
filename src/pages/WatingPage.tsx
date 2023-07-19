@@ -6,11 +6,8 @@ import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { signupState } from "../state/Atom";
-<<<<<<< HEAD
 import LoadingPage from "../components/Loading";
-=======
 import Modal from "../components/Modal";
->>>>>>> feat/#32
 
 const Background = styled(motion.div)`
   background: #060434;
@@ -48,7 +45,7 @@ const RightContainer = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   filter: blur(1.5px);
   background-size: cover;
-  z-index=1;
+  z-index: 1;
 `;
 const RequestText = styled.p`
   color: #fff;
@@ -78,7 +75,6 @@ const Input = styled.input`
   font-family: var(--font-r);
   border-radius: 0.8rem;
 `;
-<<<<<<< HEAD
 const SelfIntroContainer = styled.div`
   display: flex;
   width: 100%;
@@ -95,10 +91,6 @@ const FileAddButton = styled.div`
   align-items: center;
   cursor: pointer;
 `;
-const FileAddImg = styled.img`
-  margin-left: 1rem;
-  cursor: pointer;
-`;
 const Text = styled.p`
   color: #f4f6f6;
   text-align: left;
@@ -110,9 +102,7 @@ const Text = styled.p`
   margin: auto;
   cursor: pointer;
 `;
-=======
 
->>>>>>> feat/#32
 const InfoFirst = styled.p`
   white-space: pre-wrap;
   color: #fff;
@@ -182,45 +172,14 @@ const ModalBtn = styled.button`
   align-items: center;
   cursor: pointer;
 `;
-const SelfIntroContainer = styled.div`
-  display: flex;
-  width: 100%;
-  height: 2.5rem;
-  justify-content: space-between;
-  margin-top: 1rem;
-`;
 const ModalWrapper = styled.div`
   position: relative;
   z-index: 2; /* Modal을 위에 배치 */
 `;
-const Text = styled.text`
-  color: #f4f6f6;
-  text-align: left;
-  font-family: var(--font-l);
-  font-size: 0.8rem;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 127.075%;
-  margin: auto;
-  cursor: pointer;
-`;
-const FileAddButton = styled.div`
-  border-radius: 0.9375rem;
-  border: 1px solid #76878d;
-  background: rgba(0, 0, 0, 0.14);
-  width: 45%;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-`;
 const WatingPage = (): JSX.Element => {
   const navigate = useNavigate();
   const signupnow = useRecoilValue(signupState);
-<<<<<<< HEAD
-
-=======
   const [isModalOpen, setModalOpen] = useState(false);
->>>>>>> feat/#32
   useEffect(() => {
     console.log(signupnow);
     if (!signupnow) {
@@ -316,8 +275,6 @@ const WatingPage = (): JSX.Element => {
               </SelfIntroContainer>
             </div>
           </OptionalContainer>
-<<<<<<< HEAD
-=======
           {isModalOpen && (
             <ModalWrapper>
               <Modal
@@ -327,7 +284,6 @@ const WatingPage = (): JSX.Element => {
             </ModalWrapper>
           )}
 
->>>>>>> feat/#32
           <div
             style={{
               display: "flex",
