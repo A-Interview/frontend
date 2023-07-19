@@ -5,6 +5,8 @@ import { ReactComponent as Blurry } from "../assets/img/Blurry.svg";
 import StandByArch from "../assets/img/StandByArch.png";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingPage from "../components/Loading";
+import { useRecoilValue } from "recoil";
+import { signupState } from "../state/Atom";
 
 const BackWard = styled.div`
   display: inline-flex;
@@ -116,6 +118,13 @@ const StandBy = (): JSX.Element => {
   }, []);
 
   const navigate = useNavigate();
+  const signupnow = useRecoilValue(signupState);
+  useEffect(() => {
+    console.log(signupnow);
+    if (!signupnow) {
+      navigate("/login");
+    }
+  }, []);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
