@@ -1,4 +1,4 @@
-import React, { type FormEvent } from "react";
+import React, { type FormEvent, useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -53,27 +53,18 @@ const NavItem1 = styled.div`
   cursor: pointer;
   overflow: visible;
 `;
-const NavItem2 = styled.a`
+
+const Username = styled.p`
   margin: auto;
   font-family: var(--font-r);
-  color: #fff;
+  color: #59d4a9;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   text-decoration-line: none;
   cursor: pointer;
-`;
-const NavItem3 = styled.a`
-  margin: auto;
-  font-family: var(--font-r);
-  color: #fff;
-  font-size: 1.125rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  text-decoration-line: none;
-  cursor: pointer;
+  overflow: visible;
 `;
 
 const LoginButton = styled(motion.button)`
@@ -100,6 +91,8 @@ const NavBar = (): JSX.Element => {
   // 로그아웃 처리
   const [signupnow, setSignupState] = useRecoilState(signupState);
   const [jwt, setJwtState] = useRecoilState(jwtState);
+  const [username, setUsername] = useState<string>("");
+
   const handleLogout = async (): Promise<void> => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL_OUT, {
@@ -122,6 +115,33 @@ const NavBar = (): JSX.Element => {
       console.log("로그아웃 실패:", error);
     }
   };
+
+  // 회원 가입 성공 후 사용자 이름 가져오는 함수
+  const getUsernameFromServer = async (): Promise<string> => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/users/register/"
+      );
+      return response.data.username; // 가정: 서버에서 받아온 사용자 이름을 반환
+    } catch (error) {
+      console.log("사용자 이름 가져오기 실패:", error);
+      return ""; // 실패 시 빈 문자열 반환
+    }
+  };
+
+  useEffect(() => {
+    // Navbar가 마운트될 때 사용자 이름 가져오기
+    if (signupnow) {
+      getUsernameFromServer()
+        .then((name) => {
+          setUsername(name);
+        })
+        .catch((error) => {
+          console.log("사용자 이름 가져오기 실패:", error);
+        });
+    }
+  }, [signupnow]);
+
   return (
     <NavBarBackGround>
       <Link
@@ -145,8 +165,7 @@ const NavBar = (): JSX.Element => {
         >
           <NavItem1>마이페이지</NavItem1>
         </Link>
-        <NavItem2 href="/">링크 1</NavItem2>
-        <NavItem3 href="/">링크 2</NavItem3>
+        {signupnow && <Username>{username}님, 환영합니다</Username>}
         <form
           onSubmit={onSubmit as (e: React.FormEvent<HTMLFormElement>) => void}
           style={{

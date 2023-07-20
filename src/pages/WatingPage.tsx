@@ -179,6 +179,7 @@ const WatingPage = (): JSX.Element => {
   const navigate = useNavigate();
   const signupnow = useRecoilValue(signupState);
   const [isModalOpen, setModalOpen] = useState(false);
+
   useEffect(() => {
     console.log(signupnow);
     if (!signupnow) {
