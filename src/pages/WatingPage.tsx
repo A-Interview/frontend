@@ -216,10 +216,11 @@ const WatingPage = (): JSX.Element => {
   const updateResume = (newResume: string): void => {
     setResume(newResume);
   };
+  console.log("?????????????????????????");
   const handleForm = async (): Promise<void> => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/forms/",
+        "/forms/",
         {
           sectorname,
           jobname,
