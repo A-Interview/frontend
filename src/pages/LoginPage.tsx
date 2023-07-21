@@ -138,7 +138,6 @@ const LoginPage = (): JSX.Element => {
         access_token: response.data.access,
         refresh_token: response.data.refresh,
       });
-
       console.log("로그인 성공", signupnow);
       console.log(
         "가입된 사용자의 토큰:",

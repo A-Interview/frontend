@@ -14,3 +14,13 @@ export const jwtState = atom({
     refresh_token: "",
   },
 });
+
+export const formId = atom({
+  key: "formId",
+  default: {
+    sector_name: "",
+    job_name: "",
+    career: "",
+    resume: "",
+  },
+});
