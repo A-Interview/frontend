@@ -123,6 +123,7 @@ const LoginPage = (): JSX.Element => {
   const [signupnow, setSignupState] = useRecoilState(signupState);
   const setJwtState = useSetRecoilState(jwtState);
   const [name, setRecoilUser] = useRecoilState(usernameState);
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
   const navigate = useNavigate();
   // fadeOut 상태 추가
@@ -163,6 +164,13 @@ const LoginPage = (): JSX.Element => {
       await showToast();
     } catch (error) {
       console.log("회원가입 실패:", error);
+    }
+  };
+  const checkInput = (): void => {
+    if (email.trim() === "" || password.trim() === "") {
+      setAllFieldsFilled(false);
+    } else {
+      setAllFieldsFilled(true);
     }
   };
   // 토스트 보여주는 함수
@@ -264,6 +272,7 @@ const LoginPage = (): JSX.Element => {
                   value={email}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setEmail(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="이메일을 입력해주세요."
                 />
@@ -273,11 +282,13 @@ const LoginPage = (): JSX.Element => {
                   value={password}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setPassword(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="비밀번호를 입력해주세요."
                 />
                 <Button
                   type="submit"
+                  disabled={!allFieldsFilled}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 20 }}

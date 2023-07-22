@@ -20,19 +20,11 @@ const ModalBackdrop = styled.div`
   width: 100vw;
 `;
 
-const ExitBtn = styled.button`
+const Box = styled.div`
   width: 4.5rem;
   height: 3.4375rem;
   flex-shrink: 0;
-  border-radius: 1.1875rem;
-  background: #464759;
-  box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
   border-radius: 2.75rem;
-  color: #59d4a9;
-  font-family: var(--font-r);
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 800;
   line-height: 134.766%;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -93,16 +85,13 @@ const Modal = ({ isModalOpen, setModalOpen }: Type): JSX.Element => {
       icon: "success",
       toast: true,
       position: "center",
-      showConfirmButton: true,
+      // showConfirmButton: true,
       // timer: 1000,
-      confirmButtonColor: "#3085d6",
-      confirmButtonText: "제출",
-      cancelButtonText: "취소",
-      showCancelButton: true,
+      // confirmButtonColor: "#3085d6",
+      // confirmButtonText: "확인",
+      // cancelButtonText: "취소",
+      // showCancelButton: true,
       width: "auto",
-      html: `
-    <div style="display: flex; flex-direction: column; align-items: center;">
-    `,
     })
       .then((result) => {
         if (result.isConfirmed) {
@@ -130,27 +119,28 @@ const Modal = ({ isModalOpen, setModalOpen }: Type): JSX.Element => {
               }}
             >
               <FileUploadModal>
-                <ExitBtn onClick={setModalOpen}>닫기</ExitBtn>
+                <Box onClick={setModalOpen}></Box>
                 <div>
                   <textarea
                     value={textValue}
                     onChange={handleTextChange}
                     rows={25}
                     cols={130}
+                    placeholder="내용을 입력하세요."
                     style={{
                       width: "1119px",
-                      height: "487px",
-                      border: "1px solid #ccc",
+                      height: "488px",
+                      border: "1px solid rgb(232 232 232)",
                       borderRadius: "0 0 40px 40px",
-                      backgroundColor: "#ccc",
-                      fontSize: "15px",
+                      backgroundColor: "rgb(232 232 232)",
+                      fontSize: "20px",
                       resize: "vertical",
-                      padding: "10px",
+                      padding: "20px",
                       outline: "none",
                     }}
                   />
                 </div>
-                <Button onClick={handleButtonClick}>제출</Button>
+                <Button onClick={handleButtonClick}>제출하기</Button>
               </FileUploadModal>
             </ModalView>
           </ModalBackdrop>

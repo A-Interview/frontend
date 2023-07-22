@@ -124,6 +124,7 @@ const SignupPage = (): JSX.Element => {
   const setSignupState = useSetRecoilState<boolean>(signupState);
   const [jwt, setJwtState] = useRecoilState(jwtState);
   const setRecoilUser = useSetRecoilState(usernameState);
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
   const navigate = useNavigate();
   // fadeOut 상태 추가
@@ -162,6 +163,18 @@ const SignupPage = (): JSX.Element => {
       await showToast();
     } catch (error) {
       console.log("회원가입 실패:", error);
+    }
+  };
+  const checkInput = (): void => {
+    if (
+      username.trim() === "" ||
+      email.trim() === "" ||
+      password.trim() === "" ||
+      password2.trim() === ""
+    ) {
+      setAllFieldsFilled(false);
+    } else {
+      setAllFieldsFilled(true);
     }
   };
   // 토스트 보여주는 함수
@@ -256,6 +269,7 @@ const SignupPage = (): JSX.Element => {
                   value={username}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setUsername(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="사용자 이름을 입력해주세요."
                 />
@@ -265,6 +279,7 @@ const SignupPage = (): JSX.Element => {
                   value={email}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setEmail(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="이메일을 입력해주세요."
                 />
@@ -274,6 +289,7 @@ const SignupPage = (): JSX.Element => {
                   value={password}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setPassword(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="비밀번호를 입력해주세요."
                 />
@@ -283,11 +299,13 @@ const SignupPage = (): JSX.Element => {
                   value={password2}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setPassword2(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="비밀번호를 한번 더 입력해주세요."
                 />
                 <Button
                   type="submit"
+                  disabled={!allFieldsFilled}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 20 }}
