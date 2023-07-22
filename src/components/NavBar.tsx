@@ -2,10 +2,9 @@ import React, { type FormEvent } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useRecoilState } from "recoil";
-import { signupState, jwtState } from "../state/Atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { signupState, jwtState, usernameState } from "../state/Atom";
 import axios from "axios";
-
 const NavBarBackGround = styled.div`
   display: flex;
   width: 100%;
@@ -17,7 +16,6 @@ const NavBarBackGround = styled.div`
   padding-right: 2em;
   padding-left: 2em;
 `;
-
 const NavBarTitle = styled.div`
   color: #fff;
   font-size: 1.3125rem;
@@ -29,7 +27,6 @@ const NavBarTitle = styled.div`
   overflow: visible;
   cursor: pointer;
 `;
-
 const TitleInform = styled.div`
   display: flex;
   flex-direction: row;
@@ -53,29 +50,18 @@ const NavItem1 = styled.div`
   cursor: pointer;
   overflow: visible;
 `;
-const NavItem2 = styled.a`
+const Username = styled.p`
   margin: auto;
   font-family: var(--font-r);
-  color: #fff;
+  color: #59d4a9;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   text-decoration-line: none;
   cursor: pointer;
+  overflow: visible;
 `;
-const NavItem3 = styled.a`
-  margin: auto;
-  font-family: var(--font-r);
-  color: #fff;
-  font-size: 1.125rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  text-decoration-line: none;
-  cursor: pointer;
-`;
-
 const LoginButton = styled(motion.button)`
   width: 8.75rem;
   height: 2.5rem;
@@ -95,19 +81,20 @@ const LoginButton = styled(motion.button)`
   background: transparent;
   cursor: pointer;
 `;
-
 const NavBar = (): JSX.Element => {
-  // 로그아웃 처리
+  // const [user, setUser] = useRecoilState(signupState);
   const [signupnow, setSignupState] = useRecoilState(signupState);
   const [jwt, setJwtState] = useRecoilState(jwtState);
+  const username = useRecoilValue(usernameState);
+  const setRecoilUser = useRecoilState(usernameState)[1]; // useSetRecoilState로 변경
+
   const handleLogout = async (): Promise<void> => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL_OUT, {
         refresh: jwt.refresh_token,
       });
-
+      setRecoilUser(""); // 로그아웃 시 username 초기화
       setSignupState(false);
-
       console.log("로그아웃 성공", signupnow);
       setJwtState(response.data.refresh);
     } catch (error) {
@@ -122,6 +109,7 @@ const NavBar = (): JSX.Element => {
       console.log("로그아웃 실패:", error);
     }
   };
+
   return (
     <NavBarBackGround>
       <Link
@@ -145,8 +133,7 @@ const NavBar = (): JSX.Element => {
         >
           <NavItem1>마이페이지</NavItem1>
         </Link>
-        <NavItem2 href="/">링크 1</NavItem2>
-        <NavItem3 href="/">링크 2</NavItem3>
+        <Username>{signupnow ? `${username} 님 환영합니다` : ""}</Username>
         <form
           onSubmit={onSubmit as (e: React.FormEvent<HTMLFormElement>) => void}
           style={{
@@ -185,5 +172,4 @@ const NavBar = (): JSX.Element => {
     </NavBarBackGround>
   );
 };
-
 export default NavBar;

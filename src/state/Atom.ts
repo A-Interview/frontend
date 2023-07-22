@@ -15,6 +15,12 @@ export const jwtState = atom({
   },
 });
 
+// 사용자 이름 상태 확인
+export const usernameState = atom({
+  key: "usernameState",
+  default: "",
+});
+
 export const formId = atom({
   key: "formId",
   default: {

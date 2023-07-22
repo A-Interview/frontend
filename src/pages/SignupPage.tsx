@@ -6,7 +6,7 @@ import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
-import { signupState, jwtState } from "../state/Atom";
+import { signupState, jwtState, usernameState } from "../state/Atom";
 import Swal from "sweetalert2";
 
 const ProgressBackground = styled.div`
@@ -123,6 +123,8 @@ const SignupPage = (): JSX.Element => {
   const [password2, setPassword2] = useState("");
   const setSignupState = useSetRecoilState<boolean>(signupState);
   const [jwt, setJwtState] = useRecoilState(jwtState);
+  const setRecoilUser = useSetRecoilState(usernameState);
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
   const navigate = useNavigate();
   // fadeOut 상태 추가
@@ -137,13 +139,16 @@ const SignupPage = (): JSX.Element => {
         password2,
       });
       setUser(response.data.user);
+      setRecoilUser(username);
       setSignupState(true);
+      setFadeOut(true);
       setJwtState({
         access_token: response.data.access,
         refresh_token: response.data.refresh,
       });
+      // setRecoilUser(username);
       // 로그인 성공 후 fadeOut 상태 변경
-      setFadeOut(true);
+      // setFadeOut(true);
       console.log("회원가입 성공", user, jwt);
       console.log("가입된 사용자:", username);
       await showToast();
@@ -158,6 +163,18 @@ const SignupPage = (): JSX.Element => {
       await handleSignUp();
     } catch (error) {
       console.log("회원가입 실패:", error);
+    }
+  };
+  const checkInput = (): void => {
+    if (
+      username.trim() === "" ||
+      email.trim() === "" ||
+      password.trim() === "" ||
+      password2.trim() === ""
+    ) {
+      setAllFieldsFilled(false);
+    } else {
+      setAllFieldsFilled(true);
     }
   };
   // 토스트 보여주는 함수
@@ -252,6 +269,7 @@ const SignupPage = (): JSX.Element => {
                   value={username}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setUsername(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="사용자 이름을 입력해주세요."
                 />
@@ -261,6 +279,7 @@ const SignupPage = (): JSX.Element => {
                   value={email}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setEmail(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="이메일을 입력해주세요."
                 />
@@ -270,6 +289,7 @@ const SignupPage = (): JSX.Element => {
                   value={password}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setPassword(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="비밀번호를 입력해주세요."
                 />
@@ -279,11 +299,13 @@ const SignupPage = (): JSX.Element => {
                   value={password2}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setPassword2(e.currentTarget.value);
+                    checkInput();
                   }}
                   placeholder="비밀번호를 한번 더 입력해주세요."
                 />
                 <Button
                   type="submit"
+                  disabled={!allFieldsFilled}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 20 }}
