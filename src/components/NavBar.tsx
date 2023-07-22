@@ -133,7 +133,7 @@ const NavBar = (): JSX.Element => {
         >
           <NavItem1>마이페이지</NavItem1>
         </Link>
-        <Username>{username} 님 환영합니다</Username>
+        <Username>{signupnow ? `${username} 님 환영합니다` : ""}</Username>
         <form
           onSubmit={onSubmit as (e: React.FormEvent<HTMLFormElement>) => void}
           style={{
