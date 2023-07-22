@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, type ChangeEvent } from "react";
 import { styled } from "styled-components";
 import { motion } from "framer-motion";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { signupState } from "../state/Atom";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { signupState, formId, jwtState } from "../state/Atom";
 import LoadingPage from "../components/Loading";
 import Modal from "../components/Modal";
+
+import axios from "axios";
 
 const Background = styled(motion.div)`
   background: #060434;
@@ -81,7 +83,7 @@ const SelfIntroContainer = styled.div`
   justify-content: space-between;
   margin-top: 1rem;
 `;
-const FileAddButton = styled.div`
+const FileAddButton = styled.button`
   border-radius: 0.9375rem;
   border: 1px solid #76878d;
   background: rgba(0, 0, 0, 0.14);
@@ -178,21 +180,68 @@ const ModalWrapper = styled.div`
 const WatingPage = (): JSX.Element => {
   const navigate = useNavigate();
   const signupnow = useRecoilValue(signupState);
+  // 모달 오픈 여부
   const [isModalOpen, setModalOpen] = useState(false);
+  // 폼 양식
+  const [sectorName, setSector] = useState("");
+  const [jobName, setJob] = useState("");
+  const [career, setCareer] = useState("");
+  const [resume, setResume] = useState("");
+  const [idform, setId] = useRecoilState(formId);
+  const access = useRecoilValue(jwtState);
+  // 로그인 안되어 있으면 로그인창으로
   useEffect(() => {
     console.log(signupnow);
     if (!signupnow) {
       navigate("/login");
     }
   }, []);
+  // 뒤로가기
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
+  // 모달 오픈 여부
   const openModal = (): void => {
     setModalOpen(true);
   };
   const handleModalClose = (): void => {
     setModalOpen(false);
+  };
+  // 자소서 내용 입력
+  const updateResume = (newResume: string): void => {
+    setResume(newResume);
+  };
+  const handleForm = async (): Promise<void> => {
+    try {
+      const response = await axios.post(
+        process.env.REACT_APP_API_URL_FORM,
+        {
+          sector_name: sectorName,
+          job_name: jobName,
+          career,
+          resume,
+          id: idform,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${access.access_token}`,
+          },
+        }
+      );
+
+      setId({ id: response.data.id });
+
+      console.log("가입된 사용자의 폼:", idform, access);
+    } catch (error) {
+      console.log("입력 실패:", error);
+    }
+  };
+  const handleSave = async (): Promise<void> => {
+    try {
+      await handleForm();
+    } catch (error) {
+      console.log("입력 실패:", error);
+    }
   };
   return (
     <>
@@ -218,46 +267,70 @@ const WatingPage = (): JSX.Element => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "1rem",
+                gap: "1.5rem",
               }}
             >
               <RequestText>
                 어떠한 <span style={{ color: "#56BD66" }}>직종</span>에
                 지원하시나요?
               </RequestText>
-              <Input placeholder="ex) IT" />
+              <Input
+                type="text"
+                name="sectorname"
+                value={sectorName}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setSector(e.currentTarget.value);
+                }}
+                placeholder="ex) IT"
+              />
             </div>
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "1rem",
+                gap: "1.5rem",
               }}
             >
               <RequestText>
                 지원하는 <span style={{ color: "#56BD66" }}>직업의 이름</span>은
                 무엇인가요?
               </RequestText>
-              <Input placeholder="ex) 프론트앤드 웹 개발자" />
+              <Input
+                type="text"
+                name="jobname"
+                value={jobName}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setJob(e.currentTarget.value);
+                }}
+                placeholder="ex) 프론트앤드 웹 개발자"
+              />
             </div>
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "1rem",
+                gap: "1.5rem",
               }}
             >
               <RequestText>
                 현재 <span style={{ color: "#56BD66" }}>경력</span>은 어떻게
                 되시나요?
               </RequestText>
-              <Input placeholder="ex) 신입" />
+              <Input
+                type="text"
+                name="career"
+                value={career}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setCareer(e.currentTarget.value);
+                }}
+                placeholder="ex) 신입"
+              />
             </div>
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "1rem",
+                gap: "1.5rem",
               }}
             >
               <RequestText>
@@ -268,8 +341,15 @@ const WatingPage = (): JSX.Element => {
                 <ModalBtn onClick={openModal}>
                   <Text>글 입력하기</Text>
                 </ModalBtn>
-                <FileAddButton style={{ justifyContent: "center" }}>
-                  <Text>제출 여부</Text>
+                <FileAddButton
+                  onClick={() => {
+                    handleSave().catch((error) => {
+                      console.log("저장 실패:", error);
+                    });
+                  }}
+                  style={{ justifyContent: "center" }}
+                >
+                  <Text>저장하기</Text>
                 </FileAddButton>
               </SelfIntroContainer>
             </div>
@@ -279,6 +359,7 @@ const WatingPage = (): JSX.Element => {
               <Modal
                 isModalOpen={isModalOpen}
                 setModalOpen={handleModalClose}
+                updateResume={updateResume}
               />
             </ModalWrapper>
           )}
@@ -310,7 +391,6 @@ const WatingPage = (): JSX.Element => {
         </div>
         <Link to="/StandBy">
           <QuestionCreate
-            type="submit"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}

@@ -145,7 +145,7 @@ const SignupPage = (): JSX.Element => {
       // 로그인 성공 후 fadeOut 상태 변경
       setFadeOut(true);
       console.log("회원가입 성공", user, jwt);
-      console.log("가입된 사용자:", response.data.user);
+      console.log("가입된 사용자:", username);
       navigate("/login");
     } catch (error) {
       console.log("회원가입 실패:", error);

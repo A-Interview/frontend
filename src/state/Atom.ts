@@ -8,9 +8,16 @@ export const signupState = atom({
 
 // jwt 상태 확인
 export const jwtState = atom({
-  key: "jwtState",
+  key: "access_token",
   default: {
     access_token: "",
     refresh_token: "",
+  },
+});
+
+export const formId = atom({
+  key: "formId",
+  default: {
+    id: 0,
   },
 });

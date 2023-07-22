@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import React, { type ChangeEvent, useState } from "react";
+import React, { type ChangeEvent, type FormEvent, useState } from "react";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -18,7 +18,6 @@ const ModalBackdrop = styled.div`
   height: 100vh;
   width: 100vw;
 `;
-
 const ExitBtn = styled.button`
   width: 5.5rem;
   height: 3.4375rem;
@@ -76,12 +75,24 @@ const Button = styled.button`
 interface Type {
   isModalOpen: boolean;
   setModalOpen: () => void;
+  updateResume: (newResume: string) => void;
 }
-const Modal = ({ isModalOpen, setModalOpen }: Type): JSX.Element => {
+const Modal = ({
+  isModalOpen,
+  setModalOpen,
+  updateResume,
+}: Type): JSX.Element => {
   const [textValue, setTextValue] = useState("");
 
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
     setTextValue(e.target.value);
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+
+    updateResume(textValue);
+    setModalOpen();
   };
   return (
     <>
@@ -101,14 +112,30 @@ const Modal = ({ isModalOpen, setModalOpen }: Type): JSX.Element => {
               <FileUploadModal>
                 <ExitBtn onClick={setModalOpen}>닫기</ExitBtn>
                 <div>
-                  <textarea
-                    value={textValue}
-                    onChange={handleTextChange}
-                    rows={25}
-                    cols={150}
-                  />
+                  <form
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "1rem",
+                    }}
+                    onSubmit={
+                      onSubmit as (e: React.FormEvent<HTMLFormElement>) => void
+                    }
+                  >
+                    <textarea
+                      value={textValue}
+                      onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+                        handleTextChange(e);
+                      }}
+                      rows={25}
+                      cols={150}
+                      placeholder="이곳에 자소서를 입력해주세요."
+                    />
+                    <Button type="submit">제출하기</Button>
+                  </form>
                 </div>
-                <Button>제출하기</Button>
               </FileUploadModal>
             </ModalView>
           </ModalBackdrop>
