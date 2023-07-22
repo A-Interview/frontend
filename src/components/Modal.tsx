@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Swal from "sweetalert2";
 
-import React, { type ChangeEvent, useState } from "react";
+import React, { type ChangeEvent, type FormEvent, useState } from "react";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -71,8 +71,13 @@ const Button = styled.button`
 interface Type {
   isModalOpen: boolean;
   setModalOpen: () => void;
+  updateResume: (newResume: string) => void;
 }
-const Modal = ({ isModalOpen, setModalOpen }: Type): JSX.Element => {
+const Modal = ({
+  isModalOpen,
+  setModalOpen,
+  updateResume,
+}: Type): JSX.Element => {
   const [textValue, setTextValue] = useState("");
 
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
@@ -85,13 +90,11 @@ const Modal = ({ isModalOpen, setModalOpen }: Type): JSX.Element => {
       icon: "success",
       toast: true,
       position: "center",
-      // showConfirmButton: true,
-      // timer: 1000,
-      // confirmButtonColor: "#3085d6",
-      // confirmButtonText: "확인",
-      // cancelButtonText: "취소",
-      // showCancelButton: true,
+      showConfirmButton: true,
       width: "auto",
+      html: `
+    <div style="display: flex; flex-direction: column; align-items: center;">
+    `,
     })
       .then((result) => {
         if (result.isConfirmed) {
@@ -101,6 +104,12 @@ const Modal = ({ isModalOpen, setModalOpen }: Type): JSX.Element => {
       .catch((error) => {
         console.error("오류가 발생했습니다:", error);
       });
+  };
+  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+
+    updateResume(textValue);
+    setModalOpen();
   };
 
   return (
@@ -121,26 +130,43 @@ const Modal = ({ isModalOpen, setModalOpen }: Type): JSX.Element => {
               <FileUploadModal>
                 <Box onClick={setModalOpen}></Box>
                 <div>
-                  <textarea
-                    value={textValue}
-                    onChange={handleTextChange}
-                    rows={25}
-                    cols={130}
-                    placeholder="내용을 입력하세요."
+                  <form
                     style={{
-                      width: "1119px",
-                      height: "488px",
-                      border: "1px solid rgb(232 232 232)",
-                      borderRadius: "0 0 40px 40px",
-                      backgroundColor: "rgb(232 232 232)",
-                      fontSize: "20px",
-                      resize: "vertical",
-                      padding: "20px",
-                      outline: "none",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "1rem",
                     }}
-                  />
+                    onSubmit={
+                      onSubmit as (e: React.FormEvent<HTMLFormElement>) => void
+                    }
+                  >
+                    <textarea
+                      value={textValue}
+                      onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+                        handleTextChange(e);
+                      }}
+                      rows={25}
+                      cols={130}
+                      placeholder="내용을 입력하세요."
+                      style={{
+                        width: "1119px",
+                        height: "488px",
+                        border: "1px solid rgb(232 232 232)",
+                        borderRadius: "0 0 40px 40px",
+                        backgroundColor: "rgb(232 232 232)",
+                        fontSize: "20px",
+                        resize: "vertical",
+                        padding: "20px",
+                        outline: "none",
+                      }}
+                    />
+                    <Button type="submit" onClick={handleButtonClick}>
+                      제출하기
+                    </Button>
+                  </form>
                 </div>
-                <Button onClick={handleButtonClick}>제출하기</Button>
               </FileUploadModal>
             </ModalView>
           </ModalBackdrop>

@@ -144,7 +144,6 @@ const LoginPage = (): JSX.Element => {
         access_token: response.data.access,
         refresh_token: response.data.refresh,
       });
-
       console.log("로그인 성공", signupnow);
       console.log(
         "가입된 사용자의 토큰:",
@@ -163,7 +162,7 @@ const LoginPage = (): JSX.Element => {
       await handleLogin();
       await showToast();
     } catch (error) {
-      console.log("회원가입 실패:", error);
+      console.log("로그인 실패:", error);
     }
   };
   const checkInput = (): void => {
