@@ -146,6 +146,7 @@ const LoginPage = (): JSX.Element => {
       );
       // 로그인 성공 후 fadeOut 상태 변경
       setFadeOut(true);
+      await showToast();
     } catch (error) {
       console.log("로그인 실패:", error);
     }
@@ -155,7 +156,6 @@ const LoginPage = (): JSX.Element => {
     e.preventDefault();
     try {
       await handleLogin();
-      await showToast();
     } catch (error) {
       console.log("로그인 실패:", error);
     }
