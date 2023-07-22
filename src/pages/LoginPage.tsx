@@ -157,7 +157,7 @@ const LoginPage = (): JSX.Element => {
       await handleLogin();
       await showToast();
     } catch (error) {
-      console.log("회원가입 실패:", error);
+      console.log("로그인 실패:", error);
     }
   };
   // 토스트 보여주는 함수

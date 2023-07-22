@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-} from "react";
+import React, { useEffect, useState, type ChangeEvent } from "react";
 import { styled } from "styled-components";
 import { motion } from "framer-motion";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
@@ -188,12 +183,12 @@ const WatingPage = (): JSX.Element => {
   // 모달 오픈 여부
   const [isModalOpen, setModalOpen] = useState(false);
   // 폼 양식
-  const [formids, setformId] = useRecoilState(formId);
-  const [sectorname, setSector] = useState("");
-  const [jobname, setJob] = useState("");
+  const [sectorName, setSector] = useState("");
+  const [jobName, setJob] = useState("");
   const [career, setCareer] = useState("");
   const [resume, setResume] = useState("");
-  const [access, setAccess] = useRecoilState(jwtState);
+  const [idform, setId] = useRecoilState(formId);
+  const access = useRecoilValue(jwtState);
   // 로그인 안되어 있으면 로그인창으로
   useEffect(() => {
     console.log(signupnow);
@@ -216,49 +211,32 @@ const WatingPage = (): JSX.Element => {
   const updateResume = (newResume: string): void => {
     setResume(newResume);
   };
-  console.log("?????????????????????????");
   const handleForm = async (): Promise<void> => {
     try {
       const response = await axios.post(
-        "/forms/",
+        process.env.REACT_APP_API_URL_FORM,
         {
-          sectorname,
-          jobname,
+          sector_name: sectorName,
+          job_name: jobName,
           career,
           resume,
+          id: idform,
         },
         {
           headers: {
-            access: "Bearer " + access.access_token,
+            Authorization: `Bearer ${access.access_token}`,
           },
         }
       );
 
-      setformId({
-        sector_name: response.data.sector,
-        job_name: response.data.job,
-        career: response.data.career,
-        resume: response.data.resume,
-      });
+      setId({ id: response.data.id });
 
-      setAccess({
-        access_token: response.data.access,
-        refresh_token: response.data.refresh,
-      });
-      console.log(
-        "가입된 사용자의 폼:",
-        formids.sector_name,
-        formids.job_name,
-        formids.career,
-        formids.resume,
-        "Bearer " + access.access_token
-      );
+      console.log("가입된 사용자의 폼:", idform, access);
     } catch (error) {
       console.log("입력 실패:", error);
     }
   };
-  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
+  const handleSave = async (): Promise<void> => {
     try {
       await handleForm();
     } catch (error) {
@@ -285,103 +263,96 @@ const WatingPage = (): JSX.Element => {
         <WatingPageImage1 src={WatingPageImage} />
         <div style={{ display: "flex", gap: "6.2rem" }}>
           <OptionalContainer>
-            <form
-              onSubmit={
-                onSubmit as (e: React.FormEvent<HTMLFormElement>) => void
-              }
+            <div
               style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: "1.5rem",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.5rem",
+              <RequestText>
+                어떠한 <span style={{ color: "#56BD66" }}>직종</span>에
+                지원하시나요?
+              </RequestText>
+              <Input
+                type="text"
+                name="sectorname"
+                value={sectorName}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setSector(e.currentTarget.value);
                 }}
-              >
-                <RequestText>
-                  어떠한 <span style={{ color: "#56BD66" }}>직종</span>에
-                  지원하시나요?
-                </RequestText>
-                <Input
-                  type="text"
-                  name="sectorname"
-                  value={sectorname}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    setSector(e.currentTarget.value);
+                placeholder="ex) IT"
+              />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+              }}
+            >
+              <RequestText>
+                지원하는 <span style={{ color: "#56BD66" }}>직업의 이름</span>은
+                무엇인가요?
+              </RequestText>
+              <Input
+                type="text"
+                name="jobname"
+                value={jobName}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setJob(e.currentTarget.value);
+                }}
+                placeholder="ex) 프론트앤드 웹 개발자"
+              />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+              }}
+            >
+              <RequestText>
+                현재 <span style={{ color: "#56BD66" }}>경력</span>은 어떻게
+                되시나요?
+              </RequestText>
+              <Input
+                type="text"
+                name="career"
+                value={career}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setCareer(e.currentTarget.value);
+                }}
+                placeholder="ex) 신입"
+              />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+              }}
+            >
+              <RequestText>
+                <span style={{ color: "#56BD66" }}>자기소개서 내용</span>을
+                작성해주세요!
+              </RequestText>
+              <SelfIntroContainer>
+                <ModalBtn onClick={openModal}>
+                  <Text>글 입력하기</Text>
+                </ModalBtn>
+                <FileAddButton
+                  onClick={() => {
+                    handleSave().catch((error) => {
+                      console.log("저장 실패:", error);
+                    });
                   }}
-                  placeholder="ex) IT"
-                />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.5rem",
-                }}
-              >
-                <RequestText>
-                  지원하는 <span style={{ color: "#56BD66" }}>직업의 이름</span>
-                  은 무엇인가요?
-                </RequestText>
-                <Input
-                  type="text"
-                  name="jobname"
-                  value={jobname}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    setJob(e.currentTarget.value);
-                  }}
-                  placeholder="ex) 프론트앤드 웹 개발자"
-                />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.5rem",
-                }}
-              >
-                <RequestText>
-                  현재 <span style={{ color: "#56BD66" }}>경력</span>은 어떻게
-                  되시나요?
-                </RequestText>
-                <Input
-                  type="text"
-                  name="career"
-                  value={career}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    setCareer(e.currentTarget.value);
-                  }}
-                  placeholder="ex) 신입"
-                />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.5rem",
-                }}
-              >
-                <RequestText>
-                  <span style={{ color: "#56BD66" }}>자기소개서 내용</span>을
-                  작성해주세요!
-                </RequestText>
-                <SelfIntroContainer>
-                  <ModalBtn onClick={openModal}>
-                    <Text>글 입력하기</Text>
-                  </ModalBtn>
-                  <FileAddButton
-                    type="submit"
-                    style={{ justifyContent: "center" }}
-                  >
-                    <Text>저장하기</Text>
-                  </FileAddButton>
-                </SelfIntroContainer>
-              </div>
-            </form>
+                  style={{ justifyContent: "center" }}
+                >
+                  <Text>저장하기</Text>
+                </FileAddButton>
+              </SelfIntroContainer>
+            </div>
           </OptionalContainer>
           {isModalOpen && (
             <ModalWrapper>
