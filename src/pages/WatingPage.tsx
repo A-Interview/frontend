@@ -220,7 +220,7 @@ const WatingPage = (): JSX.Element => {
           job_name: jobName,
           career,
           resume,
-          id: idform,
+          id: idform.id,
         },
         {
           headers: {
@@ -237,7 +237,7 @@ const WatingPage = (): JSX.Element => {
         resume: response.data.resume,
       });
 
-      console.log("가입된 사용자의 폼:", idform, access);
+      console.log("가입된 사용자의 폼:", idform);
     } catch (error) {
       console.log("입력 실패:", error);
     }
