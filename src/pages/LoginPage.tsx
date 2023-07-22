@@ -6,7 +6,7 @@ import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useSetRecoilState, useRecoilState } from "recoil";
 import axios from "axios";
-import { signupState, jwtState } from "../state/Atom";
+import { signupState, jwtState, usernameState } from "../state/Atom";
 import Swal from "sweetalert2";
 
 const ProgressBackground = styled.div`
@@ -117,10 +117,12 @@ const Account = styled(motion.address)`
 `;
 
 const LoginPage = (): JSX.Element => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signupnow, setSignupState] = useRecoilState(signupState);
   const setJwtState = useSetRecoilState(jwtState);
+  const [name, setRecoilUser] = useRecoilState(usernameState);
 
   const navigate = useNavigate();
   // fadeOut 상태 추가
@@ -129,10 +131,13 @@ const LoginPage = (): JSX.Element => {
   const handleLogin = async (): Promise<void> => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL, {
+        username,
         email,
         password,
       });
-
+      setUsername(email);
+      setRecoilUser(response.data.username);
+      console.log("가입된 사용자:", name);
       setSignupState(true);
       setJwtState({
         access_token: response.data.access,
@@ -151,7 +156,6 @@ const LoginPage = (): JSX.Element => {
       console.log("로그인 실패:", error);
     }
   };
-
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     try {

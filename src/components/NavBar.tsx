@@ -1,11 +1,10 @@
-import React, { type FormEvent, useState, useEffect } from "react";
+import React, { type FormEvent } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useRecoilState } from "recoil";
-import { signupState, jwtState } from "../state/Atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { signupState, jwtState, usernameState } from "../state/Atom";
 import axios from "axios";
-
 const NavBarBackGround = styled.div`
   display: flex;
   width: 100%;
@@ -17,7 +16,6 @@ const NavBarBackGround = styled.div`
   padding-right: 2em;
   padding-left: 2em;
 `;
-
 const NavBarTitle = styled.div`
   color: #fff;
   font-size: 1.3125rem;
@@ -29,7 +27,6 @@ const NavBarTitle = styled.div`
   overflow: visible;
   cursor: pointer;
 `;
-
 const TitleInform = styled.div`
   display: flex;
   flex-direction: row;
@@ -53,7 +50,6 @@ const NavItem1 = styled.div`
   cursor: pointer;
   overflow: visible;
 `;
-
 const Username = styled.p`
   margin: auto;
   font-family: var(--font-r);
@@ -66,7 +62,6 @@ const Username = styled.p`
   cursor: pointer;
   overflow: visible;
 `;
-
 const LoginButton = styled(motion.button)`
   width: 8.75rem;
   height: 2.5rem;
@@ -86,21 +81,20 @@ const LoginButton = styled(motion.button)`
   background: transparent;
   cursor: pointer;
 `;
-
 const NavBar = (): JSX.Element => {
-  // 로그아웃 처리
+  // const [user, setUser] = useRecoilState(signupState);
   const [signupnow, setSignupState] = useRecoilState(signupState);
   const [jwt, setJwtState] = useRecoilState(jwtState);
-  const [username, setUsername] = useState<string>("");
+  const username = useRecoilValue(usernameState);
+  const setRecoilUser = useRecoilState(usernameState)[1]; // useSetRecoilState로 변경
 
   const handleLogout = async (): Promise<void> => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL_OUT, {
         refresh: jwt.refresh_token,
       });
-
+      setRecoilUser(""); // 로그아웃 시 username 초기화
       setSignupState(false);
-
       console.log("로그아웃 성공", signupnow);
       setJwtState(response.data.refresh);
     } catch (error) {
@@ -115,32 +109,6 @@ const NavBar = (): JSX.Element => {
       console.log("로그아웃 실패:", error);
     }
   };
-
-  // 회원 가입 성공 후 사용자 이름 가져오는 함수
-  const getUsernameFromServer = async (): Promise<string> => {
-    try {
-      const response = await axios.get(
-        "http://localhost:8000/api/users/register/"
-      );
-      return response.data.username; // 가정: 서버에서 받아온 사용자 이름을 반환
-    } catch (error) {
-      console.log("사용자 이름 가져오기 실패:", error);
-      return ""; // 실패 시 빈 문자열 반환
-    }
-  };
-
-  useEffect(() => {
-    // Navbar가 마운트될 때 사용자 이름 가져오기
-    if (signupnow) {
-      getUsernameFromServer()
-        .then((name) => {
-          setUsername(name);
-        })
-        .catch((error) => {
-          console.log("사용자 이름 가져오기 실패:", error);
-        });
-    }
-  }, [signupnow]);
 
   return (
     <NavBarBackGround>
@@ -165,7 +133,7 @@ const NavBar = (): JSX.Element => {
         >
           <NavItem1>마이페이지</NavItem1>
         </Link>
-        {signupnow && <Username>{username}님, 환영합니다</Username>}
+        <Username>{username} 님 환영합니다</Username>
         <form
           onSubmit={onSubmit as (e: React.FormEvent<HTMLFormElement>) => void}
           style={{
@@ -204,5 +172,4 @@ const NavBar = (): JSX.Element => {
     </NavBarBackGround>
   );
 };
-
 export default NavBar;

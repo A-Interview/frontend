@@ -6,7 +6,7 @@ import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
-import { signupState, jwtState } from "../state/Atom";
+import { signupState, jwtState, usernameState } from "../state/Atom";
 import Swal from "sweetalert2";
 
 const ProgressBackground = styled.div`
@@ -123,6 +123,7 @@ const SignupPage = (): JSX.Element => {
   const [password2, setPassword2] = useState("");
   const setSignupState = useSetRecoilState<boolean>(signupState);
   const [jwt, setJwtState] = useRecoilState(jwtState);
+  const setRecoilUser = useSetRecoilState(usernameState);
 
   const navigate = useNavigate();
   // fadeOut 상태 추가
@@ -137,15 +138,18 @@ const SignupPage = (): JSX.Element => {
         password2,
       });
       setUser(response.data.user);
+      setRecoilUser(username);
       setSignupState(true);
+      setFadeOut(true);
       setJwtState({
         access_token: response.data.access,
         refresh_token: response.data.refresh,
       });
+      // setRecoilUser(username);
       // 로그인 성공 후 fadeOut 상태 변경
-      setFadeOut(true);
+      // setFadeOut(true);
       console.log("회원가입 성공", user, jwt);
-      console.log("가입된 사용자:", response.data.user);
+      console.log("가입된 사용자:", username);
       navigate("/login");
     } catch (error) {
       console.log("회원가입 실패:", error);

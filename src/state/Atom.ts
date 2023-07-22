@@ -14,3 +14,9 @@ export const jwtState = atom({
     refresh_token: "",
   },
 });
+
+// 사용자 이름 상태 확인
+export const usernameState = atom({
+  key: "usernameState",
+  default: "",
+});

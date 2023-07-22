@@ -24,7 +24,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
-  cursor: pointer;
+  cursor: w-resize;
   z-index: 1;
 `;
 
@@ -48,8 +48,6 @@ const ProgressBox2 = styled.div`
     0px 1px 1px 0px rgba(255, 255, 255, 0.15) inset,
     0px -1px 1px 0px rgba(255, 255, 255, 0.15) inset;
   backdrop-filter: blur(50px);
-  padding-top: 1.9rem;
-  padding-bottom: 1.9rem;
 `;
 
 const ProgressBox3 = styled.div`
@@ -87,10 +85,8 @@ const ProgressQuestionText = styled.div`
 `;
 
 const ProgressVideo = styled.video`
-  width: 50%;
-  transform: scaleX(-1);
-  object-fit: cover;
-  height: 100%;
+  width: 51.9375rem;
+  height: 27.375rem;
   flex-shrink: 0;
   border-radius: 3.03713rem;
   box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
@@ -192,23 +188,6 @@ const Count = styled.div`
   color: white;
 `;
 
-const CameraButton = styled.button`
-  border-radius: 2.75rem;
-  background: rgba(255, 255, 255, 0.14);
-  box-shadow: 0px 8px 6px 0px rgba(0, 0, 0, 0.05),
-    0px 1px 1px 0px rgba(255, 255, 255, 0.15) inset,
-    0px -1px 1px 0px rgba(255, 255, 255, 0.15) inset;
-  backdrop-filter: blur(50px);
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  color: white;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  position: absolute;
-  right: 1.9rem;
-  top: 1.9rem;
-`;
-
 const InterviewProgressPage = (): JSX.Element => {
   const navigate = useNavigate();
   const signupnow = useRecoilValue(signupState);
@@ -244,21 +223,14 @@ const InterviewProgressPage = (): JSX.Element => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<string>("");
   const [isPost, setIsPost] = useState(false);
-  const [questionCount, setQuetionCount] = useState(5);
 
   // 초기 웹 소켓 연결 상태 확인
   const [firstConnected, setFirstConnected] = useState(false);
 
-  const wsUrls = [
-    "ws://localhost:8000/ws/deep-interview/",
-    "ws://localhost:8000/ws/situation-interview/",
-    "ws://localhost:8000/ws/personality-interview/",
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-
   const connectWebSocket = (): void => {
-    const ws = new WebSocket(wsUrls[currentIndex]);
+    // const ws = new WebSocket("ws://localhost:8000/ws/deep-interview/");
+    // const ws = new WebSocket("ws://localhost:8000/ws/situation-interview/");
+    const ws = new WebSocket("ws://localhost:8000/ws/personality-interview/");
 
     ws.onopen = () => {
       console.log("WebSocket connected");
@@ -282,16 +254,10 @@ const InterviewProgressPage = (): JSX.Element => {
 
     ws.onclose = () => {
       console.log("WebSocket disconnected");
-      setQuetionCount(5);
       setSocket(null);
       setFirstConnected(false);
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % wsUrls.length);
     };
   };
-
-  useEffect(() => {
-    connectWebSocket();
-  }, [currentIndex]);
 
   useEffect(() => {
     connectWebSocket();
@@ -302,34 +268,8 @@ const InterviewProgressPage = (): JSX.Element => {
       console.log("send message");
       const data = { formId: 1, type: "withoutAudio" };
       socket.send(JSON.stringify(data));
-      setQuetionCount((prev) => prev - 1);
     }
   };
-
-  const sendMessageNoReply = (): void => {
-    // Blob 객체를 읽어 데이터 URL로 변환합니다.
-    if (audioBlob instanceof Blob) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const dataUrl = reader.result as string;
-        const base64Data = dataUrl.split(",")[1];
-        const data = { formId: 1, type: "noReply", audioBlob: base64Data };
-        if (socket != null && audioBlob != null) {
-          socket.send(JSON.stringify(data));
-          console.log("posted");
-        }
-        setAudioBlob(null);
-      };
-      reader.readAsDataURL(audioBlob);
-    }
-    setMessage("");
-    setCount(10);
-    setIsPost(true);
-
-    socket?.close();
-  };
-
-  console.log(`questionCoutn : ${questionCount}`);
 
   const sendMessageWithAudio = (): void => {
     console.log(audioBlob);
@@ -351,7 +291,6 @@ const InterviewProgressPage = (): JSX.Element => {
     setMessage("");
     setCount(10);
     setIsPost(true);
-    setQuetionCount((prev) => prev - 1);
   };
 
   const [recording, setRecording] = useState(false);
@@ -496,7 +435,7 @@ const InterviewProgressPage = (): JSX.Element => {
               }}
             >
               <ProgressVideo autoPlay ref={videoRef} />
-              <CameraButton onClick={startVideo}>카메라 키기</CameraButton>
+              <button onClick={startVideo}>카메라 키기</button>
             </ProgressBox2>
             {/* 하단 오른쪽 박스 */}
             <ProgressBox3>
@@ -531,12 +470,10 @@ const InterviewProgressPage = (): JSX.Element => {
 
               <ProgressNextButton
                 onClick={() => {
-                  if (firstConnected && questionCount > 0) {
+                  if (firstConnected) {
                     sendMessage();
-                  } else if (!firstConnected && questionCount > 0) {
-                    setStopTrigger(true);
                   } else {
-                    sendMessageNoReply();
+                    setStopTrigger(true);
                   }
                 }}
               >

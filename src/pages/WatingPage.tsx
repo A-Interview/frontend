@@ -81,7 +81,7 @@ const SelfIntroContainer = styled.div`
   justify-content: space-between;
   margin-top: 1rem;
 `;
-const FileAddButton = styled.div`
+const FileAddButton = styled(motion.div)`
   border-radius: 0.9375rem;
   border: 1px solid #76878d;
   background: rgba(0, 0, 0, 0.14);
@@ -162,7 +162,7 @@ const BackWard = styled.div`
   top: 1.5rem;
   cursor: w-resize;
 `;
-const ModalBtn = styled.button`
+const ModalBtn = styled(motion.button)`
   border-radius: 0.9375rem;
   border: 1px solid #76878d;
   background: rgba(0, 0, 0, 0.14);
@@ -266,7 +266,12 @@ const WatingPage = (): JSX.Element => {
                 작성해주세요!
               </RequestText>
               <SelfIntroContainer>
-                <ModalBtn onClick={openModal}>
+                <ModalBtn
+                  onClick={openModal}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                >
                   <Text>글 입력하기</Text>
                 </ModalBtn>
                 <FileAddButton style={{ justifyContent: "center" }}>
