@@ -19,5 +19,9 @@ export const formId = atom({
   key: "formId",
   default: {
     id: 0,
+    sectorname: "",
+    jobname: "",
+    career: "",
+    resume: "",
   },
 });

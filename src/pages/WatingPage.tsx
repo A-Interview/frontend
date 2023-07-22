@@ -229,7 +229,13 @@ const WatingPage = (): JSX.Element => {
         }
       );
 
-      setId({ id: response.data.id });
+      setId({
+        id: response.data.id,
+        sectorname: response.data.sector_name,
+        jobname: response.data.job_name,
+        career: response.data.career,
+        resume: response.data.resume,
+      });
 
       console.log("가입된 사용자의 폼:", idform, access);
     } catch (error) {
