@@ -151,6 +151,7 @@ const SignupPage = (): JSX.Element => {
       // setFadeOut(true);
       console.log("회원가입 성공", user, jwt);
       console.log("가입된 사용자:", username);
+      await showToast();
       navigate("/login");
     } catch (error) {
       console.log("회원가입 실패:", error);
@@ -160,7 +161,6 @@ const SignupPage = (): JSX.Element => {
     e.preventDefault();
     try {
       await handleSignUp();
-      await showToast();
     } catch (error) {
       console.log("회원가입 실패:", error);
     }
