@@ -116,12 +116,7 @@ const Modal = ({
     <>
       <ModalContainer>
         {isModalOpen && (
-          <ModalBackdrop
-            onClick={setModalOpen}
-            style={{
-              position: "absolute",
-            }}
-          >
+          <ModalBackdrop onClick={setModalOpen}>
             <ModalView
               onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                 e.stopPropagation();

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import MyPageImage1 from "../assets/img/MyPageImage1.png";
@@ -6,6 +6,10 @@ import MyPageImage2 from "../assets/img/MyPageImage2.png";
 import MyPageImage3 from "../assets/img/MyPageImage3.png";
 import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
+// import axios from "axios";
+import { useRecoilValue } from "recoil";
+import { formId } from "../state/Atom";
+import Modal from "../components/Modal";
 
 const MyPageContainer = styled.div`
   background: #01001a;
@@ -122,6 +126,7 @@ const SelfContainer = styled.div<{ image: any }>`
   position: relative;
   background: url(${(props) => props.image}), lightgray 50% / cover no-repeat;
   background-color: rgba(0, 0, 0, 0.19);
+  cursor: pointer;
 `;
 
 const Wrap = styled.div`
@@ -186,11 +191,38 @@ const ResultBox = styled.div`
   gap: 3rem;
 `;
 
+const ModalWrapper = styled.div`
+  position: relative;
+  z-index: 2; /* Modal을 위에 배치 */
+`;
 const MyPage = (): JSX.Element => {
   const navigate = useNavigate();
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
+  };
+  const [sectorName, setSector] = useState("");
+  const [jobName, setJob] = useState("");
+  const [career, setCareer] = useState("");
+  const [resume, setResume] = useState("");
+  const idform = useRecoilValue(formId);
+  useEffect(() => {
+    setSector(idform.sectorname);
+    setJob(idform.jobname);
+    setCareer(idform.career);
+    setResume(idform.resume);
+  }, []);
+  const handleModalClose = (): void => {
+    setModalOpen(false);
+  };
+  const openModal = (): void => {
+    setModalOpen(true);
+  };
+  const updateResume = (newResume: string): void => {
+    setResume(newResume);
+    console.log(resume);
+    console.log(newResume);
   };
   return (
     <MyPageContainer>
@@ -242,7 +274,7 @@ const MyPage = (): JSX.Element => {
                     fillOpacity="0.57"
                   />
                 </svg>
-                데브옵스 엔지니어
+                {sectorName}
               </div>
               <div
                 style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}
@@ -265,7 +297,7 @@ const MyPage = (): JSX.Element => {
                     fillOpacity="0.57"
                   />
                 </svg>
-                어딜 까요
+                {jobName}
               </div>
               <div
                 style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}
@@ -288,7 +320,7 @@ const MyPage = (): JSX.Element => {
                     fillOpacity="0.57"
                   />
                 </svg>
-                5년차
+                {career}
               </div>
             </InfoRight>
           </Info>
@@ -298,7 +330,7 @@ const MyPage = (): JSX.Element => {
               <Text>내 자기 소개서 확인</Text>
             </SelfContainer>
 
-            <SelfContainer image={MyPageImage3}>
+            <SelfContainer image={MyPageImage3} onClick={openModal}>
               <Wrap />
               <Text>내 자기 소개서 수정</Text>
             </SelfContainer>
@@ -331,6 +363,15 @@ const MyPage = (): JSX.Element => {
       </ContentContainer>
       <Background />
       <LoadingPage></LoadingPage>
+      {isModalOpen && (
+        <ModalWrapper>
+          <Modal
+            isModalOpen={isModalOpen}
+            setModalOpen={handleModalClose}
+            updateResume={updateResume}
+          />
+        </ModalWrapper>
+      )}
     </MyPageContainer>
   );
 };
