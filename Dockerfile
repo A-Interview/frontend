@@ -6,11 +6,9 @@ WORKDIR /frontend
 
 ENV CHOKIDAR_USEPOLLING=true
 
-COPY package*.json ./
+COPY package*.json .
 # 현재 경로에 있는 것을 frontend로 복사
 
-
-# COPY . /frontend
 
 RUN npm cache clean --force
 
