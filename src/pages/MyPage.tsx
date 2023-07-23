@@ -221,8 +221,10 @@ const MyPage = (): JSX.Element => {
   };
   const updateResume = (newResume: string): void => {
     setResume(newResume);
-    console.log(resume);
     console.log(newResume);
+  };
+  const checkResume = (): void => {
+    console.log(resume);
   };
   return (
     <MyPageContainer>
@@ -325,7 +327,7 @@ const MyPage = (): JSX.Element => {
             </InfoRight>
           </Info>
           <SelfIntroduction>
-            <SelfContainer image={MyPageImage2}>
+            <SelfContainer image={MyPageImage2} onClick={checkResume}>
               <Wrap />
               <Text>내 자기 소개서 확인</Text>
             </SelfContainer>
