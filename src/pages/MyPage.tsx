@@ -7,7 +7,7 @@ import MyPageImage3 from "../assets/img/MyPageImage3.png";
 import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 // import axios from "axios";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { formId, maxId } from "../state/Atom";
 import Modal from "../components/Modal";
 import ModalResult from "../components/ModalResult";
@@ -212,9 +212,10 @@ const MyPage = (): JSX.Element => {
   const [resume, setResume] = useState("");
   const idform = useRecoilValue(formId);
   const [userId, setuserId] = useState(0);
-  const maxidnow = useRecoilValue<number>(maxId);
-  const [idTime1, setidTime1] = useState("");
+  const [maxidnow, setMaxIdNow] = useRecoilState<number>(maxId);
   /*
+  const [idTime1, setidTime1] = useState("");
+  
   const [idTime2, setidTime2] = useState("");
   const [idTime3, setidTime3] = useState("");
   const [idTime4, setidTime4] = useState("");
@@ -233,9 +234,10 @@ const MyPage = (): JSX.Element => {
     setJob(idform.jobname);
     setCareer(idform.career);
     setResume(idform.resume);
-    handleSave().catch((error) => {
-      console.log("저장 실패:", error);
-    });
+    if (maxidnow === 0) {
+      setuserId(23);
+      setMaxIdNow(23);
+    }
   }, []);
   // 버튼 누를 때마다 get 요청
   useEffect(() => {
@@ -250,7 +252,6 @@ const MyPage = (): JSX.Element => {
       setJob(formState[0].job_name);
       setCareer(formState[0].career);
       setResume(formState[0].resume);
-      setidTime1(formState[0].updated_at);
     }
   }, [formState]);
   // 자기소개서 수정 모달
@@ -453,7 +454,7 @@ const MyPage = (): JSX.Element => {
                   handleButtonClick1();
                 }}
               >
-                {idTime1}
+                1
               </ResultDay>
               <ResultLink style={{ justifyContent: "center" }}>
                 면접 평가 보러가기
