@@ -10,6 +10,8 @@ import LoadingPage from "../components/Loading";
 import { useRecoilValue } from "recoil";
 import { formId } from "../state/Atom";
 import Modal from "../components/Modal";
+import ModalResult from "../components/ModalResult";
+import axios from "axios";
 
 const MyPageContainer = styled.div`
   background: #01001a;
@@ -193,11 +195,21 @@ const ResultBox = styled.div`
 
 const ModalWrapper = styled.div`
   position: relative;
-  z-index: 2; /* Modal을 위에 배치 */
+  z-index: 2;
+  // Modal을 위에 배치
 `;
+interface Data {
+  id: number;
+  sector_name: string;
+  job_name: string;
+  career: string;
+  resume: string;
+  // Add other properties as needed
+}
 const MyPage = (): JSX.Element => {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalResultOpen, setModalResultOpen] = useState(false);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
@@ -207,24 +219,52 @@ const MyPage = (): JSX.Element => {
   const [career, setCareer] = useState("");
   const [resume, setResume] = useState("");
   const idform = useRecoilValue(formId);
+  const [userId, setuserId] = useState(0);
+  const [data, setData] = useState<Data | null>(null);
+  // 페이지 처음들어올때 자기소개서 설정
   useEffect(() => {
     setSector(idform.sectorname);
     setJob(idform.jobname);
     setCareer(idform.career);
     setResume(idform.resume);
+    setuserId(1);
+    // 임시로 formId 1로 설정
   }, []);
+  // 자기소개서 수정 모달
   const handleModalClose = (): void => {
     setModalOpen(false);
   };
   const openModal = (): void => {
     setModalOpen(true);
   };
+  // 자기소개서 확인 모달
+  const openModalResult = (): void => {
+    setModalResultOpen(true);
+  };
+  const handleModalResultClose = (): void => {
+    setModalResultOpen(false);
+  };
+  // 자기소개서 업데이트
   const updateResume = (newResume: string): void => {
     setResume(newResume);
     console.log(newResume);
   };
-  const checkResume = (): void => {
-    console.log(resume);
+  // formId get
+  const handleForm = async (): Promise<void> => {
+    try {
+      const response = await axios.get(`/api/forms/user/${userId}`);
+      setData(response.data);
+    } catch (error) {
+      console.error("오류 발생:", error);
+    }
+    if (data != null) console.log(data.career);
+  };
+  const handleSave = async (): Promise<void> => {
+    try {
+      await handleForm();
+    } catch (error) {
+      console.log("오류 발생:", error);
+    }
   };
   return (
     <MyPageContainer>
@@ -327,7 +367,7 @@ const MyPage = (): JSX.Element => {
             </InfoRight>
           </Info>
           <SelfIntroduction>
-            <SelfContainer image={MyPageImage2} onClick={checkResume}>
+            <SelfContainer image={MyPageImage2} onClick={openModalResult}>
               <Wrap />
               <Text>내 자기 소개서 확인</Text>
             </SelfContainer>
@@ -343,7 +383,16 @@ const MyPage = (): JSX.Element => {
           <Results>
             <ResultBox>
               <ResultDay>2023년 8월 16일</ResultDay>
-              <ResultLink>면접 평가 보러가기</ResultLink>
+              <ResultLink
+                onClick={() => {
+                  handleSave().catch((error) => {
+                    console.log("저장 실패:", error);
+                  });
+                }}
+                style={{ justifyContent: "center" }}
+              >
+                면접 평가 보러가기
+              </ResultLink>
             </ResultBox>
 
             <ResultBox>
@@ -371,6 +420,15 @@ const MyPage = (): JSX.Element => {
             isModalOpen={isModalOpen}
             setModalOpen={handleModalClose}
             updateResume={updateResume}
+          />
+        </ModalWrapper>
+      )}
+      {isModalResultOpen && (
+        <ModalWrapper>
+          <ModalResult
+            isModalResultOpen={isModalResultOpen}
+            setModalResultOpen={handleModalResultClose}
+            resume={resume}
           />
         </ModalWrapper>
       )}
