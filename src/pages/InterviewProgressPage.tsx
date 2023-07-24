@@ -253,10 +253,10 @@ const InterviewProgressPage = (): JSX.Element => {
   const [isPost, setIsPost] = useState(false);
 
   // 질문 갯수 설정 변수
-  const defaultQuestionNum = 2;
-  const situationQuestionNum = 2;
-  const deepQuestionNum = 2;
-  const personalityQuestionNum = 2;
+  const defaultQuestionNum: number = 1;
+  const situationQuestionNum: number = 1;
+  const deepQuestionNum: number = 0;
+  const personalityQuestionNum: number = 0;
 
   // 전체 질문 변수, 이를 통해 중간에 페이지 나갈 시 벡엔드 DB에 요청 가능
   const questionNum =
@@ -268,8 +268,14 @@ const InterviewProgressPage = (): JSX.Element => {
   // 현재 토픽의 몇 번째 질문인 지 체크하는 변수
   const [currentQNum, setCurrentQNum] = useState(0);
 
+  // 현재 토픽의 종류를 결정하는 변수
+  const [interviewType, setInterviewType] = useState("default");
+
   // 초기 웹 소켓 연결 상태 확인
   const [firstConnected, setFirstConnected] = useState(false);
+
+  // last_topic_answer 토큰 변수
+  const [lastTopicAnswer, setLastTopicAnswer] = useState("");
 
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
@@ -297,19 +303,9 @@ const InterviewProgressPage = (): JSX.Element => {
     ws.onmessage = (event) => {
       setFirstConnected(false);
       const data = JSON.parse(event.data);
+
       if (data.last_topic_answer != null) {
-        console.log(data.last_topic_answer);
-        // 토픽 바꾸기 & 각 토픽의 처음 post 요청
-        if (data.last_topic_answer === "default_last") {
-          setCurrentQNum(situationQuestionNum);
-          setFirstConnected(true);
-        } else if (data.last_topic_answer === "situation_last") {
-          setCurrentQNum(deepQuestionNum);
-          setFirstConnected(true);
-        } else if (data.last_topic_answer === "deep_last") {
-          setCurrentQNum(personalityQuestionNum);
-          setFirstConnected(true);
-        }
+        setLastTopicAnswer(data.last_topic_answer);
       } else {
         const message: string = data.message;
         const finishReason: string = data.finish_reason;
@@ -329,21 +325,65 @@ const InterviewProgressPage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    setCurrentQNum(defaultQuestionNum);
+    if (
+      defaultQuestionNum === 0 &&
+      situationQuestionNum === 0 &&
+      deepQuestionNum === 0
+    ) {
+      setInterviewType("personality");
+      setCurrentQNum(personalityQuestionNum);
+    } else if (
+      defaultQuestionNum === 0 &&
+      situationQuestionNum === 0 &&
+      deepQuestionNum !== 0
+    ) {
+      setInterviewType("deep");
+      setCurrentQNum(deepQuestionNum);
+    } else if (defaultQuestionNum === 0 && situationQuestionNum !== 0) {
+      setInterviewType("situation");
+      setCurrentQNum(situationQuestionNum);
+    } else if (defaultQuestionNum !== 0) {
+      setInterviewType("default");
+      setCurrentQNum(defaultQuestionNum);
+    }
+
     connectWebSocket();
   }, []);
 
+  useEffect(() => {
+    // 현재 토픽의 마지막 질문인 경우 설정.
+    if (lastTopicAnswer === "default_last") {
+      setCurrentQNum(situationQuestionNum);
+      setFirstConnected(true);
+      sendMessage();
+    } else if (lastTopicAnswer === "situation_last") {
+      setCurrentQNum(deepQuestionNum);
+      setFirstConnected(true);
+      sendMessage();
+    } else if (lastTopicAnswer === "deep_last") {
+      setCurrentQNum(personalityQuestionNum);
+      setFirstConnected(true);
+      sendMessage();
+    } else if (lastTopicAnswer === "last") {
+      navigate("/interview-result");
+    }
+  }, [lastTopicAnswer]);
+
   // 초기 메세지 요청 함수
   const sendMessage = (): void => {
-    if (socket != null && socket.readyState === WebSocket.OPEN) {
+    console.log(socket);
+    if (socket != null) {
       console.log("send Initial Message");
       const data = {
         formId: 1,
         type: "withoutAudio",
+        interviewType,
       };
       socket.send(JSON.stringify(data));
       setCount(10);
       setFirstConnected(false);
+      setCurrentQNum((prev) => prev - 1);
+      setMessage("");
     }
   };
 
@@ -360,6 +400,7 @@ const InterviewProgressPage = (): JSX.Element => {
           formId: 1,
           type: "noReply",
           audioBlob: base64Data,
+          interviewType,
         };
         if (socket != null && audioBlob != null) {
           socket.send(JSON.stringify(data));
@@ -370,6 +411,42 @@ const InterviewProgressPage = (): JSX.Element => {
     }
     setMessage("");
     setIsPost(true);
+    checkInterviewType();
+  };
+
+  // 토픽 종류를 확인하고, 바꾸는 함수
+  const checkInterviewType = (): void => {
+    if (interviewType === "default") {
+      if (
+        situationQuestionNum === 0 &&
+        deepQuestionNum === 0 &&
+        personalityQuestionNum === 0
+      ) {
+        setInterviewType("last");
+      } else if (situationQuestionNum === 0 && deepQuestionNum === 0) {
+        setInterviewType("personality");
+      } else if (situationQuestionNum === 0) {
+        setInterviewType("deep");
+      } else {
+        setInterviewType("situation");
+      }
+    } else if (interviewType === "situation") {
+      if (deepQuestionNum === 0 && personalityQuestionNum === 0) {
+        setInterviewType("last");
+      } else if (deepQuestionNum === 0) {
+        setInterviewType("personality");
+      } else {
+        setInterviewType("deep");
+      }
+    } else if (interviewType === "deep") {
+      if (personalityQuestionNum === 0) {
+        setInterviewType("last");
+      } else {
+        setInterviewType("personality");
+      }
+    } else if (interviewType === "personality") {
+      setInterviewType("last");
+    }
   };
 
   // 음성 녹음과 함께 질문 요청 함수
@@ -385,6 +462,7 @@ const InterviewProgressPage = (): JSX.Element => {
           formId: 1,
           type: "withAudio",
           audioBlob: base64Data,
+          interviewType,
         };
         if (socket != null && audioBlob != null) {
           socket.send(JSON.stringify(data));
@@ -397,6 +475,7 @@ const InterviewProgressPage = (): JSX.Element => {
     setMessage("");
     setCount(10);
     setIsPost(true);
+    setCurrentQNum((prev) => prev - 1);
   };
 
   /* ------------------------------------------------------------------------- */
