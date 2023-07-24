@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilValue, useRecoilState } from "recoil";
-import { signupState, formId, jwtState } from "../state/Atom";
+import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
+import { signupState, formId, jwtState, maxId } from "../state/Atom";
 import LoadingPage from "../components/Loading";
 import Modal from "../components/Modal";
 
@@ -190,6 +190,7 @@ const WatingPage = (): JSX.Element => {
   const [resume, setResume] = useState("");
   const [idform, setId] = useRecoilState(formId);
   const access = useRecoilValue(jwtState);
+  const setMaxIdNow = useSetRecoilState<number>(maxId);
   // 로그인 안되어 있으면 로그인창으로
   useEffect(() => {
     console.log(signupnow);
@@ -238,7 +239,8 @@ const WatingPage = (): JSX.Element => {
         resume: response.data.resume,
       });
 
-      console.log("가입된 사용자의 폼:", idform);
+      setMaxIdNow(response.data.id);
+      console.log("이전에 가입된 사용자의 폼:", idform);
     } catch (error) {
       console.log("입력 실패:", error);
     }

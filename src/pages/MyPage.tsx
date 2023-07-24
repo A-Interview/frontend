@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 // import axios from "axios";
 import { useRecoilValue } from "recoil";
-import { formId } from "../state/Atom";
+import { formId, maxId } from "../state/Atom";
 import Modal from "../components/Modal";
 import ModalResult from "../components/ModalResult";
 import axios from "axios";
@@ -161,14 +161,14 @@ const Results = styled.div`
   gap: 2rem;
 `;
 
-const ResultDay = styled.div`
-  color: #fff;
+const ResultDay = styled.button`
   text-align: center;
   font-family: var(--font-r);
   font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 134.766%;
+  cursor: pointer;
 `;
 
 const ResultLink = styled.div`
@@ -198,14 +198,6 @@ const ModalWrapper = styled.div`
   z-index: 2;
   // Modal을 위에 배치
 `;
-interface Data {
-  id: number;
-  sector_name: string;
-  job_name: string;
-  career: string;
-  resume: string;
-  // Add other properties as needed
-}
 const MyPage = (): JSX.Element => {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -220,16 +212,47 @@ const MyPage = (): JSX.Element => {
   const [resume, setResume] = useState("");
   const idform = useRecoilValue(formId);
   const [userId, setuserId] = useState(0);
-  const [data, setData] = useState<Data | null>(null);
-  // 페이지 처음들어올때 자기소개서 설정
+  const maxidnow = useRecoilValue<number>(maxId);
+  const [idTime1, setidTime1] = useState("");
+  /*
+  const [idTime2, setidTime2] = useState("");
+  const [idTime3, setidTime3] = useState("");
+  const [idTime4, setidTime4] = useState("");
+*/
+  interface FormNow {
+    sector_name: string;
+    job_name: string;
+    career: string;
+    resume: string;
+    updated_at: string;
+  }
+  const [formState, setformState] = useState<FormNow[]>([]);
+  // 페이지 처음들어올때 자기소개서 및 시간대 설정
   useEffect(() => {
     setSector(idform.sectorname);
     setJob(idform.jobname);
     setCareer(idform.career);
     setResume(idform.resume);
-    setuserId(1);
-    // 임시로 formId 1로 설정
+    handleSave().catch((error) => {
+      console.log("저장 실패:", error);
+    });
   }, []);
+  // 버튼 누를 때마다 get 요청
+  useEffect(() => {
+    handleSave().catch((error) => {
+      console.log("저장 실패:", error);
+    });
+  }, [userId]);
+  // form id 바뀔때마다 상태 업데이트
+  useEffect(() => {
+    if (formState.length > 0) {
+      setSector(formState[0].sector_name);
+      setJob(formState[0].job_name);
+      setCareer(formState[0].career);
+      setResume(formState[0].resume);
+      setidTime1(formState[0].updated_at);
+    }
+  }, [formState]);
   // 자기소개서 수정 모달
   const handleModalClose = (): void => {
     setModalOpen(false);
@@ -249,15 +272,59 @@ const MyPage = (): JSX.Element => {
     setResume(newResume);
     console.log(newResume);
   };
+
+  // 1번~4번 버튼 눌렀을때 현재 아이디에 따른 위치 조정
+  const handleButtonClick1 = (): void => {
+    if (maxidnow === 1) {
+      setuserId(maxidnow);
+    } else if (maxidnow === 2) {
+      setuserId(maxidnow - 1);
+    } else if (maxidnow === 3) {
+      setuserId(maxidnow - 2);
+    } else {
+      setuserId(maxidnow - 3);
+    }
+  };
+  const handleButtonClick2 = (): void => {
+    if (maxidnow === 1) {
+      setuserId(0);
+    } else if (maxidnow === 2) {
+      setuserId(maxidnow);
+    } else if (maxidnow === 3) {
+      setuserId(maxidnow - 1);
+    } else {
+      setuserId(maxidnow - 2);
+    }
+  };
+
+  const handleButtonClick3 = (): void => {
+    if (maxidnow === 1) {
+      setuserId(0);
+    } else if (maxidnow === 2) {
+      setuserId(0);
+    } else if (maxidnow === 3) {
+      setuserId(maxidnow);
+    } else {
+      setuserId(maxidnow - 1);
+    }
+  };
+
+  const handleButtonClick4 = (): void => {
+    if (maxidnow === 1) {
+      setuserId(0);
+    } else {
+      setuserId(maxidnow);
+    }
+  };
+
   // formId get
   const handleForm = async (): Promise<void> => {
     try {
       const response = await axios.get(`/api/forms/user/${userId}`);
-      setData(response.data);
+      setformState(response.data);
     } catch (error) {
       console.error("오류 발생:", error);
     }
-    if (data != null) console.log(data.career);
   };
   const handleSave = async (): Promise<void> => {
     try {
@@ -379,35 +446,57 @@ const MyPage = (): JSX.Element => {
           </SelfIntroduction>
         </Upper>
         <Lower>
-          {/* 지원자의 면접 결과 목록 */}
           <Results>
             <ResultBox>
-              <ResultDay>2023년 8월 16일</ResultDay>
-              <ResultLink
+              <ResultDay
                 onClick={() => {
-                  handleSave().catch((error) => {
-                    console.log("저장 실패:", error);
-                  });
+                  handleButtonClick1();
                 }}
-                style={{ justifyContent: "center" }}
               >
+                {idTime1}
+              </ResultDay>
+              <ResultLink style={{ justifyContent: "center" }}>
                 면접 평가 보러가기
               </ResultLink>
             </ResultBox>
 
             <ResultBox>
-              <ResultDay>2023년 8월 16일</ResultDay>
-              <ResultLink>면접 평가 보러가기</ResultLink>
+              <ResultDay
+                onClick={() => {
+                  handleButtonClick2();
+                }}
+              >
+                2
+              </ResultDay>
+              <ResultLink style={{ justifyContent: "center" }}>
+                면접 평가 보러가기
+              </ResultLink>
             </ResultBox>
 
             <ResultBox>
-              <ResultDay>2023년 8월 16일</ResultDay>
-              <ResultLink>면접 평가 보러가기</ResultLink>
+              <ResultDay
+                onClick={() => {
+                  handleButtonClick3();
+                }}
+              >
+                3
+              </ResultDay>
+              <ResultLink style={{ justifyContent: "center" }}>
+                면접 평가 보러가기
+              </ResultLink>
             </ResultBox>
 
             <ResultBox>
-              <ResultDay>2023년 8월 16일</ResultDay>
-              <ResultLink>면접 평가 보러가기</ResultLink>
+              <ResultDay
+                onClick={() => {
+                  handleButtonClick4();
+                }}
+              >
+                4
+              </ResultDay>
+              <ResultLink style={{ justifyContent: "center" }}>
+                면접 평가 보러가기
+              </ResultLink>
             </ResultBox>
           </Results>
         </Lower>

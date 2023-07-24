@@ -31,3 +31,8 @@ export const formId = atom({
     resume: "",
   },
 });
+
+export const maxId = atom<number>({
+  key: "maxId",
+  default: 0,
+});
