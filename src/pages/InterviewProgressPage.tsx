@@ -252,20 +252,18 @@ const InterviewProgressPage = (): JSX.Element => {
   // 메세지가 post되었는 지 확인하는 변수, 트리거를 위해 필요
   const [isPost, setIsPost] = useState(false);
 
-  // 현재 토픽 인덱스, 이를 통해 토픽이 뭔지 알 수 있음
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // 한 토픽의 마지막 질문임을 인지 시키는 변수, 트리거 역할
-  const [lastTopic, setLastTopic] = useState<string>("");
-
   // 질문 갯수 설정 변수
-  const [defaultQNum, setDefaultQNum] = useState(5);
-  const [deepQNum, setDeepQNum] = useState(5);
-  const [situationQNum, setSituationQNum] = useState(5);
-  const [personalQNum, setPersonalQNum] = useState(5);
+  const defaultQuestionNum = 2;
+  const situationQuestionNum = 2;
+  const deepQuestionNum = 2;
+  const personalityQuestionNum = 2;
 
-  // 누적 질문 변수, 이를 통해 중간에 페이지 나갈 시 벡엔드 DB에 요청 가능
-  const [allQNum, setAllQNum] = useState(0);
+  // 전체 질문 변수, 이를 통해 중간에 페이지 나갈 시 벡엔드 DB에 요청 가능
+  const questionNum =
+    defaultQuestionNum +
+    situationQuestionNum +
+    deepQuestionNum +
+    personalityQuestionNum;
 
   // 현재 토픽의 몇 번째 질문인 지 체크하는 변수
   const [currentQNum, setCurrentQNum] = useState(0);
@@ -273,29 +271,27 @@ const InterviewProgressPage = (): JSX.Element => {
   // 초기 웹 소켓 연결 상태 확인
   const [firstConnected, setFirstConnected] = useState(false);
 
-  // 소켓 URL
-  const wsUrls = [
-    "ws://localhost:8000/ws/default-interview/",
-    "ws://localhost:8000/ws/deep-interview/",
-    "ws://localhost:8000/ws/situation-interview/",
-    "ws://localhost:8000/ws/personality-interview/",
-  ];
-
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
-    const ws = new WebSocket(wsUrls[currentIndex]);
+    const ws = new WebSocket("ws://localhost:8000/ws/interview/");
 
     ws.onopen = () => {
       console.log("WebSocket connected");
-      setSocket(ws);
-      setFirstConnected(true);
+
+      // 초기 세팅
       ws.send(
         JSON.stringify({
-          type: "handShake",
+          type: "initialSetting",
           formId: 1,
-          questionNum: 0,
+          questionNum,
+          defaultQuestionNum,
+          situationQuestionNum,
+          deepQuestionNum,
+          personalityQuestionNum,
         })
       );
+      setFirstConnected(true);
+      setSocket(ws);
     };
 
     ws.onmessage = (event) => {
@@ -303,7 +299,17 @@ const InterviewProgressPage = (): JSX.Element => {
       const data = JSON.parse(event.data);
       if (data.last_topic_answer != null) {
         console.log(data.last_topic_answer);
-        setLastTopic(data.last_topic_answer);
+        // 토픽 바꾸기 & 각 토픽의 처음 post 요청
+        if (data.last_topic_answer === "default_last") {
+          setCurrentQNum(situationQuestionNum);
+          setFirstConnected(true);
+        } else if (data.last_topic_answer === "situation_last") {
+          setCurrentQNum(deepQuestionNum);
+          setFirstConnected(true);
+        } else if (data.last_topic_answer === "deep_last") {
+          setCurrentQNum(personalityQuestionNum);
+          setFirstConnected(true);
+        }
       } else {
         const message: string = data.message;
         const finishReason: string = data.finish_reason;
@@ -318,65 +324,32 @@ const InterviewProgressPage = (): JSX.Element => {
 
     ws.onclose = () => {
       console.log("WebSocket disconnected");
-      setFirstConnected(false);
-      console.log("Topic Changed");
-      if (currentIndex === 0) {
-        setAllQNum((prev) => prev + deepQNum);
-        setCurrentQNum(deepQNum);
-      }
-      if (currentIndex === 1) {
-        setAllQNum((prev) => prev + situationQNum);
-        setCurrentQNum(situationQNum);
-      }
-      if (currentIndex === 2) {
-        setAllQNum((prev) => prev + personalQNum);
-        setCurrentQNum(personalQNum);
-      }
-
-      // 토픽 바꾸기
-      if (currentQNum === 0) {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % wsUrls.length);
-      }
       setSocket(null);
     };
   };
 
-  // 초기 소켓 요청 및, 토픽이 바뀔 때마다 새로운 연결 요청
   useEffect(() => {
-    socket?.close();
-  }, [lastTopic]);
-
-  useEffect(() => {
-    connectWebSocket();
-  }, [currentIndex]);
-
-  useEffect(() => {
-    setDefaultQNum(5);
-    setDeepQNum(5);
-    setSituationQNum(5);
-    setPersonalQNum(5);
-    setAllQNum(defaultQNum);
-    setCurrentQNum(defaultQNum);
+    setCurrentQNum(defaultQuestionNum);
     connectWebSocket();
   }, []);
 
   // 초기 메세지 요청 함수
   const sendMessage = (): void => {
     if (socket != null && socket.readyState === WebSocket.OPEN) {
-      console.log("send message");
+      console.log("send Initial Message");
       const data = {
         formId: 1,
         type: "withoutAudio",
-        questionNum: allQNum,
       };
       socket.send(JSON.stringify(data));
-      setCurrentQNum((prev) => prev - 1);
+      setCount(10);
+      setFirstConnected(false);
     }
   };
 
   // 한 토픽의 마지막 메세지 요청 함수, 응답으로 오는 질문이 없음
   const sendMessageNoReply = (): void => {
-    console.log("before post");
+    console.log("send Message No Reply");
 
     if (audioBlob instanceof Blob) {
       const reader = new FileReader();
@@ -387,12 +360,9 @@ const InterviewProgressPage = (): JSX.Element => {
           formId: 1,
           type: "noReply",
           audioBlob: base64Data,
-          questionNum: allQNum,
         };
-        console.log("before post");
         if (socket != null && audioBlob != null) {
           socket.send(JSON.stringify(data));
-          console.log("posted");
         }
         setAudioBlob(null);
       };
@@ -404,7 +374,7 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 음성 녹음과 함께 질문 요청 함수
   const sendMessageWithAudio = (): void => {
-    console.log(audioBlob);
+    console.log("send Message With Audio");
     // Blob 객체를 읽어 데이터 URL로 변환합니다.
     if (audioBlob instanceof Blob) {
       const reader = new FileReader();
@@ -415,7 +385,6 @@ const InterviewProgressPage = (): JSX.Element => {
           formId: 1,
           type: "withAudio",
           audioBlob: base64Data,
-          questionNum: allQNum,
         };
         if (socket != null && audioBlob != null) {
           socket.send(JSON.stringify(data));
@@ -428,7 +397,6 @@ const InterviewProgressPage = (): JSX.Element => {
     setMessage("");
     setCount(10);
     setIsPost(true);
-    setCurrentQNum((prev) => prev - 1);
   };
 
   /* ------------------------------------------------------------------------- */
@@ -471,6 +439,7 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 음성 녹음 함수
   const startRecording = (): void => {
+    console.log(currentQNum);
     countDown();
     setTimeout(() => {
       navigator.mediaDevices
