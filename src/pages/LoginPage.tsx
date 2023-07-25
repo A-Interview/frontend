@@ -145,11 +145,7 @@ const LoginPage = (): JSX.Element => {
         refresh_token: response.data.refresh,
       });
       console.log("로그인 성공", signupnow);
-      console.log(
-        "가입된 사용자의 토큰:",
-        response.data.access,
-        response.data.refresh
-      );
+      console.log("가입된 사용자의 토큰:", response.data.access);
       // 로그인 성공 후 fadeOut 상태 변경
       setFadeOut(true);
       await showToast();

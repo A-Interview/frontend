@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 // import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { formId, maxId } from "../state/Atom";
+import { formId, maxId, jwtState } from "../state/Atom";
 import Modal from "../components/Modal";
 import ModalResult from "../components/ModalResult";
 import axios from "axios";
@@ -212,6 +212,7 @@ const MyPage = (): JSX.Element => {
   const [resume, setResume] = useState("");
   const idform = useRecoilValue(formId);
   const [userId, setuserId] = useState(0);
+  const access = useRecoilValue(jwtState);
   const [maxidnow, setMaxIdNow] = useRecoilState<number>(maxId);
   /*
   const [idTime1, setidTime1] = useState("");
@@ -226,18 +227,19 @@ const MyPage = (): JSX.Element => {
     career: string;
     resume: string;
     updated_at: string;
+    id: number;
   }
   const [formState, setformState] = useState<FormNow[]>([]);
+  const [formAll, setformAll] = useState<FormNow[]>([]);
   // 페이지 처음들어올때 자기소개서 및 시간대 설정
   useEffect(() => {
     setSector(idform.sectorname);
     setJob(idform.jobname);
     setCareer(idform.career);
     setResume(idform.resume);
-    if (maxidnow === 0) {
-      setuserId(23);
-      setMaxIdNow(23);
-    }
+    handlegetForm().catch((error) => {
+      console.log("저장 실패:", error);
+    });
   }, []);
   // 버튼 누를 때마다 get 요청
   useEffect(() => {
@@ -246,6 +248,13 @@ const MyPage = (): JSX.Element => {
     });
   }, [userId]);
   // form id 바뀔때마다 상태 업데이트
+  useEffect(() => {
+    if (formAll.length > 0) {
+      // 마이페이지로 바로 들어왔을때 잘못된 post 방지
+      setMaxIdNow(formAll[formAll.length - 1].id);
+      setuserId(formAll[formAll.length - 1].id);
+    }
+  }, [formAll]);
   useEffect(() => {
     if (formState.length > 0) {
       setSector(formState[0].sector_name);
@@ -317,8 +326,27 @@ const MyPage = (): JSX.Element => {
       setuserId(maxidnow);
     }
   };
-
-  // formId get
+  // 전체 form 가져오기
+  const getForm = async (): Promise<void> => {
+    try {
+      const response = await axios.get("/api/forms/", {
+        headers: {
+          Authorization: `Bearer ${access.access_token}`,
+        },
+      });
+      setformAll(response.data);
+    } catch (error) {
+      console.error("오류 발생:", error);
+    }
+  };
+  const handlegetForm = async (): Promise<void> => {
+    try {
+      await getForm();
+    } catch (error) {
+      console.log("오류 발생:", error);
+    }
+  };
+  // formId로 get
   const handleForm = async (): Promise<void> => {
     try {
       const response = await axios.get(`/api/forms/user/${userId}`);
