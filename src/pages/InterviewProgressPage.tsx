@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { styled } from "styled-components";
 import ProgressRobot from "../assets/img/ProgressRobot.gif";
-import ProgressTimer2 from "../assets/img/ProgressTimer2.png";
 import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 // import { useRecoilValue } from "recoil";
@@ -31,11 +30,9 @@ const BackWard = styled.div`
 const ProgressBox1 = styled.div`
   width: 100%;
   height: 100%;
-  flex-shrink: 0;
   background: rgba(242, 242, 242, 0.15);
   stroke-width: 1px;
   stroke: rgba(255, 255, 255, 0.43);
-  flex: 1;
   border-radius: 2rem;
 `;
 
@@ -55,7 +52,7 @@ const ProgressBox2 = styled.div`
 const ProgressBox3 = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  justify-content: space-between;
   width: 13.8125rem;
   height: 32.4375rem;
   flex-shrink: 0;
@@ -68,6 +65,7 @@ const ProgressBox3 = styled.div`
   padding: 1rem;
   padding-left: 1.9rem;
   padding-right: 1.9rem;
+  height: 100%;
 `;
 
 const ProgressQuestionText = styled.div`
@@ -84,6 +82,15 @@ const ProgressQuestionText = styled.div`
   line-height: normal;
   justify-content: center;
   align-items: center;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: #ccc;
+  }
+  position: relative;
 `;
 
 const ProgressVideo = styled.video`
@@ -124,12 +131,6 @@ const ProgressTimerState = styled.p`
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-`;
-
-const ProgressTimer2State = styled.img`
-  width: 6.5625rem;
-  height: 6.5625rem;
-  flex-shrink: 0;
 `;
 
 const ProgressNextButton = styled.button`
@@ -176,6 +177,9 @@ const ProgressCountDown = styled.div`
   backdrop-filter: blur(50px);
   width: 100%;
   aspect-ratio: 1/1;
+  @media (max-height: 900px) {
+    height: 3rem;
+  }
   display: flex;
   justify-content: center;
   align-items: center;
@@ -223,10 +227,30 @@ const InterviewProgressPage = (): JSX.Element => {
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
+  /* ------------------------------------------------------------------------- */
+
+  // 면접 시간 관련 코드 -> 매번 렌더링이 일어나서, 최적화에 있어서는 문제가 있을 수도...
+  // const [currentTime, setCurrentTime] = useState(new Date());
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     setCurrentTime(new Date());
+  //   }, 1000);
+
+  //   // 컴포넌트가 unmount 될 때 interval 제거
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, []);
+
+  /* ------------------------------------------------------------------------- */
 
   // 비디오 관련 코드
+  const [cameraToggle, setCameraToggle] = useState(false);
+
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // 비디오 키는 함수
   const startVideo = (): void => {
     navigator.mediaDevices
       .getUserMedia({ video: true })
@@ -240,6 +264,28 @@ const InterviewProgressPage = (): JSX.Element => {
         // Handle the error case here
       });
   };
+
+  // 비디오 끄는 함수
+  const stopVideo = (): void => {
+    if (videoRef?.current != null && videoRef.current.srcObject != null) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      const tracks = stream.getTracks();
+
+      tracks.forEach((track) => {
+        track.stop();
+      });
+      videoRef.current.srcObject = null;
+    }
+  };
+
+  // 비디오 on/off
+  useEffect(() => {
+    if (cameraToggle) {
+      startVideo();
+    } else {
+      stopVideo();
+    }
+  }, [cameraToggle]);
 
   /* ------------------------------------------------------------------------- */
 
@@ -593,8 +639,8 @@ const InterviewProgressPage = (): JSX.Element => {
         </BackWard>
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
+            display: "grid",
+            gridTemplateRows: "1fr 3fr",
             gap: "2rem",
             paddingLeft: "6rem",
             paddingRight: "6rem",
@@ -612,7 +658,11 @@ const InterviewProgressPage = (): JSX.Element => {
             }}
           >
             <ProgressQuestionText>
-              <div>{message}</div>
+              <div
+                style={{ position: "absolute", lineHeight: "2.3rem", top: "0" }}
+              >
+                {message}
+              </div>
             </ProgressQuestionText>
           </ProgressBox1>
 
@@ -622,7 +672,6 @@ const InterviewProgressPage = (): JSX.Element => {
               display: "flex",
               justifyContent: "center",
               gap: "2rem",
-              flex: "2",
             }}
           >
             <ProgressBox2
@@ -634,7 +683,13 @@ const InterviewProgressPage = (): JSX.Element => {
               }}
             >
               <ProgressVideo autoPlay ref={videoRef} />
-              <CameraButton onClick={startVideo}>카메라 키기</CameraButton>
+              <CameraButton
+                onClick={() => {
+                  setCameraToggle((prev) => !prev);
+                }}
+              >
+                카메라 on/off
+              </CameraButton>
             </ProgressBox2>
             {/* 하단 오른쪽 박스 */}
             <ProgressBox3>
@@ -643,7 +698,10 @@ const InterviewProgressPage = (): JSX.Element => {
               </ProgressRobotStateBox>
 
               <ProgressTimerBox>
-                <ProgressTimerState>진행 시간: 0분 32초</ProgressTimerState>
+                <ProgressTimerState>
+                  {/* {currentTime.toLocaleTimeString()} */}
+                  04:39
+                </ProgressTimerState>
               </ProgressTimerBox>
 
               <div
@@ -661,7 +719,6 @@ const InterviewProgressPage = (): JSX.Element => {
                       display: "flex",
                     }}
                   >
-                    <ProgressTimer2State src={ProgressTimer2} />
                     <Count>{count}</Count>
                   </div>
                 </ProgressCountDown>
