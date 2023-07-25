@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Swal from "sweetalert2";
 
 import React, { type ChangeEvent, type FormEvent, useState } from "react";
+import customCursorImage from "../assets/img/Cursor.png";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -18,6 +19,7 @@ const ModalBackdrop = styled.div`
   border-radius: 10px;
   height: 100vh;
   width: 100vw;
+  cursor: url(${customCursorImage}), auto;
 `;
 
 const Box = styled.div`

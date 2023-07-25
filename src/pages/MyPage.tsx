@@ -12,6 +12,7 @@ import { formId, maxId, jwtState } from "../state/Atom";
 import Modal from "../components/Modal";
 import ModalResult from "../components/ModalResult";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const MyPageContainer = styled.div`
   background: #01001a;
@@ -169,16 +170,23 @@ const ResultDay = styled.button`
   font-weight: 700;
   line-height: 134.766%;
   cursor: pointer;
+  background: transparent;
+  color: #fff;
+  border: none;
 `;
 
-const ResultLink = styled.div`
-  color: #fff;
+const ResultLink = styled.button`
   text-align: center;
   font-family: var(--font-r);
   font-size: 1rem;
   font-style: normal;
   font-weight: 700;
   line-height: 134.766%;
+  cursor: pointer;
+  width: 100%;
+  background: transparent;
+  color: #fff;
+  border: none;
 `;
 
 const ResultBox = styled.div`
@@ -203,9 +211,6 @@ const MyPage = (): JSX.Element => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModalResultOpen, setModalResultOpen] = useState(false);
 
-  const handleGoBack = (): any => {
-    navigate(-1); // 뒤로가기
-  };
   const [sectorName, setSector] = useState("");
   const [jobName, setJob] = useState("");
   const [career, setCareer] = useState("");
@@ -221,6 +226,9 @@ const MyPage = (): JSX.Element => {
   const [idTime3, setidTime3] = useState("");
   const [idTime4, setidTime4] = useState("");
 
+  const handleGoBack = (): any => {
+    navigate(-1); // 뒤로가기
+  };
   interface FormNow {
     sector_name: string;
     job_name: string;
@@ -280,6 +288,7 @@ const MyPage = (): JSX.Element => {
       setResume(formState[0].resume);
     }
   }, [formState]);
+
   // 자기소개서 수정 모달
   const handleModalClose = (): void => {
     setModalOpen(false);
@@ -293,11 +302,6 @@ const MyPage = (): JSX.Element => {
   };
   const handleModalResultClose = (): void => {
     setModalResultOpen(false);
-  };
-  // 자기소개서 업데이트
-  const updateResume = (newResume: string): void => {
-    setResume(newResume);
-    console.log(newResume);
   };
 
   // 1번~4번 버튼 눌렀을때 현재 아이디에 따른 위치 조정
@@ -341,6 +345,40 @@ const MyPage = (): JSX.Element => {
       setuserId(0);
     } else {
       setuserId(maxidnow);
+    }
+  };
+  // 자기소개서 업데이트
+  const updateResume = (newResume: string): void => {
+    setResume(newResume);
+    console.log(newResume);
+  };
+
+  useEffect(() => {
+    handlechangeForm()
+      .then(() => {
+        console.log("저장 성공");
+      })
+      .catch((error) => {
+        console.log("저장 실패:", error);
+      });
+  }, [resume]);
+  // 자기소개서 수정 PUT 요청 부분
+  const changeForm = async (): Promise<void> => {
+    try {
+      const response = await axios.put(`/api/forms/user/${userId}`, {
+        userId,
+        resume,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error("오류 발생:", error);
+    }
+  };
+  const handlechangeForm = async (): Promise<void> => {
+    try {
+      await changeForm();
+    } catch (error) {
+      console.log("오류 발생:", error);
     }
   };
   // 전체 form 가져오기
@@ -500,10 +538,13 @@ const MyPage = (): JSX.Element => {
                 }}
               >
                 {idTime1.substring(0, 10)}
+                {/* 시간까지만 보이게 자르기 */}
               </ResultDay>
-              <ResultLink style={{ justifyContent: "center" }}>
-                면접 평가 보러가기
-              </ResultLink>
+              <Link to="/interview-result">
+                <ResultLink style={{ justifyContent: "center" }}>
+                  면접 평가 보러가기
+                </ResultLink>
+              </Link>
             </ResultBox>
 
             <ResultBox>
@@ -513,10 +554,13 @@ const MyPage = (): JSX.Element => {
                 }}
               >
                 {idTime2.substring(0, 10)}
+                {/* 시간까지만 보이게 자르기 */}
               </ResultDay>
-              <ResultLink style={{ justifyContent: "center" }}>
-                면접 평가 보러가기
-              </ResultLink>
+              <Link to="/interview-result">
+                <ResultLink style={{ justifyContent: "center" }}>
+                  면접 평가 보러가기
+                </ResultLink>
+              </Link>
             </ResultBox>
 
             <ResultBox>
@@ -526,10 +570,13 @@ const MyPage = (): JSX.Element => {
                 }}
               >
                 {idTime3.substring(0, 10)}
+                {/* 시간까지만 보이게 자르기 */}
               </ResultDay>
-              <ResultLink style={{ justifyContent: "center" }}>
-                면접 평가 보러가기
-              </ResultLink>
+              <Link to="/interview-result">
+                <ResultLink style={{ justifyContent: "center" }}>
+                  면접 평가 보러가기
+                </ResultLink>
+              </Link>
             </ResultBox>
 
             <ResultBox>
@@ -539,10 +586,13 @@ const MyPage = (): JSX.Element => {
                 }}
               >
                 {idTime4.substring(0, 10)}
+                {/* 시간까지만 보이게 자르기 */}
               </ResultDay>
-              <ResultLink style={{ justifyContent: "center" }}>
-                면접 평가 보러가기
-              </ResultLink>
+              <Link to="/interview-result">
+                <ResultLink style={{ justifyContent: "center" }}>
+                  면접 평가 보러가기
+                </ResultLink>
+              </Link>
             </ResultBox>
           </Results>
         </Lower>

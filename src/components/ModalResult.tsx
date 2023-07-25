@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import customCursorImage from "../assets/img/Cursor.png";
 
 const ModalView = styled.div.attrs((props) => ({
   role: "dialog",
@@ -28,6 +29,7 @@ const ModalBackdrop = styled.div`
   border-radius: 10px;
   height: 100vh;
   width: 100vw;
+  cursor: url(${customCursorImage}), auto;
 `;
 const Box = styled.div`
   width: 4.5rem;
