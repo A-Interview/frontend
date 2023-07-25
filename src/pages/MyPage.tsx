@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import MyPageImage1 from "../assets/img/MyPageImage1.png";
@@ -6,6 +6,13 @@ import MyPageImage2 from "../assets/img/MyPageImage2.png";
 import MyPageImage3 from "../assets/img/MyPageImage3.png";
 import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
+// import axios from "axios";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { formId, maxId } from "../state/Atom";
+import Modal from "../components/Modal";
+import ModalResult from "../components/ModalResult";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 const MyPageContainer = styled.div`
   background: #01001a;
@@ -122,6 +129,7 @@ const SelfContainer = styled.div<{ image: any }>`
   position: relative;
   background: url(${(props) => props.image}), lightgray 50% / cover no-repeat;
   background-color: rgba(0, 0, 0, 0.19);
+  cursor: pointer;
 `;
 
 const Wrap = styled.div`
@@ -154,24 +162,31 @@ const Results = styled.div`
   gap: 2rem;
 `;
 
-const ResultDay = styled.div`
-  color: #fff;
+const ResultDay = styled.button`
   text-align: center;
   font-family: var(--font-r);
   font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 134.766%;
+  cursor: pointer;
+  background: transparent;
+  color: #fff;
+  border: none;
 `;
 
-const ResultLink = styled.div`
-  color: #fff;
+const ResultLink = styled.button`
   text-align: center;
   font-family: var(--font-r);
   font-size: 1rem;
   font-style: normal;
   font-weight: 700;
   line-height: 134.766%;
+  cursor: pointer;
+  width: 100%;
+  background: transparent;
+  color: #fff;
+  border: none;
 `;
 
 const ResultBox = styled.div`
@@ -186,11 +201,229 @@ const ResultBox = styled.div`
   gap: 3rem;
 `;
 
+const ModalWrapper = styled.div`
+  position: relative;
+  z-index: 2;
+  // Modal을 위에 배치
+`;
 const MyPage = (): JSX.Element => {
   const navigate = useNavigate();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalResultOpen, setModalResultOpen] = useState(false);
 
+  const [sectorName, setSector] = useState("");
+  const [jobName, setJob] = useState("");
+  const [career, setCareer] = useState("");
+  const [resume, setResume] = useState("");
+  const idform = useRecoilValue(formId);
+  const [userId, setuserId] = useState(0);
+  const [maxidnow, setMaxIdNow] = useRecoilState<number>(maxId);
+
+  const [idTime1, setidTime1] = useState("");
+
+  const [idTime2, setidTime2] = useState("");
+  const [idTime3, setidTime3] = useState("");
+  const [idTime4, setidTime4] = useState("");
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
+  };
+  interface FormNow {
+    sector_name: string;
+    job_name: string;
+    career: string;
+    resume: string;
+    updated_at: string;
+    id: number;
+  }
+  const [formState, setformState] = useState<FormNow[]>([]);
+  const [formAll, setformAll] = useState<FormNow[]>([]);
+  // 페이지 처음들어올때 자기소개서 및 시간대 설정
+  useEffect(() => {
+    setSector(idform.sectorname);
+    setJob(idform.jobname);
+    setCareer(idform.career);
+    setResume(idform.resume);
+    handlegetForm().catch((error) => {
+      console.log("저장 실패:", error);
+    });
+  }, []);
+  // 버튼 누를 때마다 get 요청
+  useEffect(() => {
+    handleSave().catch((error) => {
+      console.log("저장 실패:", error);
+    });
+  }, [userId]);
+  // form id 바뀔때마다 상태 업데이트
+  useEffect(() => {
+    if (formAll.length > 0) {
+      // 마이페이지로 바로 들어왔을때 잘못된 post, get 방지
+      setMaxIdNow(formAll[formAll.length - 1].id);
+      setuserId(formAll[formAll.length - 1].id);
+      // 각 칸마다 시간설정
+      if (formAll.length === 1) {
+        setidTime1(formAll[formAll.length - 1].updated_at);
+      } else if (formAll.length === 2) {
+        setidTime1(formAll[formAll.length - 2].updated_at);
+        setidTime2(formAll[formAll.length - 1].updated_at);
+      } else if (formAll.length === 3) {
+        setidTime1(formAll[formAll.length - 3].updated_at);
+        setidTime2(formAll[formAll.length - 2].updated_at);
+        setidTime3(formAll[formAll.length - 1].updated_at);
+      } else {
+        setidTime1(formAll[formAll.length - 4].updated_at);
+        setidTime2(formAll[formAll.length - 3].updated_at);
+        setidTime3(formAll[formAll.length - 2].updated_at);
+        setidTime4(formAll[formAll.length - 1].updated_at);
+      }
+    }
+  }, [formAll]);
+  useEffect(() => {
+    if (formState.length > 0) {
+      // 보이는 화면의 form 설정
+      setSector(formState[0].sector_name);
+      setJob(formState[0].job_name);
+      setCareer(formState[0].career);
+      setResume(formState[0].resume);
+    }
+  }, [formState]);
+
+  // 자기소개서 수정 모달
+  const handleModalClose = (): void => {
+    setModalOpen(false);
+  };
+  const openModal = (): void => {
+    setModalOpen(true);
+  };
+  // 자기소개서 확인 모달
+  const openModalResult = (): void => {
+    setModalResultOpen(true);
+  };
+  const handleModalResultClose = (): void => {
+    setModalResultOpen(false);
+  };
+
+  // 1번~4번 버튼 눌렀을때 현재 아이디에 따른 위치 조정
+  const handleButtonClick1 = (): void => {
+    if (formAll.length === 1) {
+      setuserId(maxidnow);
+    } else if (formAll.length === 2) {
+      setuserId(maxidnow - 1);
+    } else if (formAll.length === 3) {
+      setuserId(maxidnow - 2);
+    } else {
+      setuserId(maxidnow - 3);
+    }
+  };
+  const handleButtonClick2 = (): void => {
+    if (formAll.length === 1) {
+      setuserId(0);
+    } else if (formAll.length === 2) {
+      setuserId(maxidnow);
+    } else if (formAll.length === 3) {
+      setuserId(maxidnow - 1);
+    } else {
+      setuserId(maxidnow - 2);
+    }
+  };
+
+  const handleButtonClick3 = (): void => {
+    if (formAll.length === 1) {
+      setuserId(0);
+    } else if (formAll.length === 2) {
+      setuserId(0);
+    } else if (formAll.length === 3) {
+      setuserId(maxidnow);
+    } else {
+      setuserId(maxidnow - 1);
+    }
+  };
+
+  const handleButtonClick4 = (): void => {
+    if (formAll.length === 1) {
+      setuserId(0);
+    } else {
+      setuserId(maxidnow);
+    }
+  };
+  // 자기소개서 업데이트
+  const updateResume = (newResume: string): void => {
+    setResume(newResume);
+    console.log(newResume);
+  };
+
+  useEffect(() => {
+    handlechangeForm()
+      .then(() => {
+        console.log("저장 성공");
+      })
+      .catch((error) => {
+        console.log("저장 실패:", error);
+      });
+  }, [resume]);
+  // 자기소개서 수정 PUT 요청 부분
+  const changeForm = async (): Promise<void> => {
+    try {
+      if (process.env.REACT_APP_API_URL_FORMID !== undefined) {
+        const response = await axios.put(
+          `${process.env.REACT_APP_API_URL_FORMID}${userId}`,
+          {
+            userId,
+            resume,
+          }
+        );
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.error("오류 발생:", error);
+    }
+  };
+  const handlechangeForm = async (): Promise<void> => {
+    try {
+      await changeForm();
+    } catch (error) {
+      console.log("오류 발생:", error);
+    }
+  };
+  // 전체 form 가져오기
+  const getForm = async (): Promise<void> => {
+    try {
+      const accessToken: string | null = sessionStorage.getItem("access_token");
+      const response = await axios.get(process.env.REACT_APP_API_URL_FORM, {
+        headers: {
+          Authorization: `Bearer ${accessToken ?? ""}`,
+        },
+      });
+      setformAll(response.data);
+    } catch (error) {
+      console.error("오류 발생:", error);
+    }
+  };
+  const handlegetForm = async (): Promise<void> => {
+    try {
+      await getForm();
+    } catch (error) {
+      console.log("오류 발생:", error);
+    }
+  };
+  // formId로 get
+  const handleForm = async (): Promise<void> => {
+    try {
+      if (process.env.REACT_APP_API_URL_FORMID !== undefined) {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL_FORMID}${userId}`
+        );
+        setformState(response.data);
+      }
+    } catch (error) {
+      console.error("오류 발생:", error);
+    }
+  };
+  const handleSave = async (): Promise<void> => {
+    try {
+      await handleForm();
+    } catch (error) {
+      console.log("오류 발생:", error);
+    }
   };
   return (
     <MyPageContainer>
@@ -242,7 +475,7 @@ const MyPage = (): JSX.Element => {
                     fillOpacity="0.57"
                   />
                 </svg>
-                데브옵스 엔지니어
+                {sectorName}
               </div>
               <div
                 style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}
@@ -265,7 +498,7 @@ const MyPage = (): JSX.Element => {
                     fillOpacity="0.57"
                   />
                 </svg>
-                어딜 까요
+                {jobName}
               </div>
               <div
                 style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}
@@ -288,49 +521,110 @@ const MyPage = (): JSX.Element => {
                     fillOpacity="0.57"
                   />
                 </svg>
-                5년차
+                {career}
               </div>
             </InfoRight>
           </Info>
           <SelfIntroduction>
-            <SelfContainer image={MyPageImage2}>
+            <SelfContainer image={MyPageImage2} onClick={openModalResult}>
               <Wrap />
               <Text>내 자기 소개서 확인</Text>
             </SelfContainer>
 
-            <SelfContainer image={MyPageImage3}>
+            <SelfContainer image={MyPageImage3} onClick={openModal}>
               <Wrap />
               <Text>내 자기 소개서 수정</Text>
             </SelfContainer>
           </SelfIntroduction>
         </Upper>
         <Lower>
-          {/* 지원자의 면접 결과 목록 */}
           <Results>
             <ResultBox>
-              <ResultDay>2023년 8월 16일</ResultDay>
-              <ResultLink>면접 평가 보러가기</ResultLink>
+              <ResultDay
+                onClick={() => {
+                  handleButtonClick1();
+                }}
+              >
+                {idTime1.substring(0, 10)}
+                {/* 시간까지만 보이게 자르기 */}
+              </ResultDay>
+              <Link to="/interview-result">
+                <ResultLink style={{ justifyContent: "center" }}>
+                  면접 평가 보러가기
+                </ResultLink>
+              </Link>
             </ResultBox>
 
             <ResultBox>
-              <ResultDay>2023년 8월 16일</ResultDay>
-              <ResultLink>면접 평가 보러가기</ResultLink>
+              <ResultDay
+                onClick={() => {
+                  handleButtonClick2();
+                }}
+              >
+                {idTime2.substring(0, 10)}
+                {/* 시간까지만 보이게 자르기 */}
+              </ResultDay>
+              <Link to="/interview-result">
+                <ResultLink style={{ justifyContent: "center" }}>
+                  면접 평가 보러가기
+                </ResultLink>
+              </Link>
             </ResultBox>
 
             <ResultBox>
-              <ResultDay>2023년 8월 16일</ResultDay>
-              <ResultLink>면접 평가 보러가기</ResultLink>
+              <ResultDay
+                onClick={() => {
+                  handleButtonClick3();
+                }}
+              >
+                {idTime3.substring(0, 10)}
+                {/* 시간까지만 보이게 자르기 */}
+              </ResultDay>
+              <Link to="/interview-result">
+                <ResultLink style={{ justifyContent: "center" }}>
+                  면접 평가 보러가기
+                </ResultLink>
+              </Link>
             </ResultBox>
 
             <ResultBox>
-              <ResultDay>2023년 8월 16일</ResultDay>
-              <ResultLink>면접 평가 보러가기</ResultLink>
+              <ResultDay
+                onClick={() => {
+                  handleButtonClick4();
+                }}
+              >
+                {idTime4.substring(0, 10)}
+                {/* 시간까지만 보이게 자르기 */}
+              </ResultDay>
+              <Link to="/interview-result">
+                <ResultLink style={{ justifyContent: "center" }}>
+                  면접 평가 보러가기
+                </ResultLink>
+              </Link>
             </ResultBox>
           </Results>
         </Lower>
       </ContentContainer>
       <Background />
       <LoadingPage></LoadingPage>
+      {isModalOpen && (
+        <ModalWrapper>
+          <Modal
+            isModalOpen={isModalOpen}
+            setModalOpen={handleModalClose}
+            updateResume={updateResume}
+          />
+        </ModalWrapper>
+      )}
+      {isModalResultOpen && (
+        <ModalWrapper>
+          <ModalResult
+            isModalResultOpen={isModalResultOpen}
+            setModalResultOpen={handleModalResultClose}
+            resume={resume}
+          />
+        </ModalWrapper>
+      )}
     </MyPageContainer>
   );
 };

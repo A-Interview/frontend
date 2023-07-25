@@ -15,6 +15,21 @@ export const deepQuestionNum = atom({
   default: 3,
 });
 
+export const formId = atom({
+  key: "formId",
+  default: {
+    id: 0,
+    sectorname: "",
+    jobname: "",
+    career: "",
+    resume: "",
+  },
+});
+
+export const maxId = atom<number>({
+  key: "maxId",
+  default: 0,
+});
 export const personalityQuestionNum = atom({
   key: "personalityQuestionNum",
   default: 3,
