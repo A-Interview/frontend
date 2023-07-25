@@ -3,8 +3,6 @@ import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import AnswerList from "../components/AnswerList";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { signupState } from "../state/Atom";
 
 const InterviewResultBackGround = styled.div`
   background: linear-gradient(
@@ -120,10 +118,9 @@ const AnswerLists = styled.div`
 `;
 const InterviewResultPage = (): JSX.Element => {
   const navigate = useNavigate();
-  const signupnow = useRecoilValue(signupState);
   useEffect(() => {
-    console.log(signupnow);
-    if (!signupnow) {
+    const signupNow = sessionStorage.getItem("sign_up_state");
+    if (signupNow !== "true") {
       navigate("/login");
     }
   }, []);

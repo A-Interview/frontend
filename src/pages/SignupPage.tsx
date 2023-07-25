@@ -1,13 +1,12 @@
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
+import React, { useState, type ChangeEvent, useEffect } from "react";
 import { styled } from "styled-components";
 import { motion } from "framer-motion";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
 import axios from "axios";
-import { signupState, jwtState, usernameState } from "../state/Atom";
 import Swal from "sweetalert2";
+import { SaveSignUpstateToSessionStorage } from "../state/Atom";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -62,7 +61,7 @@ const LoginTitle = styled.p`
   margin-top: 2.5rem;
   margin-bottom: 1rem;
 `;
-const Form = styled.form`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
@@ -116,51 +115,47 @@ const Account = styled(motion.address)`
   cursor: pointer;
 `;
 const SignupPage = (): JSX.Element => {
-  const [user, setUser] = useRecoilState(signupState);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-  const setSignupState = useSetRecoilState<boolean>(signupState);
-  const [jwt, setJwtState] = useRecoilState(jwtState);
-  const setRecoilUser = useSetRecoilState(usernameState);
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
+  useEffect(() => {
+    checkInput();
+  }, [username, email, password, password2]);
+  console.log(allFieldsFilled);
   const navigate = useNavigate();
   // fadeOut 상태 추가
   const [fadeOut, setFadeOut] = useState(false);
 
   const handleSignUp = async (): Promise<void> => {
     try {
-      const response = await axios.post(process.env.REACT_APP_API_URL_REG, {
+      await axios.post(process.env.REACT_APP_API_URL_REG, {
         username,
         email,
         password,
         password2,
       });
-      setUser(response.data.user);
-      setRecoilUser(username);
-      setSignupState(true);
+
+      // 회원 가입 여부 저장
+      SaveSignUpstateToSessionStorage("true");
       setFadeOut(true);
-      setJwtState({
-        access_token: response.data.access,
-        refresh_token: response.data.refresh,
-      });
-      // setRecoilUser(username);
-      // 로그인 성공 후 fadeOut 상태 변경
-      // setFadeOut(true);
-      console.log("회원가입 성공", user, jwt);
-      console.log("가입된 사용자:", username);
       await showToast();
       navigate("/login");
     } catch (error) {
       console.log("회원가입 실패:", error);
     }
   };
-  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
+  const onSubmit = (): void => {
     try {
-      await handleSignUp();
+      handleSignUp()
+        .then(() => {
+          console.log("회원가입 성공");
+        })
+        .catch((error) => {
+          console.log("회원 가입 실패", error);
+        });
     } catch (error) {
       console.log("회원가입 실패:", error);
     }
@@ -258,18 +253,13 @@ const SignupPage = (): JSX.Element => {
               }}
             >
               <LoginTitle>회원가입</LoginTitle>
-              <Form
-                onSubmit={
-                  onSubmit as (e: React.FormEvent<HTMLFormElement>) => void
-                }
-              >
+              <Wrapper>
                 <Input
                   type="text"
                   name="id"
                   value={username}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setUsername(e.currentTarget.value);
-                    checkInput();
                   }}
                   placeholder="사용자 이름을 입력해주세요."
                 />
@@ -279,7 +269,6 @@ const SignupPage = (): JSX.Element => {
                   value={email}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setEmail(e.currentTarget.value);
-                    checkInput();
                   }}
                   placeholder="이메일을 입력해주세요."
                 />
@@ -289,7 +278,6 @@ const SignupPage = (): JSX.Element => {
                   value={password}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setPassword(e.currentTarget.value);
-                    checkInput();
                   }}
                   placeholder="비밀번호를 입력해주세요."
                 />
@@ -299,20 +287,19 @@ const SignupPage = (): JSX.Element => {
                   value={password2}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setPassword2(e.currentTarget.value);
-                    checkInput();
                   }}
                   placeholder="비밀번호를 한번 더 입력해주세요."
                 />
                 <Button
-                  type="submit"
                   disabled={!allFieldsFilled}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                  onClick={onSubmit}
                 >
                   가입하기
                 </Button>
-              </Form>
+              </Wrapper>
               <Link to="/login">
                 <Account
                   whileHover={{ scale: 1.05 }}

@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
-import { signupState, formId, jwtState, maxId } from "../state/Atom";
+import { SaveCurrentFormIdToSessionStorage } from "../state/Atom";
 import LoadingPage from "../components/Loading";
 import Modal from "../components/Modal";
 
@@ -179,7 +178,7 @@ const ModalWrapper = styled.div`
 `;
 const WatingPage = (): JSX.Element => {
   const navigate = useNavigate();
-  const signupnow = useRecoilValue(signupState);
+
   // 모달 오픈 여부
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -188,13 +187,11 @@ const WatingPage = (): JSX.Element => {
   const [jobName, setJob] = useState("");
   const [career, setCareer] = useState("");
   const [resume, setResume] = useState("");
-  const [idform, setId] = useRecoilState(formId);
-  const access = useRecoilValue(jwtState);
-  const setMaxIdNow = useSetRecoilState<number>(maxId);
   // 로그인 안되어 있으면 로그인창으로
   useEffect(() => {
-    console.log(signupnow);
-    if (!signupnow) {
+    const signupNow = sessionStorage.getItem("sign_up_state");
+
+    if (signupNow !== "true") {
       navigate("/login");
     }
   }, []);
@@ -215,32 +212,24 @@ const WatingPage = (): JSX.Element => {
   };
   const handleForm = async (): Promise<void> => {
     try {
-      const response = await axios.post(
-        process.env.REACT_APP_API_URL_FORM,
-        {
-          sector_name: sectorName,
-          job_name: jobName,
-          career,
-          resume,
-          id: idform.id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${access.access_token}`,
+      const accessToken: string | null = sessionStorage.getItem("access_token");
+      if (accessToken != null) {
+        const response = await axios.post(
+          process.env.REACT_APP_API_URL_FORM,
+          {
+            sector_name: sectorName,
+            job_name: jobName,
+            career,
+            resume,
           },
-        }
-      );
-
-      setId({
-        id: response.data.id,
-        sectorname: response.data.sector_name,
-        jobname: response.data.job_name,
-        career: response.data.career,
-        resume: response.data.resume,
-      });
-
-      setMaxIdNow(response.data.id);
-      console.log("이전에 가입된 사용자의 폼:", idform);
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        SaveCurrentFormIdToSessionStorage(response.data.id.toString());
+      }
     } catch (error) {
       console.log("입력 실패:", error);
     }

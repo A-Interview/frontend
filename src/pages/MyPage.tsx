@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 // import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { formId, maxId, jwtState } from "../state/Atom";
+import { formId, maxId } from "../state/Atom";
 import Modal from "../components/Modal";
 import ModalResult from "../components/ModalResult";
 import axios from "axios";
@@ -217,7 +217,6 @@ const MyPage = (): JSX.Element => {
   const [resume, setResume] = useState("");
   const idform = useRecoilValue(formId);
   const [userId, setuserId] = useState(0);
-  const access = useRecoilValue(jwtState);
   const [maxidnow, setMaxIdNow] = useRecoilState<number>(maxId);
 
   const [idTime1, setidTime1] = useState("");
@@ -388,9 +387,10 @@ const MyPage = (): JSX.Element => {
   // 전체 form 가져오기
   const getForm = async (): Promise<void> => {
     try {
+      const accessToken: string | null = sessionStorage.getItem("access_token");
       const response = await axios.get(process.env.REACT_APP_API_URL_FORM, {
         headers: {
-          Authorization: `Bearer ${access.access_token}`,
+          Authorization: `Bearer ${accessToken ?? ""}`,
         },
       });
       setformAll(response.data);
