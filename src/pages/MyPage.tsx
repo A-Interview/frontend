@@ -225,7 +225,6 @@ const MyPage = (): JSX.Element => {
   const [idTime2, setidTime2] = useState("");
   const [idTime3, setidTime3] = useState("");
   const [idTime4, setidTime4] = useState("");
-
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
@@ -365,11 +364,16 @@ const MyPage = (): JSX.Element => {
   // 자기소개서 수정 PUT 요청 부분
   const changeForm = async (): Promise<void> => {
     try {
-      const response = await axios.put(`/api/forms/user/${userId}`, {
-        userId,
-        resume,
-      });
-      console.log(response.data);
+      if (process.env.REACT_APP_API_URL_FORMID !== undefined) {
+        const response = await axios.put(
+          `${process.env.REACT_APP_API_URL_FORMID}${userId}`,
+          {
+            userId,
+            resume,
+          }
+        );
+        console.log(response.data);
+      }
     } catch (error) {
       console.error("오류 발생:", error);
     }
@@ -384,7 +388,7 @@ const MyPage = (): JSX.Element => {
   // 전체 form 가져오기
   const getForm = async (): Promise<void> => {
     try {
-      const response = await axios.get("/api/forms/", {
+      const response = await axios.get(process.env.REACT_APP_API_URL_FORM, {
         headers: {
           Authorization: `Bearer ${access.access_token}`,
         },
@@ -404,8 +408,12 @@ const MyPage = (): JSX.Element => {
   // formId로 get
   const handleForm = async (): Promise<void> => {
     try {
-      const response = await axios.get(`/api/forms/user/${userId}`);
-      setformState(response.data);
+      if (process.env.REACT_APP_API_URL_FORMID !== undefined) {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL_FORMID}${userId}`
+        );
+        setformState(response.data);
+      }
     } catch (error) {
       console.error("오류 발생:", error);
     }
