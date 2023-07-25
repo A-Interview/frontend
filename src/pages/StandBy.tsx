@@ -5,8 +5,6 @@ import { ReactComponent as Blurry } from "../assets/img/Blurry.svg";
 import StandByArch from "../assets/img/StandByArch.png";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingPage from "../components/Loading";
-import { useRecoilValue } from "recoil";
-import { signupState, formId } from "../state/Atom";
 
 const BackWard = styled.div`
   display: inline-flex;
@@ -108,7 +106,6 @@ const StandBy = (): JSX.Element => {
   const [archImgVisible, setArchImgVisible] = useState(false);
   const [standbyTextVisible, setStandbyTextVisible] = useState(false);
   const [standbyButton, setStandbyButton] = useState(false);
-  const formIdea = useRecoilValue(formId);
 
   useEffect(() => {
     setTimeout(() => {
@@ -119,11 +116,11 @@ const StandBy = (): JSX.Element => {
   }, []);
 
   const navigate = useNavigate();
-  const signupnow = useRecoilValue(signupState);
+
   useEffect(() => {
-    console.log(signupnow);
-    console.log(formIdea);
-    if (!signupnow) {
+    const signupNow = sessionStorage.getItem("sign_up_state");
+
+    if (signupNow !== "true") {
       navigate("/login");
     }
   }, []);

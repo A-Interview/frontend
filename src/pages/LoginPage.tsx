@@ -1,12 +1,21 @@
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
+import React, {
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  useEffect,
+} from "react";
 import { motion } from "framer-motion";
 import { styled } from "styled-components";
 import loginstars from "../assets/img/LoginStarspng.png";
 import LoginBoxImage from "../assets/img/LoginBoxImage.png";
 import { Link, useNavigate } from "react-router-dom";
-import { useSetRecoilState, useRecoilState } from "recoil";
 import axios from "axios";
-import { signupState, jwtState, usernameState } from "../state/Atom";
+import {
+  SaveAccessTokenToSessionStorage,
+  SaveRefreshTokenToSessionStorage,
+  SaveSignUpstateToSessionStorage,
+  SaveUserNameStateToSessionStorage,
+} from "../state/Atom";
 import Swal from "sweetalert2";
 
 const ProgressBackground = styled.div`
@@ -120,9 +129,7 @@ const LoginPage = (): JSX.Element => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [signupnow, setSignupState] = useRecoilState(signupState);
-  const setJwtState = useSetRecoilState(jwtState);
-  const [name, setRecoilUser] = useRecoilState(usernameState);
+  // const [signupnow, setSignupState] = useRecoilState(signupState);
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
   const navigate = useNavigate();
@@ -137,19 +144,17 @@ const LoginPage = (): JSX.Element => {
         password,
       });
       setUsername(email);
-      setRecoilUser(response.data.username);
-      console.log("가입된 사용자:", name);
-      setSignupState(true);
-      setJwtState({
-        access_token: response.data.access,
-        refresh_token: response.data.refresh,
-      });
-      console.log("로그인 성공", signupnow);
+      SaveUserNameStateToSessionStorage(email);
       console.log(
         "가입된 사용자의 토큰:",
         response.data.access,
         response.data.refresh
       );
+
+      SaveAccessTokenToSessionStorage(response.data.access);
+      SaveRefreshTokenToSessionStorage(response.data.refresh);
+      SaveSignUpstateToSessionStorage("true");
+
       // 로그인 성공 후 fadeOut 상태 변경
       setFadeOut(true);
       await showToast();
@@ -157,6 +162,7 @@ const LoginPage = (): JSX.Element => {
       console.log("로그인 실패:", error);
     }
   };
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     try {
@@ -172,6 +178,10 @@ const LoginPage = (): JSX.Element => {
       setAllFieldsFilled(true);
     }
   };
+
+  useEffect(() => {
+    checkInput();
+  }, [email, password]);
   // 토스트 보여주는 함수
   const showToast = async (): Promise<void> => {
     await Swal.fire({
@@ -271,7 +281,6 @@ const LoginPage = (): JSX.Element => {
                   value={email}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setEmail(e.currentTarget.value);
-                    checkInput();
                   }}
                   placeholder="이메일을 입력해주세요."
                 />
@@ -281,7 +290,6 @@ const LoginPage = (): JSX.Element => {
                   value={password}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setPassword(e.currentTarget.value);
-                    checkInput();
                   }}
                   placeholder="비밀번호를 입력해주세요."
                 />

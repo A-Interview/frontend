@@ -14,6 +14,7 @@ import InterviewProgressPage from "./pages/InterviewProgressPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import { RecoilRoot } from "recoil";
+import ApplyFormPickerPage from "./pages/ApplyFormPickerPage";
 
 function App(): JSX.Element {
   return (
@@ -32,6 +33,7 @@ function App(): JSX.Element {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/apply-form-picker" element={<ApplyFormPickerPage />} />
         </Routes>
       </RecoilRoot>
     </>
