@@ -147,7 +147,7 @@ const MainPage = (): JSX.Element => {
           </motion.div>
 
           <Link
-            to="/wating-room"
+            to="/apply-form-picker"
             style={{ display: "flex", textDecoration: "none" }}
           >
             <StartButton

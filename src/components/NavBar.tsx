@@ -1,10 +1,12 @@
-import React, { type FormEvent } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { signupState, jwtState, usernameState } from "../state/Atom";
 import axios from "axios";
+import {
+  SaveSignUpstateToSessionStorage,
+  SaveUserNameStateToSessionStorage,
+} from "../state/Atom";
 const NavBarBackGround = styled.div`
   display: flex;
   width: 100%;
@@ -82,33 +84,62 @@ const LoginButton = styled(motion.button)`
   cursor: pointer;
 `;
 const NavBar = (): JSX.Element => {
-  // const [user, setUser] = useRecoilState(signupState);
-  const [signupnow, setSignupState] = useRecoilState(signupState);
-  const [jwt, setJwtState] = useRecoilState(jwtState);
-  const username = useRecoilValue(usernameState);
-  const setRecoilUser = useRecoilState(usernameState)[1]; // useSetRecoilState로 변경
+  const [username, setUserName] = useState<string>("");
+  const [signupNow, setSignupNow] = useState("false");
+  useEffect(() => {
+    const user = sessionStorage.getItem("user_name_state");
+    const signupState = sessionStorage.getItem("sign_up_state");
 
-  const handleLogout = async (): Promise<void> => {
+    if (user != null) {
+      setUserName(user);
+    }
+    if (signupState != null) {
+      setSignupNow(signupState);
+    }
+  }, []);
+
+  const handleLogout = (): void => {
+    console.log("실행");
     try {
-      const response = await axios.post(process.env.REACT_APP_API_URL_OUT, {
-        refresh: jwt.refresh_token,
-      });
-      setRecoilUser(""); // 로그아웃 시 username 초기화
-      setSignupState(false);
-      console.log("로그아웃 성공", signupnow);
-      setJwtState(response.data.refresh);
+      const refreshToken: string | null = sessionStorage.getItem("refresh");
+      if (refreshToken != null) {
+        // 비동기 작업인 axios.post를 여기서 호출하지 않고,
+        // 로그아웃 처리를 하기 위한 함수로 분리합니다.
+        logoutAsync()
+          .then(() => {
+            console.log("로그아웃 성공");
+          })
+          .catch((error) => {
+            console.log("로그아웃 실패:", error);
+          });
+      }
     } catch (error) {
       console.log("로그아웃 실패:", error);
     }
   };
-  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    try {
-      await handleLogout();
-    } catch (error) {
-      console.log("로그아웃 실패:", error);
+
+  const logoutAsync = async (): Promise<void> => {
+    await axios.post(process.env.REACT_APP_API_URL_OUT, {
+      refresh: sessionStorage.getItem("refresh_token"),
+    });
+
+    // 기타 로그아웃과 관련된 비동기 작업 수행
+    SaveUserNameStateToSessionStorage("");
+    SaveSignUpstateToSessionStorage("false");
+    const signUpState = sessionStorage.getItem("sign_up_state");
+    if (signUpState != null) {
+      setSignupNow(signUpState);
     }
   };
+
+  // const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  //   e.preventDefault();
+  //   try {
+  //     await handleLogout();
+  //   } catch (error) {
+  //     console.log("로그아웃 실패:", error);
+  //   }
+  // };
 
   return (
     <NavBarBackGround>
@@ -133,20 +164,21 @@ const NavBar = (): JSX.Element => {
         >
           <NavItem1>마이페이지</NavItem1>
         </Link>
-        <Username>{signupnow ? `${username} 님 환영합니다` : ""}</Username>
-        <form
-          onSubmit={onSubmit as (e: React.FormEvent<HTMLFormElement>) => void}
+        <Username>
+          {signupNow === "true" ? `${username} 님 환영합니다` : ""}
+        </Username>
+        <div
           style={{
             display: "flex",
             justifyContent: "center",
           }}
         >
-          {signupnow ? (
+          {signupNow === "true" ? (
             <LoginButton
-              type="submit"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 1.1 }}
               transition={{ type: "spring", stiffness: 200, damping: 10 }}
+              onClick={handleLogout}
             >
               로그 아웃
             </LoginButton>
@@ -167,7 +199,7 @@ const NavBar = (): JSX.Element => {
               </LoginButton>
             </Link>
           )}
-        </form>
+        </div>
       </TitleInform>
     </NavBarBackGround>
   );
