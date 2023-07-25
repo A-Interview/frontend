@@ -214,13 +214,13 @@ const MyPage = (): JSX.Element => {
   const [userId, setuserId] = useState(0);
   const access = useRecoilValue(jwtState);
   const [maxidnow, setMaxIdNow] = useRecoilState<number>(maxId);
-  /*
+
   const [idTime1, setidTime1] = useState("");
-  
+
   const [idTime2, setidTime2] = useState("");
   const [idTime3, setidTime3] = useState("");
   const [idTime4, setidTime4] = useState("");
-*/
+
   interface FormNow {
     sector_name: string;
     job_name: string;
@@ -250,13 +250,30 @@ const MyPage = (): JSX.Element => {
   // form id 바뀔때마다 상태 업데이트
   useEffect(() => {
     if (formAll.length > 0) {
-      // 마이페이지로 바로 들어왔을때 잘못된 post 방지
+      // 마이페이지로 바로 들어왔을때 잘못된 post, get 방지
       setMaxIdNow(formAll[formAll.length - 1].id);
       setuserId(formAll[formAll.length - 1].id);
+      // 각 칸마다 시간설정
+      if (formAll.length === 1) {
+        setidTime1(formAll[formAll.length - 1].updated_at);
+      } else if (formAll.length === 2) {
+        setidTime1(formAll[formAll.length - 2].updated_at);
+        setidTime2(formAll[formAll.length - 1].updated_at);
+      } else if (formAll.length === 3) {
+        setidTime1(formAll[formAll.length - 3].updated_at);
+        setidTime2(formAll[formAll.length - 2].updated_at);
+        setidTime3(formAll[formAll.length - 1].updated_at);
+      } else {
+        setidTime1(formAll[formAll.length - 4].updated_at);
+        setidTime2(formAll[formAll.length - 3].updated_at);
+        setidTime3(formAll[formAll.length - 2].updated_at);
+        setidTime4(formAll[formAll.length - 1].updated_at);
+      }
     }
   }, [formAll]);
   useEffect(() => {
     if (formState.length > 0) {
+      // 보이는 화면의 form 설정
       setSector(formState[0].sector_name);
       setJob(formState[0].job_name);
       setCareer(formState[0].career);
@@ -285,22 +302,22 @@ const MyPage = (): JSX.Element => {
 
   // 1번~4번 버튼 눌렀을때 현재 아이디에 따른 위치 조정
   const handleButtonClick1 = (): void => {
-    if (maxidnow === 1) {
+    if (formAll.length === 1) {
       setuserId(maxidnow);
-    } else if (maxidnow === 2) {
+    } else if (formAll.length === 2) {
       setuserId(maxidnow - 1);
-    } else if (maxidnow === 3) {
+    } else if (formAll.length === 3) {
       setuserId(maxidnow - 2);
     } else {
       setuserId(maxidnow - 3);
     }
   };
   const handleButtonClick2 = (): void => {
-    if (maxidnow === 1) {
+    if (formAll.length === 1) {
       setuserId(0);
-    } else if (maxidnow === 2) {
+    } else if (formAll.length === 2) {
       setuserId(maxidnow);
-    } else if (maxidnow === 3) {
+    } else if (formAll.length === 3) {
       setuserId(maxidnow - 1);
     } else {
       setuserId(maxidnow - 2);
@@ -308,11 +325,11 @@ const MyPage = (): JSX.Element => {
   };
 
   const handleButtonClick3 = (): void => {
-    if (maxidnow === 1) {
+    if (formAll.length === 1) {
       setuserId(0);
-    } else if (maxidnow === 2) {
+    } else if (formAll.length === 2) {
       setuserId(0);
-    } else if (maxidnow === 3) {
+    } else if (formAll.length === 3) {
       setuserId(maxidnow);
     } else {
       setuserId(maxidnow - 1);
@@ -320,7 +337,7 @@ const MyPage = (): JSX.Element => {
   };
 
   const handleButtonClick4 = (): void => {
-    if (maxidnow === 1) {
+    if (formAll.length === 1) {
       setuserId(0);
     } else {
       setuserId(maxidnow);
@@ -482,7 +499,7 @@ const MyPage = (): JSX.Element => {
                   handleButtonClick1();
                 }}
               >
-                1
+                {idTime1.substring(0, 10)}
               </ResultDay>
               <ResultLink style={{ justifyContent: "center" }}>
                 면접 평가 보러가기
@@ -495,7 +512,7 @@ const MyPage = (): JSX.Element => {
                   handleButtonClick2();
                 }}
               >
-                2
+                {idTime2.substring(0, 10)}
               </ResultDay>
               <ResultLink style={{ justifyContent: "center" }}>
                 면접 평가 보러가기
@@ -508,7 +525,7 @@ const MyPage = (): JSX.Element => {
                   handleButtonClick3();
                 }}
               >
-                3
+                {idTime3.substring(0, 10)}
               </ResultDay>
               <ResultLink style={{ justifyContent: "center" }}>
                 면접 평가 보러가기
@@ -521,7 +538,7 @@ const MyPage = (): JSX.Element => {
                   handleButtonClick4();
                 }}
               >
-                4
+                {idTime4.substring(0, 10)}
               </ResultDay>
               <ResultLink style={{ justifyContent: "center" }}>
                 면접 평가 보러가기
