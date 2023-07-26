@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { SaveCurrentFormIdToSessionStorage } from "../state/Atom";
 import LoadingPage from "../components/Loading";
 import Modal from "../components/Modal";
-
+import Swal from "sweetalert2";
 import axios from "axios";
 
 const Background = styled(motion.div)`
@@ -210,31 +210,47 @@ const WatingPage = (): JSX.Element => {
   const updateResume = (newResume: string): void => {
     setResume(newResume);
   };
-  const handleForm = async (): Promise<void> => {
-    try {
-      const accessToken: string | null = sessionStorage.getItem("access_token");
-      if (accessToken != null) {
-        const response = await axios.post(
-          process.env.REACT_APP_API_URL_FORM,
-          {
-            sector_name: sectorName,
-            job_name: jobName,
-            career,
-            resume,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
+  const handleForm = (): void => {
+    Swal.fire({
+      title: "제출 완료",
+      icon: "success",
+      toast: true,
+      position: "center",
+      showConfirmButton: true,
+      width: "auto",
+      html: `
+      <div style="display: flex; flex-direction: column; align-items: center;">
+      `,
+    })
+      .then(async () => {
+        const accessToken: string | null =
+          sessionStorage.getItem("access_token");
+        if (accessToken != null) {
+          return await axios.post(
+            process.env.REACT_APP_API_URL_FORM,
+            {
+              sector_name: sectorName,
+              job_name: jobName,
+              career,
+              resume,
             },
-          }
-        );
-        SaveCurrentFormIdToSessionStorage(response.data.id);
-      }
-    } catch (error) {
-      console.log("입력 실패:", error);
-    }
-
-    checkFormNumber();
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+        }
+      })
+      .then((response) => {
+        if (response != null) {
+          SaveCurrentFormIdToSessionStorage(response.data.id);
+        }
+        checkFormNumber();
+      })
+      .catch((error) => {
+        console.log("입력 실패:", error);
+      });
   };
 
   // 현재 Form의 갯수가 4개를 넘어가는 지 체크하는 함수
@@ -273,7 +289,7 @@ const WatingPage = (): JSX.Element => {
   };
   const handleSave = async (): Promise<void> => {
     try {
-      await handleForm();
+      handleForm();
     } catch (error) {
       console.log("입력 실패:", error);
     }

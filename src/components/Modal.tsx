@@ -88,7 +88,7 @@ const Modal = ({
 
   const handleButtonClick = (): void => {
     Swal.fire({
-      title: "제출 완료",
+      title: "작성 완료",
       icon: "success",
       toast: true,
       position: "center",
