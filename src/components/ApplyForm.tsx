@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { SaveCurrentFormIdToSessionStorage } from "../state/Atom";
+import { useNavigate } from "react-router-dom";
 
 const FormContainer = styled.div`
   position: absolute;
@@ -36,15 +38,29 @@ const ApplyFormWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 
 interface Props {
   jobName: string;
   createdAt: string;
+  id: number;
 }
-const ApplyForm = ({ jobName, createdAt }: Props): JSX.Element => {
+const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
+  const navigate = useNavigate();
+
+  const selectForm = (id: number): void => {
+    SaveCurrentFormIdToSessionStorage(id);
+
+    navigate("/standby");
+  };
+
   return (
-    <ApplyFormWrapper>
+    <ApplyFormWrapper
+      onClick={(e: any) => {
+        selectForm(id);
+      }}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="219"

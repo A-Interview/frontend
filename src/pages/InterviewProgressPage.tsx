@@ -3,8 +3,6 @@ import { styled } from "styled-components";
 import ProgressRobot from "../assets/img/ProgressRobot.gif";
 import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
-// import { useRecoilValue } from "recoil";
-// import { signupState } from "../state/Atom";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -298,18 +296,15 @@ const InterviewProgressPage = (): JSX.Element => {
   // 메세지가 post되었는 지 확인하는 변수, 트리거를 위해 필요
   const [isPost, setIsPost] = useState(false);
 
-  // 질문 갯수 설정 변수
-  const defaultQuestionNum: number = 1;
-  const situationQuestionNum: number = 1;
-  const deepQuestionNum: number = 0;
-  const personalityQuestionNum: number = 0;
+  // post_id
+  const [postId, setPostId] = useState<number>(-1);
 
-  // 전체 질문 변수, 이를 통해 중간에 페이지 나갈 시 벡엔드 DB에 요청 가능
-  const questionNum =
-    defaultQuestionNum +
-    situationQuestionNum +
-    deepQuestionNum +
-    personalityQuestionNum;
+  // 질문 갯수 설정 변수
+  const [defaultQuestionNum, setDefaultQuestionNum] = useState<number>(-1);
+  const [situationQuestionNum, setSituationQuestionNum] = useState<number>(-1);
+  const [deepQuestionNum, setDeepQuestionNum] = useState<number>(-1);
+  const [personalityQuestionNum, setPersonalityQuestionNum] =
+    useState<number>(-1);
 
   // 현재 토픽의 몇 번째 질문인 지 체크하는 변수
   const [currentQNum, setCurrentQNum] = useState(0);
@@ -335,7 +330,11 @@ const InterviewProgressPage = (): JSX.Element => {
         JSON.stringify({
           type: "initialSetting",
           formId: 1,
-          questionNum,
+          questionNum:
+            defaultQuestionNum +
+            situationQuestionNum +
+            deepQuestionNum +
+            personalityQuestionNum,
           defaultQuestionNum,
           situationQuestionNum,
           deepQuestionNum,
@@ -370,31 +369,69 @@ const InterviewProgressPage = (): JSX.Element => {
     };
   };
 
+  // 페이지 접속 시, 필요한 데이터 정보를 세션 스토리지로 부터 불러옴.
+  useEffect(() => {
+    const id = Number(sessionStorage.getItem("form_id"));
+    const defaultValue = Number(sessionStorage.getItem("default"));
+    const situationValue = Number(sessionStorage.getItem("situation"));
+    const deepValue = Number(sessionStorage.getItem("deep"));
+    const personalityValue = Number(sessionStorage.getItem("personality"));
+
+    if (
+      id != null &&
+      defaultValue != null &&
+      situationValue != null &&
+      deepValue != null &&
+      personalityValue != null
+    ) {
+      console.log("form_id : ", id);
+      setDefaultQuestionNum(defaultValue);
+      setSituationQuestionNum(situationValue);
+      setDeepQuestionNum(deepValue);
+      setPersonalityQuestionNum(personalityValue);
+      setPostId(id);
+    }
+  }, []);
+
   useEffect(() => {
     if (
-      defaultQuestionNum === 0 &&
-      situationQuestionNum === 0 &&
-      deepQuestionNum === 0
+      postId !== -1 &&
+      defaultQuestionNum !== -1 &&
+      situationQuestionNum !== -1 &&
+      deepQuestionNum !== -1 &&
+      personalityQuestionNum !== -1
     ) {
-      setInterviewType("personality");
-      setCurrentQNum(personalityQuestionNum);
-    } else if (
-      defaultQuestionNum === 0 &&
-      situationQuestionNum === 0 &&
-      deepQuestionNum !== 0
-    ) {
-      setInterviewType("deep");
-      setCurrentQNum(deepQuestionNum);
-    } else if (defaultQuestionNum === 0 && situationQuestionNum !== 0) {
-      setInterviewType("situation");
-      setCurrentQNum(situationQuestionNum);
-    } else if (defaultQuestionNum !== 0) {
-      setInterviewType("default");
-      setCurrentQNum(defaultQuestionNum);
-    }
+      if (
+        defaultQuestionNum === 0 &&
+        situationQuestionNum === 0 &&
+        deepQuestionNum === 0
+      ) {
+        setInterviewType("personality");
+        setCurrentQNum(personalityQuestionNum);
+      } else if (
+        defaultQuestionNum === 0 &&
+        situationQuestionNum === 0 &&
+        deepQuestionNum !== 0
+      ) {
+        setInterviewType("deep");
+        setCurrentQNum(deepQuestionNum);
+      } else if (defaultQuestionNum === 0 && situationQuestionNum !== 0) {
+        setInterviewType("situation");
+        setCurrentQNum(situationQuestionNum);
+      } else if (defaultQuestionNum !== 0) {
+        setInterviewType("default");
+        setCurrentQNum(defaultQuestionNum);
+      }
 
-    connectWebSocket();
-  }, []);
+      connectWebSocket();
+    }
+  }, [
+    postId,
+    defaultQuestionNum,
+    situationQuestionNum,
+    deepQuestionNum,
+    personalityQuestionNum,
+  ]);
 
   useEffect(() => {
     // 현재 토픽의 마지막 질문인 경우 설정.

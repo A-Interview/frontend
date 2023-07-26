@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import {
+  SaveDeepNumToSessionStorage,
+  SaveDefaultNumToSessionStorage,
+  SavePersonalNumToSessionStorage,
+  SaveSituationNumToSessionStorage,
+} from "../state/Atom";
 
 const Label = styled.div`
   color: #fff;
@@ -83,6 +89,15 @@ const SelectOption = ({
   const [showOptions, setShowOptions] = useState(false);
   const handleOnChangeSelectValue = (e: any): void => {
     const { value } = e.target;
+    if (name === "기본면접") {
+      SaveDefaultNumToSessionStorage(value);
+    } else if (name === "상황면접") {
+      SaveSituationNumToSessionStorage(value);
+    } else if (name === "심층면접") {
+      SaveDeepNumToSessionStorage(value);
+    } else if (name === "성향면접") {
+      SavePersonalNumToSessionStorage(value);
+    }
     setCurrentValue(value);
   };
 
