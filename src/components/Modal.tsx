@@ -22,17 +22,17 @@ const ModalBackdrop = styled.div`
   cursor: url(${customCursorImage}), auto;
 `;
 
-const Box = styled.div`
-  width: 4.5rem;
-  height: 3.4375rem;
-  flex-shrink: 0;
-  border-radius: 2.75rem;
-  line-height: 134.766%;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  margin-left: 60rem;
-  cursor: pointer;
-`;
+// const Box = styled.div`
+//   width: 4.5rem;
+//   height: 3.4375rem;
+//   flex-shrink: 0;
+//   border-radius: 2.75rem;
+//   line-height: 134.766%;
+//   margin-top: 0.5rem;
+//   margin-bottom: 0.5rem;
+//   margin-left: 60rem;
+//   cursor: pointer;
+// `;
 
 const ModalView = styled.div.attrs((props) => ({
   role: "dialog",
@@ -40,10 +40,10 @@ const ModalView = styled.div.attrs((props) => ({
   display: flex;
   align-items: center;
   flex-direction: column;
-  border-radius: 40px;
+  border-radius: 20px;
   width: 70rem;
   height: 35rem;
-  background-color: #a9a9a9;
+  background-color: #fff;
   box-shadow: 4px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
 
@@ -125,15 +125,21 @@ const Modal = ({
               }}
             >
               <FileUploadModal>
-                <Box onClick={setModalOpen}></Box>
-                <div>
+                <div
+                  style={{
+                    textAlign: "left",
+                    fontSize: "1.25rem",
+                    fontWeight: "800",
+                  }}
+                >
+                  자기소개를 입력하세요!
                   <form
                     style={{
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "center",
                       alignItems: "center",
-                      gap: "1rem",
+                      // gap: "1rem",
                     }}
                     onSubmit={
                       onSubmit as (e: React.FormEvent<HTMLFormElement>) => void
@@ -150,9 +156,9 @@ const Modal = ({
                       style={{
                         width: "1119px",
                         height: "488px",
-                        border: "1px solid rgb(232 232 232)",
-                        borderRadius: "0 0 40px 40px",
-                        backgroundColor: "rgb(232 232 232)",
+                        border: "1px solid #fff",
+                        borderRadius: "20px",
+                        backgroundColor: "#fff",
                         fontSize: "20px",
                         resize: "vertical",
                         padding: "20px",
