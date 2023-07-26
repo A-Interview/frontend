@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 import ApplyFormImage1 from "../assets/img/ApplyFormImage1.png";
 import ApplyFormImage2 from "../assets/img/ApplyFormImage2.png";
 import ApplyForm from "../components/ApplyForm";
@@ -12,6 +12,25 @@ import {
   personalityQuestionNum,
 } from "../state/Atom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import LoadingPage from "../components/Loading";
+const BackWard = styled.div`
+  display: inline-flex;
+  height: 2.25rem;
+  padding: 0.375rem 0.3125rem 0.375rem 0.4375rem;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  position: fixed;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.3);
+  left: 1.5rem;
+  top: 1.5rem;
+  cursor: pointer;
+
+  z-index: 1;
+`;
+
 const ApplyFormPickerWrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -110,8 +129,17 @@ const ApplyFormPickerPage = (): JSX.Element => {
   );
 
   const [formDatas, setFormDatas] = useState([]);
+  const navigate = useNavigate();
+  const handleGoBack = (): any => {
+    navigate(-1); // 뒤로가기
+  };
 
   useEffect(() => {
+    const signupNow = sessionStorage.getItem("sign_up_state");
+
+    if (signupNow !== "true") {
+      navigate("/login");
+    }
     getForm()
       .then(() => {
         console.log("get form");
@@ -141,6 +169,20 @@ const ApplyFormPickerPage = (): JSX.Element => {
   return (
     <>
       <ApplyFormPickerWrapper>
+        <BackWard onClick={handleGoBack}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M5 12C5 12.3946 5.14656 12.7328 5.46223 13.0259L14.2334 21.6167C14.4814 21.8647 14.7971 22 15.1691 22C15.9132 22 16.5107 21.4138 16.5107 20.6584C16.5107 20.2864 16.3529 19.9594 16.1048 19.7001L8.2018 12L16.1048 4.29989C16.3529 4.04059 16.5107 3.70237 16.5107 3.3416C16.5107 2.58625 15.9132 2 15.1691 2C14.7971 2 14.4814 2.13529 14.2334 2.38331L5.46223 10.9628C5.14656 11.2672 5 11.6054 5 12Z"
+              fill="white"
+            />
+          </svg>
+        </BackWard>
         <ApplyContainer>
           <ApplyTitle>작성하신 지원서를 선택하세요</ApplyTitle>
           <ApplyForms>
@@ -192,6 +234,7 @@ const ApplyFormPickerPage = (): JSX.Element => {
         <BottomDesign />
         <BottomDesign2 />
       </ApplyFormPickerWrapper>
+      <LoadingPage></LoadingPage>
     </>
   );
 };

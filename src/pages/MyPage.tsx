@@ -6,13 +6,13 @@ import MyPageImage2 from "../assets/img/MyPageImage2.png";
 import MyPageImage3 from "../assets/img/MyPageImage3.png";
 import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
-// import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { formId, maxId } from "../state/Atom";
 import Modal from "../components/Modal";
 import ModalResult from "../components/ModalResult";
 import axios from "axios";
 import { Link } from "react-router-dom";
+// import { motion } from "framer-motion";
 
 const MyPageContainer = styled.div`
   background: #01001a;
@@ -426,206 +426,221 @@ const MyPage = (): JSX.Element => {
     }
   };
   return (
-    <MyPageContainer>
-      <BackWard onClick={handleGoBack}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <path
-            d="M5 12C5 12.3946 5.14656 12.7328 5.46223 13.0259L14.2334 21.6167C14.4814 21.8647 14.7971 22 15.1691 22C15.9132 22 16.5107 21.4138 16.5107 20.6584C16.5107 20.2864 16.3529 19.9594 16.1048 19.7001L8.2018 12L16.1048 4.29989C16.3529 4.04059 16.5107 3.70237 16.5107 3.3416C16.5107 2.58625 15.9132 2 15.1691 2C14.7971 2 14.4814 2.13529 14.2334 2.38331L5.46223 10.9628C5.14656 11.2672 5 11.6054 5 12Z"
-            fill="white"
-          />
-        </svg>
-      </BackWard>
+    <>
+      <MyPageContainer>
+        <BackWard onClick={handleGoBack}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M5 12C5 12.3946 5.14656 12.7328 5.46223 13.0259L14.2334 21.6167C14.4814 21.8647 14.7971 22 15.1691 22C15.9132 22 16.5107 21.4138 16.5107 20.6584C16.5107 20.2864 16.3529 19.9594 16.1048 19.7001L8.2018 12L16.1048 4.29989C16.3529 4.04059 16.5107 3.70237 16.5107 3.3416C16.5107 2.58625 15.9132 2 15.1691 2C14.7971 2 14.4814 2.13529 14.2334 2.38331L5.46223 10.9628C5.14656 11.2672 5 11.6054 5 12Z"
+              fill="white"
+            />
+          </svg>
+        </BackWard>
 
-      <NavBar />
+        <NavBar />
 
-      <ContentContainer>
-        <Upper>
-          <Pic />
-          <Info>
-            <InfoLeft>
-              <div>희망하는 직종</div>
-              <div>지원하고자 하는 곳</div>
-              <div>경력 사항</div>
-            </InfoLeft>
-            <InfoRight>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="23"
-                  height="22"
-                  viewBox="0 0 23 22"
-                  fill="none"
+        <ContentContainer>
+          <Upper>
+            <Pic />
+            <Info>
+              <InfoLeft>
+                <div>희망하는 직종</div>
+                <div>지원하고자 하는 곳</div>
+                <div>경력 사항</div>
+              </InfoLeft>
+              <InfoRight>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
+                  }}
                 >
-                  <path
-                    d="M17.8922 18.0809H4.77063C4.52206 18.0809 4.28366 18.176 4.10789 18.3453C3.93212 18.5146 3.83337 18.7442 3.83337 18.9835C3.83337 19.2229 3.93212 19.4525 4.10789 19.6218C4.28366 19.791 4.52206 19.8861 4.77063 19.8861H17.8922C18.1408 19.8861 18.3792 19.791 18.555 19.6218C18.7307 19.4525 18.8295 19.2229 18.8295 18.9835C18.8295 18.7442 18.7307 18.5146 18.555 18.3453C18.3792 18.176 18.1408 18.0809 17.8922 18.0809Z"
-                    fill="#F2F2F2"
-                    fillOpacity="0.57"
-                  />
-                  <path
-                    d="M4.77054 16.2758H4.8549L8.76326 15.9328C9.19139 15.8917 9.59183 15.7101 9.89734 15.4183L18.3327 7.29486C18.6601 6.96177 18.837 6.51727 18.8247 6.05877C18.8124 5.60028 18.6119 5.16517 18.267 4.8488L15.699 2.37566C15.3638 2.07247 14.9246 1.89851 14.4649 1.88686C14.0052 1.87521 13.5571 2.02669 13.2059 2.31248L4.77054 10.4359C4.46759 10.7301 4.27895 11.1158 4.23631 11.5281L3.83328 15.2919C3.82066 15.4242 3.83847 15.5574 3.88545 15.6822C3.93244 15.807 4.00743 15.9203 4.10509 16.014C4.19267 16.0977 4.29653 16.1639 4.41072 16.2088C4.52492 16.2537 4.64719 16.2765 4.77054 16.2758ZM14.3962 3.63931L16.9549 6.10342L15.0804 7.8635L12.5685 5.44452L14.3962 3.63931ZM6.05458 11.6815L11.3313 6.63596L13.8619 9.07299L8.6133 14.1276L5.80153 14.3803L6.05458 11.6815Z"
-                    fill="#F2F2F2"
-                    fillOpacity="0.57"
-                  />
-                </svg>
-                {sectorName}
-              </div>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="23"
-                  height="22"
-                  viewBox="0 0 23 22"
-                  fill="none"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="23"
+                    height="22"
+                    viewBox="0 0 23 22"
+                    fill="none"
+                  >
+                    <path
+                      d="M17.8922 18.0809H4.77063C4.52206 18.0809 4.28366 18.176 4.10789 18.3453C3.93212 18.5146 3.83337 18.7442 3.83337 18.9835C3.83337 19.2229 3.93212 19.4525 4.10789 19.6218C4.28366 19.791 4.52206 19.8861 4.77063 19.8861H17.8922C18.1408 19.8861 18.3792 19.791 18.555 19.6218C18.7307 19.4525 18.8295 19.2229 18.8295 18.9835C18.8295 18.7442 18.7307 18.5146 18.555 18.3453C18.3792 18.176 18.1408 18.0809 17.8922 18.0809Z"
+                      fill="#F2F2F2"
+                      fillOpacity="0.57"
+                    />
+                    <path
+                      d="M4.77054 16.2758H4.8549L8.76326 15.9328C9.19139 15.8917 9.59183 15.7101 9.89734 15.4183L18.3327 7.29486C18.6601 6.96177 18.837 6.51727 18.8247 6.05877C18.8124 5.60028 18.6119 5.16517 18.267 4.8488L15.699 2.37566C15.3638 2.07247 14.9246 1.89851 14.4649 1.88686C14.0052 1.87521 13.5571 2.02669 13.2059 2.31248L4.77054 10.4359C4.46759 10.7301 4.27895 11.1158 4.23631 11.5281L3.83328 15.2919C3.82066 15.4242 3.83847 15.5574 3.88545 15.6822C3.93244 15.807 4.00743 15.9203 4.10509 16.014C4.19267 16.0977 4.29653 16.1639 4.41072 16.2088C4.52492 16.2537 4.64719 16.2765 4.77054 16.2758ZM14.3962 3.63931L16.9549 6.10342L15.0804 7.8635L12.5685 5.44452L14.3962 3.63931ZM6.05458 11.6815L11.3313 6.63596L13.8619 9.07299L8.6133 14.1276L5.80153 14.3803L6.05458 11.6815Z"
+                      fill="#F2F2F2"
+                      fillOpacity="0.57"
+                    />
+                  </svg>
+                  {sectorName}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
+                  }}
                 >
-                  <path
-                    d="M17.8922 18.0809H4.77063C4.52206 18.0809 4.28366 18.176 4.10789 18.3453C3.93212 18.5146 3.83337 18.7442 3.83337 18.9835C3.83337 19.2229 3.93212 19.4525 4.10789 19.6218C4.28366 19.791 4.52206 19.8861 4.77063 19.8861H17.8922C18.1408 19.8861 18.3792 19.791 18.555 19.6218C18.7307 19.4525 18.8295 19.2229 18.8295 18.9835C18.8295 18.7442 18.7307 18.5146 18.555 18.3453C18.3792 18.176 18.1408 18.0809 17.8922 18.0809Z"
-                    fill="#F2F2F2"
-                    fillOpacity="0.57"
-                  />
-                  <path
-                    d="M4.77054 16.2758H4.8549L8.76326 15.9328C9.19139 15.8917 9.59183 15.7101 9.89734 15.4183L18.3327 7.29486C18.6601 6.96177 18.837 6.51727 18.8247 6.05877C18.8124 5.60028 18.6119 5.16517 18.267 4.8488L15.699 2.37566C15.3638 2.07247 14.9246 1.89851 14.4649 1.88686C14.0052 1.87521 13.5571 2.02669 13.2059 2.31248L4.77054 10.4359C4.46759 10.7301 4.27895 11.1158 4.23631 11.5281L3.83328 15.2919C3.82066 15.4242 3.83847 15.5574 3.88545 15.6822C3.93244 15.807 4.00743 15.9203 4.10509 16.014C4.19267 16.0977 4.29653 16.1639 4.41072 16.2088C4.52492 16.2537 4.64719 16.2765 4.77054 16.2758ZM14.3962 3.63931L16.9549 6.10342L15.0804 7.8635L12.5685 5.44452L14.3962 3.63931ZM6.05458 11.6815L11.3313 6.63596L13.8619 9.07299L8.6133 14.1276L5.80153 14.3803L6.05458 11.6815Z"
-                    fill="#F2F2F2"
-                    fillOpacity="0.57"
-                  />
-                </svg>
-                {jobName}
-              </div>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="23"
-                  height="22"
-                  viewBox="0 0 23 22"
-                  fill="none"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="23"
+                    height="22"
+                    viewBox="0 0 23 22"
+                    fill="none"
+                  >
+                    <path
+                      d="M17.8922 18.0809H4.77063C4.52206 18.0809 4.28366 18.176 4.10789 18.3453C3.93212 18.5146 3.83337 18.7442 3.83337 18.9835C3.83337 19.2229 3.93212 19.4525 4.10789 19.6218C4.28366 19.791 4.52206 19.8861 4.77063 19.8861H17.8922C18.1408 19.8861 18.3792 19.791 18.555 19.6218C18.7307 19.4525 18.8295 19.2229 18.8295 18.9835C18.8295 18.7442 18.7307 18.5146 18.555 18.3453C18.3792 18.176 18.1408 18.0809 17.8922 18.0809Z"
+                      fill="#F2F2F2"
+                      fillOpacity="0.57"
+                    />
+                    <path
+                      d="M4.77054 16.2758H4.8549L8.76326 15.9328C9.19139 15.8917 9.59183 15.7101 9.89734 15.4183L18.3327 7.29486C18.6601 6.96177 18.837 6.51727 18.8247 6.05877C18.8124 5.60028 18.6119 5.16517 18.267 4.8488L15.699 2.37566C15.3638 2.07247 14.9246 1.89851 14.4649 1.88686C14.0052 1.87521 13.5571 2.02669 13.2059 2.31248L4.77054 10.4359C4.46759 10.7301 4.27895 11.1158 4.23631 11.5281L3.83328 15.2919C3.82066 15.4242 3.83847 15.5574 3.88545 15.6822C3.93244 15.807 4.00743 15.9203 4.10509 16.014C4.19267 16.0977 4.29653 16.1639 4.41072 16.2088C4.52492 16.2537 4.64719 16.2765 4.77054 16.2758ZM14.3962 3.63931L16.9549 6.10342L15.0804 7.8635L12.5685 5.44452L14.3962 3.63931ZM6.05458 11.6815L11.3313 6.63596L13.8619 9.07299L8.6133 14.1276L5.80153 14.3803L6.05458 11.6815Z"
+                      fill="#F2F2F2"
+                      fillOpacity="0.57"
+                    />
+                  </svg>
+                  {jobName}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
+                  }}
                 >
-                  <path
-                    d="M17.8922 18.0809H4.77063C4.52206 18.0809 4.28366 18.176 4.10789 18.3453C3.93212 18.5146 3.83337 18.7442 3.83337 18.9835C3.83337 19.2229 3.93212 19.4525 4.10789 19.6218C4.28366 19.791 4.52206 19.8861 4.77063 19.8861H17.8922C18.1408 19.8861 18.3792 19.791 18.555 19.6218C18.7307 19.4525 18.8295 19.2229 18.8295 18.9835C18.8295 18.7442 18.7307 18.5146 18.555 18.3453C18.3792 18.176 18.1408 18.0809 17.8922 18.0809Z"
-                    fill="#F2F2F2"
-                    fillOpacity="0.57"
-                  />
-                  <path
-                    d="M4.77054 16.2758H4.8549L8.76326 15.9328C9.19139 15.8917 9.59183 15.7101 9.89734 15.4183L18.3327 7.29486C18.6601 6.96177 18.837 6.51727 18.8247 6.05877C18.8124 5.60028 18.6119 5.16517 18.267 4.8488L15.699 2.37566C15.3638 2.07247 14.9246 1.89851 14.4649 1.88686C14.0052 1.87521 13.5571 2.02669 13.2059 2.31248L4.77054 10.4359C4.46759 10.7301 4.27895 11.1158 4.23631 11.5281L3.83328 15.2919C3.82066 15.4242 3.83847 15.5574 3.88545 15.6822C3.93244 15.807 4.00743 15.9203 4.10509 16.014C4.19267 16.0977 4.29653 16.1639 4.41072 16.2088C4.52492 16.2537 4.64719 16.2765 4.77054 16.2758ZM14.3962 3.63931L16.9549 6.10342L15.0804 7.8635L12.5685 5.44452L14.3962 3.63931ZM6.05458 11.6815L11.3313 6.63596L13.8619 9.07299L8.6133 14.1276L5.80153 14.3803L6.05458 11.6815Z"
-                    fill="#F2F2F2"
-                    fillOpacity="0.57"
-                  />
-                </svg>
-                {career}
-              </div>
-            </InfoRight>
-          </Info>
-          <SelfIntroduction>
-            <SelfContainer image={MyPageImage2} onClick={openModalResult}>
-              <Wrap />
-              <Text>내 자기 소개서 확인</Text>
-            </SelfContainer>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="23"
+                    height="22"
+                    viewBox="0 0 23 22"
+                    fill="none"
+                  >
+                    <path
+                      d="M17.8922 18.0809H4.77063C4.52206 18.0809 4.28366 18.176 4.10789 18.3453C3.93212 18.5146 3.83337 18.7442 3.83337 18.9835C3.83337 19.2229 3.93212 19.4525 4.10789 19.6218C4.28366 19.791 4.52206 19.8861 4.77063 19.8861H17.8922C18.1408 19.8861 18.3792 19.791 18.555 19.6218C18.7307 19.4525 18.8295 19.2229 18.8295 18.9835C18.8295 18.7442 18.7307 18.5146 18.555 18.3453C18.3792 18.176 18.1408 18.0809 17.8922 18.0809Z"
+                      fill="#F2F2F2"
+                      fillOpacity="0.57"
+                    />
+                    <path
+                      d="M4.77054 16.2758H4.8549L8.76326 15.9328C9.19139 15.8917 9.59183 15.7101 9.89734 15.4183L18.3327 7.29486C18.6601 6.96177 18.837 6.51727 18.8247 6.05877C18.8124 5.60028 18.6119 5.16517 18.267 4.8488L15.699 2.37566C15.3638 2.07247 14.9246 1.89851 14.4649 1.88686C14.0052 1.87521 13.5571 2.02669 13.2059 2.31248L4.77054 10.4359C4.46759 10.7301 4.27895 11.1158 4.23631 11.5281L3.83328 15.2919C3.82066 15.4242 3.83847 15.5574 3.88545 15.6822C3.93244 15.807 4.00743 15.9203 4.10509 16.014C4.19267 16.0977 4.29653 16.1639 4.41072 16.2088C4.52492 16.2537 4.64719 16.2765 4.77054 16.2758ZM14.3962 3.63931L16.9549 6.10342L15.0804 7.8635L12.5685 5.44452L14.3962 3.63931ZM6.05458 11.6815L11.3313 6.63596L13.8619 9.07299L8.6133 14.1276L5.80153 14.3803L6.05458 11.6815Z"
+                      fill="#F2F2F2"
+                      fillOpacity="0.57"
+                    />
+                  </svg>
+                  {career}
+                </div>
+              </InfoRight>
+            </Info>
+            <SelfIntroduction>
+              <SelfContainer image={MyPageImage2} onClick={openModalResult}>
+                <Wrap />
+                <Text>내 자기 소개서 확인</Text>
+              </SelfContainer>
 
-            <SelfContainer image={MyPageImage3} onClick={openModal}>
-              <Wrap />
-              <Text>내 자기 소개서 수정</Text>
-            </SelfContainer>
-          </SelfIntroduction>
-        </Upper>
-        <Lower>
-          <Results>
-            <ResultBox>
-              <ResultDay
-                onClick={() => {
-                  handleButtonClick1();
-                }}
-              >
-                {idTime1.substring(0, 10)}
-                {/* 시간까지만 보이게 자르기 */}
-              </ResultDay>
-              <Link to="/interview-result">
-                <ResultLink style={{ justifyContent: "center" }}>
-                  면접 평가 보러가기
-                </ResultLink>
-              </Link>
-            </ResultBox>
+              <SelfContainer image={MyPageImage3} onClick={openModal}>
+                <Wrap />
+                <Text>내 자기 소개서 수정</Text>
+              </SelfContainer>
+            </SelfIntroduction>
+          </Upper>
+          <Lower>
+            <Results>
+              <ResultBox>
+                <ResultDay
+                  onClick={() => {
+                    handleButtonClick1();
+                  }}
+                >
+                  {idTime1.substring(0, 10)}
+                  {/* 시간까지만 보이게 자르기 */}
+                </ResultDay>
+                <Link to="/interview-result">
+                  <ResultLink style={{ justifyContent: "center" }}>
+                    면접 평가 보러가기
+                  </ResultLink>
+                </Link>
+              </ResultBox>
 
-            <ResultBox>
-              <ResultDay
-                onClick={() => {
-                  handleButtonClick2();
-                }}
-              >
-                {idTime2.substring(0, 10)}
-                {/* 시간까지만 보이게 자르기 */}
-              </ResultDay>
-              <Link to="/interview-result">
-                <ResultLink style={{ justifyContent: "center" }}>
-                  면접 평가 보러가기
-                </ResultLink>
-              </Link>
-            </ResultBox>
+              <ResultBox>
+                <ResultDay
+                  onClick={() => {
+                    handleButtonClick2();
+                  }}
+                >
+                  {idTime2.substring(0, 10)}
+                  {/* 시간까지만 보이게 자르기 */}
+                </ResultDay>
+                <Link to="/interview-result">
+                  <ResultLink style={{ justifyContent: "center" }}>
+                    면접 평가 보러가기
+                  </ResultLink>
+                </Link>
+              </ResultBox>
 
-            <ResultBox>
-              <ResultDay
-                onClick={() => {
-                  handleButtonClick3();
-                }}
-              >
-                {idTime3.substring(0, 10)}
-                {/* 시간까지만 보이게 자르기 */}
-              </ResultDay>
-              <Link to="/interview-result">
-                <ResultLink style={{ justifyContent: "center" }}>
-                  면접 평가 보러가기
-                </ResultLink>
-              </Link>
-            </ResultBox>
+              <ResultBox>
+                <ResultDay
+                  onClick={() => {
+                    handleButtonClick3();
+                  }}
+                >
+                  {idTime3.substring(0, 10)}
+                  {/* 시간까지만 보이게 자르기 */}
+                </ResultDay>
+                <Link to="/interview-result">
+                  <ResultLink style={{ justifyContent: "center" }}>
+                    면접 평가 보러가기
+                  </ResultLink>
+                </Link>
+              </ResultBox>
 
-            <ResultBox>
-              <ResultDay
-                onClick={() => {
-                  handleButtonClick4();
-                }}
-              >
-                {idTime4.substring(0, 10)}
-                {/* 시간까지만 보이게 자르기 */}
-              </ResultDay>
-              <Link to="/interview-result">
-                <ResultLink style={{ justifyContent: "center" }}>
-                  면접 평가 보러가기
-                </ResultLink>
-              </Link>
-            </ResultBox>
-          </Results>
-        </Lower>
-      </ContentContainer>
-      <Background />
-      <LoadingPage></LoadingPage>
-      {isModalOpen && (
-        <ModalWrapper>
-          <Modal
-            isModalOpen={isModalOpen}
-            setModalOpen={handleModalClose}
-            updateResume={updateResume}
-          />
-        </ModalWrapper>
-      )}
-      {isModalResultOpen && (
-        <ModalWrapper>
-          <ModalResult
-            isModalResultOpen={isModalResultOpen}
-            setModalResultOpen={handleModalResultClose}
-            resume={resume}
-          />
-        </ModalWrapper>
-      )}
-    </MyPageContainer>
+              <ResultBox>
+                <ResultDay
+                  onClick={() => {
+                    handleButtonClick4();
+                  }}
+                >
+                  {idTime4.substring(0, 10)}
+                  {/* 시간까지만 보이게 자르기 */}
+                </ResultDay>
+                <Link to="/interview-result">
+                  <ResultLink style={{ justifyContent: "center" }}>
+                    면접 평가 보러가기
+                  </ResultLink>
+                </Link>
+              </ResultBox>
+            </Results>
+          </Lower>
+        </ContentContainer>
+        <Background />
+        <LoadingPage></LoadingPage>
+        {isModalOpen && (
+          <ModalWrapper>
+            <Modal
+              isModalOpen={isModalOpen}
+              setModalOpen={handleModalClose}
+              updateResume={updateResume}
+            />
+          </ModalWrapper>
+        )}
+        {isModalResultOpen && (
+          <ModalWrapper>
+            <ModalResult
+              isModalResultOpen={isModalResultOpen}
+              setModalResultOpen={handleModalResultClose}
+              resume={resume}
+            />
+          </ModalWrapper>
+        )}
+      </MyPageContainer>
+      <LoadingPage></LoadingPage>\
+    </>
   );
 };
 

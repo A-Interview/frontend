@@ -18,7 +18,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
-  cursor: w-resize;
+  cursor: pointer;
 
   z-index: 1;
 `;
