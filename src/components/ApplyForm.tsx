@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { SaveCurrentFormIdToSessionStorage } from "../state/Atom";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const FormContainer = styled.div`
   position: absolute;
@@ -49,10 +50,84 @@ interface Props {
 const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
   const navigate = useNavigate();
 
+  // Form을 선택할 때, 새로운 Form 생성 유도하는 함수.
   const selectForm = (id: number): void => {
-    SaveCurrentFormIdToSessionStorage(id);
+    axios
+      .get(`api/forms/user/${id}`)
+      .then((res) => {
+        const copyData = res.data[0];
+        copyDataToForm(copyData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     navigate("/standby");
+  };
+
+  // 데이터를 카피하고 새로운 POST를 하는 함수
+  const copyDataToForm = (copyData: any): void => {
+    const accessToken: string | null = sessionStorage.getItem("access_token");
+    if (accessToken != null) {
+      axios
+        .post(
+          process.env.REACT_APP_API_URL_FORM,
+          {
+            sector_name: copyData.sector_name,
+            job_name: copyData.job_name,
+            career: copyData.career,
+            resume: copyData.resume,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          checkFormNumber();
+          SaveCurrentFormIdToSessionStorage(res.data.id);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  // 현재 Form의 갯수가 4개를 넘어가는 지 체크하는 함수
+  const checkFormNumber = (): void => {
+    const accessToken: string | null = sessionStorage.getItem("access_token");
+    if (accessToken != null) {
+      axios
+        .get("/api/forms", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((res) => {
+          console.log(res.data.length);
+          if (res.data.length >= 5) {
+            const firstDataId = res.data[0].id;
+            console.log(firstDataId);
+            deleteFirst(firstDataId);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+  // 만약에 4개를 넘어간다면, 제일 오래된 Form을 삭제
+  const deleteFirst = (firstData: number): void => {
+    axios
+      .delete(`/api/forms/user/${firstData.toString()}`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
