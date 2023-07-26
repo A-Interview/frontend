@@ -329,7 +329,7 @@ const InterviewProgressPage = (): JSX.Element => {
       ws.send(
         JSON.stringify({
           type: "initialSetting",
-          formId: 1,
+          formId: postId,
           questionNum:
             defaultQuestionNum +
             situationQuestionNum +
@@ -458,7 +458,7 @@ const InterviewProgressPage = (): JSX.Element => {
     if (socket != null) {
       console.log("send Initial Message");
       const data = {
-        formId: 1,
+        formId: postId,
         type: "withoutAudio",
         interviewType,
       };
@@ -480,7 +480,7 @@ const InterviewProgressPage = (): JSX.Element => {
         const dataUrl = reader.result as string;
         const base64Data = dataUrl.split(",")[1];
         const data = {
-          formId: 1,
+          formId: postId,
           type: "noReply",
           audioBlob: base64Data,
           interviewType,
@@ -542,7 +542,7 @@ const InterviewProgressPage = (): JSX.Element => {
         const dataUrl = reader.result as string;
         const base64Data = dataUrl.split(",")[1];
         const data = {
-          formId: 1,
+          formId: postId,
           type: "withAudio",
           audioBlob: base64Data,
           interviewType,
