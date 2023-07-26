@@ -228,11 +228,48 @@ const WatingPage = (): JSX.Element => {
             },
           }
         );
-        SaveCurrentFormIdToSessionStorage(response.data.id.toString());
+        SaveCurrentFormIdToSessionStorage(response.data.id);
       }
     } catch (error) {
       console.log("입력 실패:", error);
     }
+
+    checkFormNumber();
+  };
+
+  // 현재 Form의 갯수가 4개를 넘어가는 지 체크하는 함수
+  const checkFormNumber = (): void => {
+    const accessToken: string | null = sessionStorage.getItem("access_token");
+    if (accessToken != null) {
+      axios
+        .get("/api/forms", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((res) => {
+          console.log(res.data.length);
+          if (res.data.length >= 5) {
+            const firstDataId = res.data[0].id;
+            console.log(firstDataId);
+            deleteFirst(firstDataId);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+  // 만약에 4개를 넘어간다면, 제일 오래된 Form을 삭제
+  const deleteFirst = (firstData: number): void => {
+    axios
+      .delete(`/api/forms/user/${firstData.toString()}`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const handleSave = async (): Promise<void> => {
     try {
