@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { SaveCurrentFormIdToSessionStorage } from "../state/Atom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 const FormContainer = styled.div`
   position: absolute;
@@ -34,7 +35,7 @@ const FormDate = styled.div`
   line-height: 134.766%;
 `;
 
-const ApplyFormWrapper = styled.div`
+const ApplyFormWrapper = styled(motion.div)`
   position: relative;
   display: flex;
   justify-content: center;
@@ -135,6 +136,9 @@ const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
       onClick={(e: any) => {
         selectForm(id);
       }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 1.1 }}
+      transition={{ type: "spring", stiffness: 500, damping: 20 }}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

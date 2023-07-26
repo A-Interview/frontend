@@ -16,7 +16,7 @@ const ProgressBackground = styled.div`
   justify-content: center;
   position: relative;
 `;
-const BackWard = styled.div`
+const BackWard = styled(motion.div)`
   display: inline-flex;
   height: 2.25rem;
   padding: 0.375rem 0.3125rem 0.375rem 0.4375rem;
@@ -28,7 +28,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
-  cursor: w-resize;
+  cursor: pointer;
 `;
 const LoginStarsimg = styled.img`
   width: 72.78869rem;
@@ -144,6 +144,7 @@ const SignupPage = (): JSX.Element => {
       await showToast();
       navigate("/login");
     } catch (error) {
+      await showToast2();
       console.log("회원가입 실패:", error);
     }
   };
@@ -189,13 +190,35 @@ const SignupPage = (): JSX.Element => {
     });
     navigate("/login");
   };
+
+  const showToast2 = async (): Promise<void> => {
+    await Swal.fire({
+      icon: "error",
+      title:
+        "회원가입 실패: 기존에 있는 계정이거나 이메일의 형식이 올바르지 않습니다.",
+      toast: true,
+      position: "center",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+  };
   const handleGoBack = (): void => {
     navigate(-1); // 뒤로가기
   };
   return (
     <>
       <ProgressBackground>
-        <BackWard onClick={handleGoBack}>
+        <BackWard
+          onClick={handleGoBack}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 20 }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -339,7 +362,7 @@ const SignupPage = (): JSX.Element => {
           }}
         >
           {/* 로그인 중에 보여줄 컨텐츠 (로딩 스피너 등) */}
-          <h2 style={{ color: "#fff" }}>로그인 중...</h2>
+          <h2 style={{ color: "#fff" }}>회원가입 중...</h2>
         </motion.div>
       </ProgressBackground>
     </>

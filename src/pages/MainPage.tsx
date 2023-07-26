@@ -77,9 +77,8 @@ const StartButton = styled(motion.button)`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  margin-top: 2rem;
-  margin-bottom: 10em;
   cursor: pointer;
+  z-index: 1;
 `;
 
 const variants: Variants = {
@@ -148,7 +147,13 @@ const MainPage = (): JSX.Element => {
 
           <Link
             to="/apply-form-picker"
-            style={{ display: "flex", textDecoration: "none" }}
+            style={{
+              display: "flex",
+              textDecoration: "none",
+              width: "12.5rem",
+              marginTop: "2rem",
+              marginBottom: "10rem",
+            }}
           >
             <StartButton
               whileHover={{ scale: 1.3 }}

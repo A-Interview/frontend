@@ -24,7 +24,7 @@ const ProgressBackground = styled.div`
   background: #060434;
   position: relative;
 `;
-const BackWard = styled.div`
+const BackWard = styled(motion.div)`
   display: inline-flex;
   height: 2.25rem;
   padding: 0.375rem 0.3125rem 0.375rem 0.4375rem;
@@ -159,7 +159,8 @@ const LoginPage = (): JSX.Element => {
       setFadeOut(true);
       await showToast();
     } catch (error) {
-      console.log("로그인 실패:", error);
+      await showToast2();
+      console.log("로그인 실패", error);
     }
   };
 
@@ -168,7 +169,8 @@ const LoginPage = (): JSX.Element => {
     try {
       await handleLogin();
     } catch (error) {
-      console.log("로그인 실패:", error);
+      await showToast2();
+      console.log("로그인 실패", error);
     }
   };
   const checkInput = (): void => {
@@ -199,6 +201,21 @@ const LoginPage = (): JSX.Element => {
     });
     navigate("/");
   };
+  const showToast2 = async (): Promise<void> => {
+    await Swal.fire({
+      icon: "error",
+      title: "로그인 실패: 아이디 혹은\n비밀번호를 확인해주세요.",
+      toast: true,
+      position: "center",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+  };
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
@@ -211,7 +228,12 @@ const LoginPage = (): JSX.Element => {
           justifyContent: "center",
         }}
       >
-        <BackWard onClick={handleGoBack}>
+        <BackWard
+          onClick={handleGoBack}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 20 }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

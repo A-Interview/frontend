@@ -18,7 +18,7 @@ const NavBarBackGround = styled.div`
   padding-right: 2em;
   padding-left: 2em;
 `;
-const NavBarTitle = styled.div`
+const NavBarTitle = styled(motion.div)`
   color: #fff;
   font-size: 1.3125rem;
   font-family: var(--font-e);
@@ -40,7 +40,7 @@ const TitleInform = styled.div`
   line-height: normal;
   gap: 2rem;
 `;
-const NavItem1 = styled.div`
+const NavItem1 = styled(motion.div)`
   margin: auto;
   font-family: var(--font-r);
   color: #fff;
@@ -151,7 +151,13 @@ const NavBar = (): JSX.Element => {
           textDecoration: "none",
         }}
       >
-        <NavBarTitle>A-Interview</NavBarTitle>
+        <NavBarTitle
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 20 }}
+        >
+          A-Interview
+        </NavBarTitle>
       </Link>
       <TitleInform>
         <Link
@@ -162,7 +168,13 @@ const NavBar = (): JSX.Element => {
             textDecoration: "none",
           }}
         >
-          <NavItem1>마이페이지</NavItem1>
+          <NavItem1
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 500, damping: 20 }}
+          >
+            마이페이지
+          </NavItem1>
         </Link>
         <Username>
           {signupNow === "true" ? `${username} 님 환영합니다` : ""}
