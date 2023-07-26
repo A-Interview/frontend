@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import AnswerList from "../components/AnswerList";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const InterviewResultBackGround = styled.div`
   background: linear-gradient(
@@ -118,12 +119,37 @@ const AnswerLists = styled.div`
 `;
 const InterviewResultPage = (): JSX.Element => {
   const navigate = useNavigate();
+
+  const [data, setData] = useState([]);
   useEffect(() => {
     const signupNow = sessionStorage.getItem("sign_up_state");
     if (signupNow !== "true") {
       navigate("/login");
     }
+
+    getQna();
   }, []);
+
+  // QNA를 받아오기
+  const getQna = (): void => {
+    const formId = sessionStorage.getItem("form_id");
+    if (formId != null) {
+      axios
+        .get(`/api/qna/`, {
+          params: { form_id: formId },
+        })
+        .then((res) => {
+          setData(res.data.QnA);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  // GPT 답변 받아오기
+
+  console.log(data);
   return (
     <div>
       <NavBar />
@@ -165,38 +191,19 @@ const InterviewResultPage = (): JSX.Element => {
               </AnswerTitleContainer>
               {/* 질문, 답변 리스트 */}
               <AnswerLists>
-                <AnswerList
-                  question="Q. 실제 환자와의 상호작용에서 발생할 수 있는 윤리적인 문제나 난관에 대해 어떻게 대처할 것인지 설명해주세요."
-                  answer="A. 잘 대처해야 한다고 생각합니다."
-                  aiAnswer="AI-A. 인간시대의 끝이 도래했다."
-                />
-
-                <AnswerList
-                  question="Q. 실제 환자와의 상호작용에서 발생할 수 있는 윤리적인 문제나 난관에 대해 어떻게 대처할 것인지 설명해주세요."
-                  answer="A. 잘 대처해야 한다고 생각합니다."
-                  aiAnswer="AI-A. 인간시대의 끝이 도래했다."
-                />
-
-                <AnswerList
-                  question="Q. 실제 환자와의 상호작용에서 발생할 수 있는 윤리적인 문제나 난관에 대해 어떻게 대처할 것인지 설명해주세요."
-                  answer="A. 잘 대처해야 한다고 생각합니다."
-                  aiAnswer="AI-A. 인간시대의 끝이 도래했다."
-                />
-                <AnswerList
-                  question="Q. 실제 환자와의 상호작용에서 발생할 수 있는 윤리적인 문제나 난관에 대해 어떻게 대처할 것인지 설명해주세요."
-                  answer="A. 잘 대처해야 한다고 생각합니다."
-                  aiAnswer="AI-A. 인간시대의 끝이 도래했다."
-                />
-                <AnswerList
-                  question="Q. 실제 환자와의 상호작용에서 발생할 수 있는 윤리적인 문제나 난관에 대해 어떻게 대처할 것인지 설명해주세요."
-                  answer="A. 잘 대처해야 한다고 생각합니다."
-                  aiAnswer="AI-A. 인간시대의 끝이 도래했다."
-                />
-                <AnswerList
-                  question="Q. 실제 환자와의 상호작용에서 발생할 수 있는 윤리적인 문제나 난관에 대해 어떻게 대처할 것인지 설명해주세요."
-                  answer="A. 잘 대처해야 한다고 생각합니다."
-                  aiAnswer="AI-A. 인간시대의 끝이 도래했다."
-                />
+                {data.length === 0 ? (
+                  <div>Loading...</div>
+                ) : (
+                  data?.map((chunk: any, index) => (
+                    <AnswerList
+                      key={index}
+                      question={chunk.question}
+                      answer={chunk.answer}
+                      questionId={chunk.question_id}
+                      baseRecode={chunk.record}
+                    />
+                  ))
+                )}
               </AnswerLists>
             </AnswerContainer>
           </div>
