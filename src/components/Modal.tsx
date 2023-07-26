@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Swal from "sweetalert2";
 import React, { type ChangeEvent, type FormEvent, useState } from "react";
 import customCursorImage from "../assets/img/Cursor.png";
+import { motion } from "framer-motion";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -21,24 +22,13 @@ const ModalBackdrop = styled.div`
   cursor: url(${customCursorImage}), auto;
 `;
 
-// const Box = styled.div`
-//   width: 4.5rem;
-//   height: 3.4375rem;
-//   flex-shrink: 0;
-//   border-radius: 2.75rem;
-//   line-height: 134.766%;
-//   margin-top: 0.5rem;
-//   margin-bottom: 0.5rem;
-//   margin-left: 60rem;
-//   cursor: pointer;
-// `;
-
-const ModalView = styled.div.attrs((props) => ({
+const ModalView = styled(motion.div).attrs((props) => ({
   role: "dialog",
 }))`
   display: flex;
   align-items: center;
   flex-direction: column;
+  position: fixed;
   border-radius: 10px;
   width: 70rem;
   height: 37rem;
@@ -47,21 +37,38 @@ const ModalView = styled.div.attrs((props) => ({
 `;
 
 const Button = styled.button`
-  width: 8rem;
-  height: 3.4375rem;
+  width: 6rem;
+  height: 3rem;
+  flex-shrink: 0;
+  border: #7c7c7c;
+  border-radius: 0.5rem;
+  background-color: #7c7c7c;
+  color: white;
+  font-family: var(--font-r);
+  font-size: 1.1rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 134.766%;
+  margin: 0.75em 0.3rem 0 0;
+  cursor: pointer;
+`;
+const Button2 = styled.button`
+  width: 6rem;
+  height: 3rem;
   flex-shrink: 0;
   border: #2185d0;
   border-radius: 0.5rem;
   background-color: #2185d0;
   color: white;
   font-family: var(--font-r);
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
   margin-top: 0.75em;
   cursor: pointer;
 `;
+
 interface Type {
   isModalOpen: boolean;
   setModalOpen: () => void;
@@ -115,6 +122,10 @@ const Modal = ({
               onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                 e.stopPropagation();
               }}
+              initial={{ opacity: 0, rotateY: 90 }}
+              animate={{ opacity: 1, rotateY: 0 }}
+              exit={{ opacity: 0, rotateY: 90 }}
+              transition={{ duration: 0.4 }}
             >
               <form
                 style={{
@@ -133,7 +144,7 @@ const Modal = ({
                     margin: "1.5rem 0 1.3rem 1.3rem",
                   }}
                 >
-                  자기소개를 입력하세요!
+                  자기소개를 입력하세요
                 </div>
                 <textarea
                   value={textValue}
@@ -160,9 +171,10 @@ const Modal = ({
                     paddingRight: "1.5rem",
                   }}
                 >
-                  <Button type="submit" onClick={handleButtonClick}>
+                  <Button type="submit">취소</Button>
+                  <Button2 type="submit" onClick={handleButtonClick}>
                     제출하기
-                  </Button>
+                  </Button2>
                 </div>
               </form>
             </ModalView>
