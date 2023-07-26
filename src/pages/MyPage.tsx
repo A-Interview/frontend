@@ -21,7 +21,7 @@ const MyPageContainer = styled.div`
   position: relative;
 `;
 
-const BackWard = styled.div`
+const BackWard = styled(motion.div)`
   display: inline-flex;
   height: 2.25rem;
   padding: 0.375rem 0.3125rem 0.375rem 0.4375rem;
@@ -49,6 +49,10 @@ const Background = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  @media only screen and (max-width: 1500px) {
+    width: 60rem;
+    height: 35rem;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -428,7 +432,12 @@ const MyPage = (): JSX.Element => {
   return (
     <>
       <MyPageContainer>
-        <BackWard onClick={handleGoBack}>
+        <BackWard
+          onClick={handleGoBack}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 20 }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -580,7 +589,11 @@ const MyPage = (): JSX.Element => {
                   <ResultLink
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 20,
+                    }}
                     style={{ justifyContent: "center" }}
                   >
                     면접 평가 보러가기
@@ -604,7 +617,11 @@ const MyPage = (): JSX.Element => {
                   <ResultLink
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 20,
+                    }}
                     style={{ justifyContent: "center" }}
                   >
                     면접 평가 보러가기
@@ -628,7 +645,11 @@ const MyPage = (): JSX.Element => {
                   <ResultLink
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 20,
+                    }}
                     style={{ justifyContent: "center" }}
                   >
                     면접 평가 보러가기
@@ -652,7 +673,11 @@ const MyPage = (): JSX.Element => {
                   <ResultLink
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 20,
+                    }}
                     style={{ justifyContent: "center" }}
                   >
                     면접 평가 보러가기

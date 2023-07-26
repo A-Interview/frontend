@@ -6,7 +6,7 @@ import StandByArch from "../assets/img/StandByArch.png";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingPage from "../components/Loading";
 
-const BackWard = styled.div`
+const BackWard = styled(motion.div)`
   display: inline-flex;
   height: 2.25rem;
   padding: 0.375rem 0.3125rem 0.375rem 0.4375rem;
@@ -132,7 +132,12 @@ const StandBy = (): JSX.Element => {
   return (
     <div>
       <StandByBackground>
-        <BackWard onClick={handleGoBack}>
+        <BackWard
+          onClick={handleGoBack}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 20 }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
