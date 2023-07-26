@@ -12,7 +12,7 @@ import Modal from "../components/Modal";
 import ModalResult from "../components/ModalResult";
 import axios from "axios";
 import { Link } from "react-router-dom";
-// import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const MyPageContainer = styled.div`
   background: #01001a;
@@ -121,7 +121,7 @@ const Info = styled.div`
   justify-content: space-between;
 `;
 
-const SelfContainer = styled.div<{ image: any }>`
+const SelfContainer = styled(motion.div)<{ image: any }>`
   width: 19.1875rem;
   height: 8.5625rem;
   border-radius: 2.4375rem;
@@ -162,7 +162,7 @@ const Results = styled.div`
   gap: 2rem;
 `;
 
-const ResultDay = styled.button`
+const ResultDay = styled(motion.button)`
   text-align: center;
   font-family: var(--font-r);
   font-size: 1.375rem;
@@ -175,7 +175,7 @@ const ResultDay = styled.button`
   border: none;
 `;
 
-const ResultLink = styled.button`
+const ResultLink = styled(motion.button)`
   text-align: center;
   font-family: var(--font-r);
   font-size: 1rem;
@@ -539,12 +539,24 @@ const MyPage = (): JSX.Element => {
               </InfoRight>
             </Info>
             <SelfIntroduction>
-              <SelfContainer image={MyPageImage2} onClick={openModalResult}>
+              <SelfContainer
+                image={MyPageImage2}
+                onClick={openModalResult}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 500, damping: 20 }}
+              >
                 <Wrap />
                 <Text>내 자기 소개서 확인</Text>
               </SelfContainer>
 
-              <SelfContainer image={MyPageImage3} onClick={openModal}>
+              <SelfContainer
+                image={MyPageImage3}
+                onClick={openModal}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 500, damping: 20 }}
+              >
                 <Wrap />
                 <Text>내 자기 소개서 수정</Text>
               </SelfContainer>
@@ -557,12 +569,20 @@ const MyPage = (): JSX.Element => {
                   onClick={() => {
                     handleButtonClick1();
                   }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
                 >
                   {idTime1.substring(0, 10)}
                   {/* 시간까지만 보이게 자르기 */}
                 </ResultDay>
                 <Link to="/interview-result">
-                  <ResultLink style={{ justifyContent: "center" }}>
+                  <ResultLink
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    style={{ justifyContent: "center" }}
+                  >
                     면접 평가 보러가기
                   </ResultLink>
                 </Link>
@@ -573,12 +593,20 @@ const MyPage = (): JSX.Element => {
                   onClick={() => {
                     handleButtonClick2();
                   }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
                 >
                   {idTime2.substring(0, 10)}
                   {/* 시간까지만 보이게 자르기 */}
                 </ResultDay>
                 <Link to="/interview-result">
-                  <ResultLink style={{ justifyContent: "center" }}>
+                  <ResultLink
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    style={{ justifyContent: "center" }}
+                  >
                     면접 평가 보러가기
                   </ResultLink>
                 </Link>
@@ -589,12 +617,20 @@ const MyPage = (): JSX.Element => {
                   onClick={() => {
                     handleButtonClick3();
                   }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
                 >
                   {idTime3.substring(0, 10)}
                   {/* 시간까지만 보이게 자르기 */}
                 </ResultDay>
                 <Link to="/interview-result">
-                  <ResultLink style={{ justifyContent: "center" }}>
+                  <ResultLink
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    style={{ justifyContent: "center" }}
+                  >
                     면접 평가 보러가기
                   </ResultLink>
                 </Link>
@@ -605,12 +641,20 @@ const MyPage = (): JSX.Element => {
                   onClick={() => {
                     handleButtonClick4();
                   }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
                 >
                   {idTime4.substring(0, 10)}
                   {/* 시간까지만 보이게 자르기 */}
                 </ResultDay>
                 <Link to="/interview-result">
-                  <ResultLink style={{ justifyContent: "center" }}>
+                  <ResultLink
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    style={{ justifyContent: "center" }}
+                  >
                     면접 평가 보러가기
                   </ResultLink>
                 </Link>
