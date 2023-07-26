@@ -59,6 +59,10 @@ export const SaveCurrentFormIdToSessionStorage = (id: number): void => {
   sessionStorage.setItem("form_id", id.toString());
 };
 
+export const SaveCurrentUserIdToSessionStorage = (id: number): void => {
+  sessionStorage.setItem("user_id", id.toString());
+};
+
 // 세션 스토리지에 각 면접 개수 저장
 
 export const SaveDefaultNumToSessionStorage = (id: number): void => {

@@ -213,9 +213,10 @@ const WatingPage = (): JSX.Element => {
   const handleForm = async (): Promise<void> => {
     try {
       const accessToken: string | null = sessionStorage.getItem("access_token");
-      if (accessToken != null) {
+      const userId: string | null = sessionStorage.getItem("user_id");
+      if (accessToken != null && userId != null) {
         const response = await axios.post(
-          process.env.REACT_APP_API_URL_FORM,
+          `${process.env.REACT_APP_API_URL_FORM}${userId}/`,
           {
             sector_name: sectorName,
             job_name: jobName,
