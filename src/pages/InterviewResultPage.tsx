@@ -108,7 +108,7 @@ const AnswerLists = styled.div`
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 5rem;
   &::-webkit-scrollbar {
     width: 3px;
   }
