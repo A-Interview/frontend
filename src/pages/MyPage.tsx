@@ -232,6 +232,11 @@ const MyPage = (): JSX.Element => {
   const [idTime2, setidTime2] = useState("");
   const [idTime3, setidTime3] = useState("");
   const [idTime4, setidTime4] = useState("");
+  const [formidTime1, setformidTime1] = useState(0);
+
+  const [formidTime2, setformidTime2] = useState(0);
+  const [formidTime3, setformidTime3] = useState(0);
+  const [formidTime4, setformidTime4] = useState(0);
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
@@ -270,18 +275,28 @@ const MyPage = (): JSX.Element => {
       // 각 칸마다 시간설정
       if (formAll.length === 1) {
         setidTime1(formAll[formAll.length - 1].updated_at);
+        setformidTime1(formAll[formAll.length - 1].id);
       } else if (formAll.length === 2) {
         setidTime1(formAll[formAll.length - 2].updated_at);
+        setformidTime1(formAll[formAll.length - 2].id);
         setidTime2(formAll[formAll.length - 1].updated_at);
+        setformidTime2(formAll[formAll.length - 1].id);
       } else if (formAll.length === 3) {
         setidTime1(formAll[formAll.length - 3].updated_at);
+        setformidTime1(formAll[formAll.length - 3].id);
         setidTime2(formAll[formAll.length - 2].updated_at);
+        setformidTime2(formAll[formAll.length - 2].id);
         setidTime3(formAll[formAll.length - 1].updated_at);
+        setformidTime3(formAll[formAll.length - 1].id);
       } else {
         setidTime1(formAll[formAll.length - 4].updated_at);
+        setformidTime1(formAll[formAll.length - 4].id);
         setidTime2(formAll[formAll.length - 3].updated_at);
+        setformidTime2(formAll[formAll.length - 3].id);
         setidTime3(formAll[formAll.length - 2].updated_at);
+        setformidTime3(formAll[formAll.length - 2].id);
         setidTime4(formAll[formAll.length - 1].updated_at);
+        setformidTime4(formAll[formAll.length - 1].id);
       }
     }
   }, [formAll]);
@@ -439,12 +454,19 @@ const MyPage = (): JSX.Element => {
       console.log("오류 발생:", error);
     }
   };
-  const sendformId = (): void => {
-    const formIdString: string | null = sessionStorage.getItem("form_id");
-    if (formIdString !== null) {
-      const formId: number = parseInt(formIdString, 10);
-      SaveCurrentFormIdToSessionStorage(formId);
-    }
+  // form_id 전역 저장
+  const sendformId1 = (): void => {
+    SaveCurrentFormIdToSessionStorage(formidTime1);
+    console.log(formidTime1);
+  };
+  const sendformId2 = (): void => {
+    SaveCurrentFormIdToSessionStorage(formidTime2);
+  };
+  const sendformId3 = (): void => {
+    SaveCurrentFormIdToSessionStorage(formidTime3);
+  };
+  const sendformId4 = (): void => {
+    SaveCurrentFormIdToSessionStorage(formidTime4);
   };
 
   return (
@@ -613,6 +635,7 @@ const MyPage = (): JSX.Element => {
                       damping: 20,
                     }}
                     style={{ justifyContent: "center" }}
+                    onClick={sendformId1}
                   >
                     면접 평가 보러가기
                   </ResultLink>
@@ -641,7 +664,7 @@ const MyPage = (): JSX.Element => {
                       damping: 20,
                     }}
                     style={{ justifyContent: "center" }}
-                    onClick={sendformId}
+                    onClick={sendformId2}
                   >
                     면접 평가 보러가기
                   </ResultLink>
@@ -670,6 +693,7 @@ const MyPage = (): JSX.Element => {
                       damping: 20,
                     }}
                     style={{ justifyContent: "center" }}
+                    onClick={sendformId3}
                   >
                     면접 평가 보러가기
                   </ResultLink>
@@ -698,6 +722,7 @@ const MyPage = (): JSX.Element => {
                       damping: 20,
                     }}
                     style={{ justifyContent: "center" }}
+                    onClick={sendformId4}
                   >
                     면접 평가 보러가기
                   </ResultLink>

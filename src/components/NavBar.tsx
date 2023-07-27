@@ -51,6 +51,7 @@ const NavItem1 = styled(motion.div)`
   text-decoration-line: none;
   cursor: pointer;
   overflow: visible;
+  z-index: 1;
 `;
 const Username = styled.p`
   margin: auto;
