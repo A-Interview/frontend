@@ -145,6 +145,7 @@ const ChangeUl = styled.ul<{ isOpen: boolean }>`
   background: rgba(0, 0, 0, 0.2);
   list-style: none;
   padding: initial;
+  z-index: 1;
 `;
 
 const ChangeLi = styled.li`

@@ -244,7 +244,7 @@ const LoginPage = (): JSX.Element => {
             display: "flex",
             position: "fixed",
             top: "-14rem",
-            left: "40rem",
+            right: "-14rem",
           }}
         >
           <LoginStarsimg src={loginstars} />
