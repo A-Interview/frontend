@@ -149,7 +149,7 @@ const QuestionCreate = styled(motion.button)`
   cursor: pointer;
   box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
-const BackWard = styled.div`
+const BackWard = styled(motion.div)`
   display: inline-flex;
   height: 2.25rem;
   padding: 0.375rem 0.3125rem 0.375rem 0.4375rem;
@@ -161,7 +161,7 @@ const BackWard = styled.div`
   background: rgba(255, 255, 255, 0.3);
   left: 1.5rem;
   top: 1.5rem;
-  cursor: w-resize;
+  cursor: pointer;
 `;
 const ModalBtn = styled(motion.button)`
   border-radius: 0.9375rem;
@@ -213,10 +213,10 @@ const WatingPage = (): JSX.Element => {
   const handleForm = async (): Promise<void> => {
     try {
       const accessToken: string | null = sessionStorage.getItem("access_token");
-      const userId = sessionStorage.getItem("user_id");
+      const userId: string | null = sessionStorage.getItem("user_id");
       if (accessToken != null && userId != null) {
         const response = await axios.post(
-          process.env.REACT_APP_API_URL_FORM + userId + "/",
+          `${process.env.REACT_APP_API_URL_FORM}${userId}/`,
           {
             sector_name: sectorName,
             job_name: jobName,
@@ -242,10 +242,10 @@ const WatingPage = (): JSX.Element => {
   // 현재 Form의 갯수가 4개를 넘어가는 지 체크하는 함수
   const checkFormNumber = (): void => {
     const accessToken: string | null = sessionStorage.getItem("access_token");
-    const userId = sessionStorage.getItem("user_id");
+    const userId: string | null = sessionStorage.getItem("user_id");
     if (accessToken != null && userId != null) {
       axios
-        .get("/api/forms/" + userId, {
+        .get(`${process.env.REACT_APP_API_URL_FORM}${userId}/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -283,7 +283,12 @@ const WatingPage = (): JSX.Element => {
   };
   return (
     <>
-      <BackWard onClick={handleGoBack}>
+      <BackWard
+        onClick={handleGoBack}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 1.1 }}
+        transition={{ type: "spring", stiffness: 500, damping: 20 }}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -391,6 +396,9 @@ const WatingPage = (): JSX.Element => {
                     });
                   }}
                   style={{ justifyContent: "center" }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 10 }}
                 >
                   <Text>저장하기</Text>
                 </FileAddButton>
