@@ -36,7 +36,7 @@ const ModalView = styled(motion.div).attrs((props) => ({
   box-shadow: 4px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
 
-const Button = styled.button`
+const Button = styled(motion.button)`
   width: 6rem;
   height: 3rem;
   flex-shrink: 0;
@@ -52,7 +52,7 @@ const Button = styled.button`
   margin: 0.75em 0.3rem 0 0;
   cursor: pointer;
 `;
-const Button2 = styled.button`
+const Button2 = styled(motion.button)`
   width: 6rem;
   height: 3rem;
   flex-shrink: 0;
@@ -112,12 +112,20 @@ const Modal = ({
     updateResume(textValue);
     setModalOpen();
   };
+  const closeModal = (): void => {
+    // 모달창을 닫을 때 사용되는 함수
+    setModalOpen();
+  };
 
   return (
     <>
       <ModalContainer>
         {isModalOpen && (
-          <ModalBackdrop onClick={setModalOpen}>
+          <ModalBackdrop
+            onClick={() => {
+              closeModal();
+            }}
+          >
             <ModalView
               onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                 e.stopPropagation();
@@ -171,8 +179,26 @@ const Modal = ({
                     paddingRight: "1.5rem",
                   }}
                 >
-                  <Button type="submit">취소</Button>
-                  <Button2 type="submit" onClick={handleButtonClick}>
+                  <Button
+                    type="submit"
+                    onClick={() => {
+                      closeModal();
+                    }}
+                    initial={{ opacity: 0, rotateY: 90 }} // 초기 투명도를 0으로 설정하고 90도로 수평으로 회전합니다.
+                    animate={{ opacity: 1, rotateY: 0 }} // 버튼이 나타날 때 투명도를 1로 설정하고 회전을 없앱니다.
+                    exit={{ opacity: 0, rotateY: 90 }} // 버튼이 사라질 때 투명도를 0으로 설정하고 90도로 수평으로 회전합니다.
+                    transition={{ duration: 0.2 }} // 애니메이션 지속 시간을 설정합니다. (예: 0.2초)
+                  >
+                    취소
+                  </Button>
+                  <Button2
+                    type="submit"
+                    onClick={handleButtonClick}
+                    initial={{ opacity: 0, rotateY: 90 }} // 초기 투명도를 0으로 설정하고 90도로 수평으로 회전합니다.
+                    animate={{ opacity: 1, rotateY: 0 }} // 버튼이 나타날 때 투명도를 1로 설정하고 회전을 없앱니다.
+                    exit={{ opacity: 0, rotateY: 90 }} // 버튼이 사라질 때 투명도를 0으로 설정하고 90도로 수평으로 회전합니다.
+                    transition={{ duration: 0.2 }} // 애니메이션 지속 시간을 설정합니다. (예: 0.2초)
+                  >
                     제출하기
                   </Button2>
                 </div>
