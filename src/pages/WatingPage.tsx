@@ -7,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { SaveCurrentFormIdToSessionStorage } from "../state/Atom";
 import LoadingPage from "../components/Loading";
 import Modal from "../components/Modal";
-
 import axios from "axios";
 
 const Background = styled(motion.div)`
@@ -89,7 +88,6 @@ const FileAddButton = styled(motion.div)`
   width: 45%;
   display: flex;
   align-items: center;
-  cursor: pointer;
 `;
 const Text = styled.p`
   color: #f4f6f6;
@@ -187,6 +185,7 @@ const WatingPage = (): JSX.Element => {
   const [jobName, setJob] = useState("");
   const [career, setCareer] = useState("");
   const [resume, setResume] = useState("");
+  const formtrue = sessionStorage.getItem("formtrue");
   // 로그인 안되어 있으면 로그인창으로
   useEffect(() => {
     const signupNow = sessionStorage.getItem("sign_up_state");
@@ -214,7 +213,8 @@ const WatingPage = (): JSX.Element => {
     try {
       const accessToken: string | null = sessionStorage.getItem("access_token");
       const userId: string | null = sessionStorage.getItem("user_id");
-      if (accessToken != null && userId != null) {
+
+      if (accessToken !== null && userId !== null) {
         const response = await axios.post(
           `${process.env.REACT_APP_API_URL_FORM}${userId}/`,
           {
@@ -229,14 +229,16 @@ const WatingPage = (): JSX.Element => {
             },
           }
         );
-        console.log(response);
-        SaveCurrentFormIdToSessionStorage(response.data.id);
+
+        if (response != null) {
+          SaveCurrentFormIdToSessionStorage(response.data.id);
+        }
       }
+
+      checkFormNumber();
     } catch (error) {
       console.log("입력 실패:", error);
     }
-
-    checkFormNumber();
   };
 
   // 현재 Form의 갯수가 4개를 넘어가는 지 체크하는 함수
@@ -389,18 +391,12 @@ const WatingPage = (): JSX.Element => {
                 >
                   <Text>글 입력하기</Text>
                 </ModalBtn>
-                <FileAddButton
-                  onClick={() => {
-                    handleSave().catch((error) => {
-                      console.log("저장 실패:", error);
-                    });
-                  }}
-                  style={{ justifyContent: "center" }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                >
-                  <Text>저장하기</Text>
+                <FileAddButton style={{ justifyContent: "center" }}>
+                  {formtrue === "true" ? (
+                    <Text>저장됨</Text>
+                  ) : (
+                    <Text>저장되지 않음</Text>
+                  )}
                 </FileAddButton>
               </SelfIntroContainer>
             </div>
@@ -445,6 +441,11 @@ const WatingPage = (): JSX.Element => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}
+            onClick={() => {
+              handleSave().catch((error) => {
+                console.log("저장 실패:", error);
+              });
+            }}
           >
             면접 생성
           </QuestionCreate>

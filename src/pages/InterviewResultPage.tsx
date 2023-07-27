@@ -4,6 +4,7 @@ import { styled } from "styled-components";
 import AnswerList from "../components/AnswerList";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import LoadingPage from "../components/Loading";
 
 const InterviewResultBackGround = styled.div`
   background: linear-gradient(
@@ -332,6 +333,7 @@ const InterviewResultPage = (): JSX.Element => {
           </div>
         </BackGroundTwo>
       </InterviewResultBackGround>
+      <LoadingPage></LoadingPage>
     </div>
   );
 };

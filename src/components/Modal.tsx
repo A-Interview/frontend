@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import React, { type ChangeEvent, type FormEvent, useState } from "react";
 import customCursorImage from "../assets/img/Cursor.png";
 import { motion } from "framer-motion";
+import { SaveCurrentFormTrueToSessionStorage } from "../state/Atom";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -87,7 +88,7 @@ const Modal = ({
 
   const handleButtonClick = (): void => {
     Swal.fire({
-      title: "제출 완료",
+      title: "저장 완료",
       icon: "success",
       toast: true,
       position: "center",
@@ -111,6 +112,7 @@ const Modal = ({
 
     updateResume(textValue);
     setModalOpen();
+    SaveCurrentFormTrueToSessionStorage(true);
   };
   const closeModal = (): void => {
     // 모달창을 닫을 때 사용되는 함수
