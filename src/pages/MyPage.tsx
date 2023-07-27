@@ -752,7 +752,7 @@ const MyPage = (): JSX.Element => {
           </ModalWrapper>
         )}
       </MyPageContainer>
-      <LoadingPage></LoadingPage>\
+      <LoadingPage></LoadingPage>
     </>
   );
 };

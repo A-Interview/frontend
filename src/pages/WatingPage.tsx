@@ -187,6 +187,7 @@ const WatingPage = (): JSX.Element => {
   const [jobName, setJob] = useState("");
   const [career, setCareer] = useState("");
   const [resume, setResume] = useState("");
+  const formtrue = sessionStorage.getItem("formtrue");
   // 로그인 안되어 있으면 로그인창으로
   useEffect(() => {
     const signupNow = sessionStorage.getItem("sign_up_state");
@@ -404,18 +405,12 @@ const WatingPage = (): JSX.Element => {
                 >
                   <Text>글 입력하기</Text>
                 </ModalBtn>
-                <FileAddButton
-                  onClick={() => {
-                    handleSave().catch((error) => {
-                      console.log("저장 실패:", error);
-                    });
-                  }}
-                  style={{ justifyContent: "center" }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                >
-                  <Text>저장하기</Text>
+                <FileAddButton style={{ justifyContent: "center" }}>
+                  {formtrue === "true" ? (
+                    <Text>저장됨</Text>
+                  ) : (
+                    <Text>저장되지 않음</Text>
+                  )}
                 </FileAddButton>
               </SelfIntroContainer>
             </div>
@@ -460,6 +455,11 @@ const WatingPage = (): JSX.Element => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}
+            onClick={() => {
+              handleSave().catch((error) => {
+                console.log("저장 실패:", error);
+              });
+            }}
           >
             면접 생성
           </QuestionCreate>
