@@ -151,6 +151,8 @@ const ProgressNextButton = styled.button`
   border-radius: 2rem;
   box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
   background: transparent;
+  outline: none;
+  border: none;
 `;
 
 const ProgressTimerBox = styled.div`
@@ -292,7 +294,9 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 소켓 변수 정의
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>(
+    "면접을 시작하시려면 다음 질문을 클릭해주세요."
+  );
 
   // 메세지가 post되었는 지 확인하는 변수, 트리거를 위해 필요
   const [isPost, setIsPost] = useState(false);
