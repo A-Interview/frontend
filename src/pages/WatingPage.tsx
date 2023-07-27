@@ -229,6 +229,7 @@ const WatingPage = (): JSX.Element => {
             },
           }
         );
+        console.log(response);
         SaveCurrentFormIdToSessionStorage(response.data.id);
       }
     } catch (error) {
