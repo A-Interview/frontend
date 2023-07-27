@@ -49,6 +49,7 @@ const NumLi = styled.li`
   color: #fefefe;
   &:hover {
     background-color: #595959;
+    color: #68a9ff;
   }
   z-index: 2;
   font-family: var(--font-b);

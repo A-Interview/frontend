@@ -5,6 +5,7 @@ import AnswerList from "../components/AnswerList";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoadingPage from "../components/Loading";
+import { motion } from "framer-motion";
 
 const InterviewResultBackGround = styled.div`
   background: linear-gradient(
@@ -21,7 +22,7 @@ const InterviewResultBackGround = styled.div`
   padding-top: 2rem;
 `;
 
-const BackGroundTwo = styled.div`
+const BackGroundTwo = styled(motion.div)`
   width: 83rem;
   height: 48.375rem;
 
@@ -82,7 +83,7 @@ const AnswerContainer = styled.div`
   overflow: hidden;
 `;
 
-const AnswerTitleContainer = styled.div`
+const AnswerTitleContainer = styled(motion.div)`
   display: flex;
   flex-direction: row;
   gap: 1rem;
@@ -97,13 +98,13 @@ const AnswerTitleText = styled.div`
   line-height: 134.766%;
   padding-bottom: 0.1rem;
 `;
-const AnswerBar = styled.div`
+const AnswerBar = styled(motion.div)`
   width: 12rem;
   height: 0.1875rem;
   background: #fff;
 `;
 
-const AnswerLists = styled.div`
+const AnswerLists = styled(motion.div)`
   overflow: auto;
   height: 100%;
   padding-top: 1rem;
@@ -121,7 +122,7 @@ const AnswerLists = styled.div`
   }
 `;
 
-const ChangeButton = styled.div`
+const ChangeButton = styled(motion.div)`
   border: none;
   outline: none;
   background: transparent;
@@ -264,11 +265,23 @@ const InterviewResultPage = (): JSX.Element => {
     );
   };
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 2000);
+  }, []);
+
   return (
     <div>
       <NavBar />
       <InterviewResultBackGround>
-        <BackGroundTwo>
+        <BackGroundTwo
+          initial={{ opacity: 0, rotateY: 90 }}
+          animate={isLoaded ? { opacity: 1, rotateY: 0 } : {}}
+          transition={{ duration: 1 }}
+        >
           <div
             style={{
               display: "flex",
@@ -281,7 +294,13 @@ const InterviewResultPage = (): JSX.Element => {
             <ResultTitle>
               <TitleFirst>면접 최종 결과</TitleFirst>
               <TitleSecond onClick={onChangeView}>
-                <ChangeButton>전체 보기</ChangeButton>
+                <ChangeButton
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                >
+                  전체 보기
+                </ChangeButton>
                 <ChangeUl isOpen={isOpen}>
                   <ChangeLi onClick={onClickAll}>전체보기</ChangeLi>
                   <ChangeLi onClick={onClickDefault}>기본면접</ChangeLi>
@@ -292,7 +311,11 @@ const InterviewResultPage = (): JSX.Element => {
               </TitleSecond>
             </ResultTitle>
             <AnswerContainer>
-              <AnswerTitleContainer>
+              <AnswerTitleContainer
+                initial={{ opacity: 0, y: 50 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="33"
@@ -310,11 +333,19 @@ const InterviewResultPage = (): JSX.Element => {
 
                 <div>
                   <AnswerTitleText>질문 & 나와 AI 답변</AnswerTitleText>
-                  <AnswerBar />
+                  <AnswerBar
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                  />
                 </div>
               </AnswerTitleContainer>
               {/* 질문, 답변 리스트 */}
-              <AnswerLists>
+              <AnswerLists
+                initial={{ opacity: 0, y: 50 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
                 {viewData.length === 0 ? (
                   <div>Loading...</div>
                 ) : (

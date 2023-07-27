@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import React, { type ChangeEvent, type FormEvent, useState } from "react";
-import customCursorImage from "../assets/img/Cursor.png";
 import { motion } from "framer-motion";
 import { SaveCurrentFormTrueToSessionStorage } from "../state/Atom";
 
@@ -16,11 +15,10 @@ const ModalBackdrop = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: rgba(0, 0, 0, 0.4); */
+  background-color: rgba(70, 70, 70, 0.17);
   border-radius: 10px;
   height: 100vh;
   width: 100vw;
-  cursor: url(${customCursorImage}), auto;
 `;
 
 const ModalView = styled(motion.div).attrs((props) => ({
@@ -186,20 +184,18 @@ const Modal = ({
                     onClick={() => {
                       closeModal();
                     }}
-                    initial={{ opacity: 0, rotateY: 90 }} // 초기 투명도를 0으로 설정하고 90도로 수평으로 회전합니다.
-                    animate={{ opacity: 1, rotateY: 0 }} // 버튼이 나타날 때 투명도를 1로 설정하고 회전을 없앱니다.
-                    exit={{ opacity: 0, rotateY: 90 }} // 버튼이 사라질 때 투명도를 0으로 설정하고 90도로 수평으로 회전합니다.
-                    transition={{ duration: 0.2 }} // 애니메이션 지속 시간을 설정합니다. (예: 0.2초)
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 10 }}
                   >
                     취소
                   </Button>
                   <Button2
                     type="submit"
                     onClick={handleButtonClick}
-                    initial={{ opacity: 0, rotateY: 90 }} // 초기 투명도를 0으로 설정하고 90도로 수평으로 회전합니다.
-                    animate={{ opacity: 1, rotateY: 0 }} // 버튼이 나타날 때 투명도를 1로 설정하고 회전을 없앱니다.
-                    exit={{ opacity: 0, rotateY: 90 }} // 버튼이 사라질 때 투명도를 0으로 설정하고 90도로 수평으로 회전합니다.
-                    transition={{ duration: 0.2 }} // 애니메이션 지속 시간을 설정합니다. (예: 0.2초)
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 10 }}
                   >
                     제출하기
                   </Button2>

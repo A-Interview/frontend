@@ -132,7 +132,7 @@ const ProgressTimerState = styled.p`
   font-weight: 400;
 `;
 
-const ProgressNextButton = styled.button`
+const ProgressNextButton = styled(motion.button)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -779,6 +779,9 @@ const InterviewProgressPage = (): JSX.Element => {
                     setCount(10);
                   }
                 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 500, damping: 20 }}
               >
                 <p>다음 질문</p>
               </ProgressNextButton>
