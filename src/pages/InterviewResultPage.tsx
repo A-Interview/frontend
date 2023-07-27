@@ -67,6 +67,8 @@ const TitleSecond = styled.div`
   align-items: center;
   padding-right: 2rem;
   padding-left: 2rem;
+  position: relative;
+  cursor: pointer;
 `;
 const AnswerContainer = styled.div`
   border-radius: 2rem;
@@ -95,7 +97,7 @@ const AnswerTitleText = styled.div`
   padding-bottom: 0.1rem;
 `;
 const AnswerBar = styled.div`
-  width: 9rem;
+  width: 12rem;
   height: 0.1875rem;
   background: #fff;
 `;
@@ -117,10 +119,63 @@ const AnswerLists = styled.div`
     background: #ccc;
   }
 `;
+
+const ChangeButton = styled.div`
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-b);
+  font-size: 1rem;
+  color: #fff;
+`;
+
+const ChangeUl = styled.ul<{ isOpen: boolean }>`
+  display: ${(props) => (props.isOpen ? "block" : "none")};
+  position: absolute;
+  width: 100%;
+  top: 49px;
+  left: 0;
+  border: 1px solid #c4c4c4;
+  box-sizing: border-box;
+  box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  list-style: none;
+  padding: initial;
+`;
+
+const ChangeLi = styled.li`
+  cursor: pointer;
+  &:hover {
+    color: #68a9ff;
+  }
+  font-size: 1rem;
+`;
+
 const InterviewResultPage = (): JSX.Element => {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
+
+  // 보여줄 데이터 상태
+  const [viewData, setViewData] = useState([]);
+
+  const [questionData, setQuestionData] = useState({
+    defaultQueNum: 0,
+    situationQueNum: 0,
+    deepQueNum: 0,
+    personalityQueNum: 0,
+    totalQueNum: 0,
+  });
+
+  // 각 면접 종류 별 보기 버튼
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onChangeView = (): void => {
+    // 이전 인자를 받아와서 역전
+    setIsOpen((prev) => !prev);
+  };
+
   useEffect(() => {
     const signupNow = sessionStorage.getItem("sign_up_state");
     if (signupNow !== "true") {
@@ -128,6 +183,8 @@ const InterviewResultPage = (): JSX.Element => {
     }
 
     getQna();
+
+    getQuestionNumber();
   }, []);
 
   // QNA를 받아오기
@@ -140,6 +197,7 @@ const InterviewResultPage = (): JSX.Element => {
         })
         .then((res) => {
           setData(res.data.QnA);
+          setViewData(res.data.QnA);
         })
         .catch((error) => {
           console.log(error);
@@ -147,9 +205,64 @@ const InterviewResultPage = (): JSX.Element => {
     }
   };
 
-  // GPT 답변 받아오기
+  // 각 유형 별 질문 갯수 받아오기
+  const getQuestionNumber = (): void => {
+    const formId = sessionStorage.getItem("form_id");
+    if (formId != null) {
+      axios
+        .get(`/api/forms/qnum/${formId}`)
+        .then((res) => {
+          setQuestionData({
+            defaultQueNum: res.data.default_que_num,
+            situationQueNum: res.data.situation_que_num,
+            deepQueNum: res.data.deep_que_num,
+            personalityQueNum: res.data.personality_que_num,
+            totalQueNum: res.data.total_que_num,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
 
-  console.log(data);
+  const onClickAll = (): void => {
+    setViewData(data);
+  };
+
+  const onClickDefault = (): void => {
+    setViewData(data.slice(0, questionData.defaultQueNum));
+  };
+  const onClickSituation = (): void => {
+    setViewData(
+      data.slice(
+        questionData.defaultQueNum,
+        questionData.defaultQueNum + questionData.situationQueNum
+      )
+    );
+  };
+
+  const onClickDeep = (): void => {
+    setViewData(
+      data.slice(
+        questionData.defaultQueNum + questionData.situationQueNum,
+        questionData.defaultQueNum +
+          questionData.situationQueNum +
+          questionData.deepQueNum
+      )
+    );
+  };
+  const onClickPersonality = (): void => {
+    setViewData(
+      data.slice(
+        questionData.defaultQueNum +
+          questionData.situationQueNum +
+          questionData.deepQueNum,
+        questionData.totalQueNum
+      )
+    );
+  };
+
   return (
     <div>
       <NavBar />
@@ -165,8 +278,17 @@ const InterviewResultPage = (): JSX.Element => {
             }}
           >
             <ResultTitle>
-              <TitleFirst>면접 종합 평가</TitleFirst>
-              <TitleSecond>녹음본 듣기</TitleSecond>
+              <TitleFirst>면접 최종 결과</TitleFirst>
+              <TitleSecond onClick={onChangeView}>
+                <ChangeButton>전체 보기</ChangeButton>
+                <ChangeUl isOpen={isOpen}>
+                  <ChangeLi onClick={onClickAll}>전체보기</ChangeLi>
+                  <ChangeLi onClick={onClickDefault}>기본면접</ChangeLi>
+                  <ChangeLi onClick={onClickSituation}>상황면접</ChangeLi>
+                  <ChangeLi onClick={onClickDeep}>심층면접</ChangeLi>
+                  <ChangeLi onClick={onClickPersonality}>성향면접</ChangeLi>
+                </ChangeUl>
+              </TitleSecond>
             </ResultTitle>
             <AnswerContainer>
               <AnswerTitleContainer>
@@ -184,17 +306,18 @@ const InterviewResultPage = (): JSX.Element => {
                     fill="white"
                   />
                 </svg>
+
                 <div>
-                  <AnswerTitleText>질문과 나의 답변</AnswerTitleText>
+                  <AnswerTitleText>질문 & 나와 AI 답변</AnswerTitleText>
                   <AnswerBar />
                 </div>
               </AnswerTitleContainer>
               {/* 질문, 답변 리스트 */}
               <AnswerLists>
-                {data.length === 0 ? (
+                {viewData.length === 0 ? (
                   <div>Loading...</div>
                 ) : (
-                  data?.map((chunk: any, index) => (
+                  viewData?.map((chunk: any, index) => (
                     <AnswerList
                       key={index}
                       question={chunk.question}
