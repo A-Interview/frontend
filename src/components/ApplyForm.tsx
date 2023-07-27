@@ -69,10 +69,11 @@ const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
   // 데이터를 카피하고 새로운 POST를 하는 함수
   const copyDataToForm = (copyData: any): void => {
     const accessToken: string | null = sessionStorage.getItem("access_token");
-    if (accessToken != null) {
+    const userId = sessionStorage.getItem("user_id");
+    if (accessToken != null && userId != null) {
       axios
         .post(
-          process.env.REACT_APP_API_URL_FORM,
+          process.env.REACT_APP_API_URL_FORM + userId + "/",
           {
             sector_name: copyData.sector_name,
             job_name: copyData.job_name,
@@ -99,9 +100,10 @@ const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
   // 현재 Form의 갯수가 4개를 넘어가는 지 체크하는 함수
   const checkFormNumber = (): void => {
     const accessToken: string | null = sessionStorage.getItem("access_token");
-    if (accessToken != null) {
+    const userId = sessionStorage.getItem("user_id");
+    if (accessToken != null && userId != null) {
       axios
-        .get("/api/forms", {
+        .get("/api/forms/" + userId, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

@@ -12,12 +12,12 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   SaveAccessTokenToSessionStorage,
+  SaveCurrentUserIdToSessionStorage,
   SaveRefreshTokenToSessionStorage,
   SaveSignUpstateToSessionStorage,
   SaveUserNameStateToSessionStorage,
 } from "../state/Atom";
 import Swal from "sweetalert2";
-
 const ProgressBackground = styled.div`
   width: 100vw;
   height: 100vh;
@@ -121,21 +121,17 @@ const Account = styled(motion.address)`
   width: 26.25rem;
   height: 4.25rem;
   flex-shrink: 0;
-
   cursor: pointer;
 `;
-
 const LoginPage = (): JSX.Element => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // const [signupnow, setSignupState] = useRecoilState(signupState);
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
-
   const navigate = useNavigate();
   // fadeOut 상태 추가
   const [fadeOut, setFadeOut] = useState(false);
-
   const handleLogin = async (): Promise<void> => {
     try {
       const response = await axios.post(process.env.REACT_APP_API_URL, {
@@ -145,16 +141,15 @@ const LoginPage = (): JSX.Element => {
       });
       setUsername(email);
       SaveUserNameStateToSessionStorage(email);
+      SaveCurrentUserIdToSessionStorage(response.data.user_id);
       console.log(
         "가입된 사용자의 토큰:",
         response.data.access,
         response.data.refresh
       );
-
       SaveAccessTokenToSessionStorage(response.data.access);
       SaveRefreshTokenToSessionStorage(response.data.refresh);
       SaveSignUpstateToSessionStorage("true");
-
       // 로그인 성공 후 fadeOut 상태 변경
       setFadeOut(true);
       await showToast();
@@ -163,7 +158,6 @@ const LoginPage = (): JSX.Element => {
       console.log("로그인 실패", error);
     }
   };
-
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     try {
@@ -180,7 +174,6 @@ const LoginPage = (): JSX.Element => {
       setAllFieldsFilled(true);
     }
   };
-
   useEffect(() => {
     checkInput();
   }, [email, password]);
@@ -216,7 +209,6 @@ const LoginPage = (): JSX.Element => {
       },
     });
   };
-
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
@@ -247,7 +239,6 @@ const LoginPage = (): JSX.Element => {
             />
           </svg>
         </BackWard>
-
         <div
           style={{
             display: "flex",

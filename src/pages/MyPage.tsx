@@ -392,12 +392,18 @@ const MyPage = (): JSX.Element => {
   const getForm = async (): Promise<void> => {
     try {
       const accessToken: string | null = sessionStorage.getItem("access_token");
-      const response = await axios.get(process.env.REACT_APP_API_URL_FORM, {
-        headers: {
-          Authorization: `Bearer ${accessToken ?? ""}`,
-        },
-      });
-      setformAll(response.data);
+      const userId: string | null = sessionStorage.getItem("user_id");
+      if (userId !== null) {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL_FORM}${userId}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken ?? ""}`,
+            },
+          }
+        );
+        setformAll(response.data);
+      }
     } catch (error) {
       console.error("오류 발생:", error);
     }
