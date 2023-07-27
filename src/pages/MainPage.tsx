@@ -141,7 +141,7 @@ const MainPage = (): JSX.Element => {
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <TitleSubContent>
-              Commencez dès maintenant le meilleur service dentretien dembauche.
+              Start the best ai interview service right now.
             </TitleSubContent>
           </motion.div>
 

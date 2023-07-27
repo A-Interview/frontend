@@ -17,6 +17,10 @@ const Label = styled.div`
   line-height: 134.766%; /* 1.68456rem */
 `;
 const NumCount = styled.ul<{ show: boolean }>`
+  padding: initial;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   overflow-y: scroll;
   border: none;
   max-height: ${(props) => (props.show ? "9rem" : "0")};
@@ -63,7 +67,7 @@ const SelectIcon = styled.div`
   width: 1.3125rem;
   height: 0.625rem;
   z-index: 2;
-  right: 0;
+  left: 4rem;
   top: 0.5rem;
 `;
 

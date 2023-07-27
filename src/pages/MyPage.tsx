@@ -17,6 +17,7 @@ import ModalResult from "../components/ModalResult";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
 
 const MyPageContainer = styled.div`
   background: #01001a;
@@ -237,6 +238,12 @@ const MyPage = (): JSX.Element => {
   const [formidTime2, setformidTime2] = useState(0);
   const [formidTime3, setformidTime3] = useState(0);
   const [formidTime4, setformidTime4] = useState(0);
+
+  const [checkQna1, setcheckQna1] = useState("");
+  const [checkQna2, setcheckQna2] = useState("");
+  const [checkQna3, setcheckQna3] = useState("");
+  const [checkQna4, setcheckQna4] = useState("");
+
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
@@ -310,6 +317,12 @@ const MyPage = (): JSX.Element => {
     }
   }, [formState]);
 
+  useEffect(() => {
+    getQna1();
+    getQna2();
+    getQna3();
+    getQna4();
+  }, [formidTime1, formidTime2, formidTime3, formidTime4]);
   // 자기소개서 수정 모달
   const handleModalClose = (): void => {
     setModalOpen(false);
@@ -383,6 +396,64 @@ const MyPage = (): JSX.Element => {
         console.log("저장 실패:", error);
       });
   }, [resume]);
+  // Form이 비었을 경우 면접 결과 페이지로 넘어가는 것을 차단
+
+  const getQna1 = (): void => {
+    if (process.env.REACT_APP_API_URL_QNA !== undefined) {
+      axios
+        .get(process.env.REACT_APP_API_URL_QNA, {
+          params: { form_id: formidTime1 },
+        })
+        .then((res) => {
+          setcheckQna1(res.data.QnA);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+  const getQna2 = (): void => {
+    if (process.env.REACT_APP_API_URL_QNA !== undefined) {
+      axios
+        .get(process.env.REACT_APP_API_URL_QNA, {
+          params: { form_id: formidTime2 },
+        })
+        .then((res) => {
+          setcheckQna2(res.data.QnA);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+  const getQna3 = (): void => {
+    if (process.env.REACT_APP_API_URL_QNA !== undefined) {
+      axios
+        .get(process.env.REACT_APP_API_URL_QNA, {
+          params: { form_id: formidTime3 },
+        })
+        .then((res) => {
+          setcheckQna3(res.data.QnA);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+  const getQna4 = (): void => {
+    if (process.env.REACT_APP_API_URL_QNA !== undefined) {
+      axios
+        .get(process.env.REACT_APP_API_URL_QNA, {
+          params: { form_id: formidTime4 },
+        })
+        .then((res) => {
+          setcheckQna4(res.data.QnA);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
   // 자기소개서 수정 PUT 요청 부분
   const changeForm = async (): Promise<void> => {
     try {
@@ -457,7 +528,6 @@ const MyPage = (): JSX.Element => {
   // form_id 전역 저장
   const sendformId1 = (): void => {
     SaveCurrentFormIdToSessionStorage(formidTime1);
-    console.log(formidTime1);
   };
   const sendformId2 = (): void => {
     SaveCurrentFormIdToSessionStorage(formidTime2);
@@ -467,6 +537,32 @@ const MyPage = (): JSX.Element => {
   };
   const sendformId4 = (): void => {
     SaveCurrentFormIdToSessionStorage(formidTime4);
+  };
+  // qna 비었을 때 뜨는 토스트창
+  const showToast = async (): Promise<void> => {
+    await Swal.fire({
+      icon: "error",
+      title: "QNA가 진행되지 않은\n 면접 평가입니다.",
+      toast: true,
+      position: "center",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+  };
+
+  const showToastMake = (): void => {
+    showToast()
+      .then(() => {
+        console.log("토스트 생성 완료");
+      })
+      .catch((error) => {
+        console.error("토스트 에러발생:", error);
+      });
   };
 
   return (
@@ -625,7 +721,7 @@ const MyPage = (): JSX.Element => {
                   {idTime1.substring(0, 10)}
                   {/* 시간까지만 보이게 자르기 */}
                 </ResultDay>
-                <Link to="/interview-result">
+                {checkQna1.length === 0 ? (
                   <ResultLink
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 1.1 }}
@@ -635,11 +731,26 @@ const MyPage = (): JSX.Element => {
                       damping: 20,
                     }}
                     style={{ justifyContent: "center" }}
-                    onClick={sendformId1}
+                    onClick={showToastMake}
                   >
                     면접 평가 보러가기
                   </ResultLink>
-                </Link>
+                ) : (
+                  <Link to="/interview-result" onClick={sendformId1}>
+                    <ResultLink
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 1.1 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 20,
+                      }}
+                      style={{ justifyContent: "center" }}
+                    >
+                      면접 평가 보러가기
+                    </ResultLink>
+                  </Link>
+                )}
               </ResultBox>
 
               <ResultBox>
@@ -654,7 +765,7 @@ const MyPage = (): JSX.Element => {
                   {idTime2.substring(0, 10)}
                   {/* 시간까지만 보이게 자르기 */}
                 </ResultDay>
-                <Link to="/interview-result">
+                {checkQna2.length === 0 ? (
                   <ResultLink
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 1.1 }}
@@ -664,11 +775,26 @@ const MyPage = (): JSX.Element => {
                       damping: 20,
                     }}
                     style={{ justifyContent: "center" }}
-                    onClick={sendformId2}
+                    onClick={showToastMake}
                   >
                     면접 평가 보러가기
                   </ResultLink>
-                </Link>
+                ) : (
+                  <Link to="/interview-result" onClick={sendformId2}>
+                    <ResultLink
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 1.1 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 20,
+                      }}
+                      style={{ justifyContent: "center" }}
+                    >
+                      면접 평가 보러가기
+                    </ResultLink>
+                  </Link>
+                )}
               </ResultBox>
 
               <ResultBox>
@@ -683,7 +809,7 @@ const MyPage = (): JSX.Element => {
                   {idTime3.substring(0, 10)}
                   {/* 시간까지만 보이게 자르기 */}
                 </ResultDay>
-                <Link to="/interview-result">
+                {checkQna3.length === 0 ? (
                   <ResultLink
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 1.1 }}
@@ -693,11 +819,26 @@ const MyPage = (): JSX.Element => {
                       damping: 20,
                     }}
                     style={{ justifyContent: "center" }}
-                    onClick={sendformId3}
+                    onClick={showToastMake}
                   >
                     면접 평가 보러가기
                   </ResultLink>
-                </Link>
+                ) : (
+                  <Link to="/interview-result" onClick={sendformId3}>
+                    <ResultLink
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 1.1 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 20,
+                      }}
+                      style={{ justifyContent: "center" }}
+                    >
+                      면접 평가 보러가기
+                    </ResultLink>
+                  </Link>
+                )}
               </ResultBox>
 
               <ResultBox>
@@ -712,7 +853,7 @@ const MyPage = (): JSX.Element => {
                   {idTime4.substring(0, 10)}
                   {/* 시간까지만 보이게 자르기 */}
                 </ResultDay>
-                <Link to="/interview-result">
+                {checkQna4.length === 0 ? (
                   <ResultLink
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 1.1 }}
@@ -722,11 +863,26 @@ const MyPage = (): JSX.Element => {
                       damping: 20,
                     }}
                     style={{ justifyContent: "center" }}
-                    onClick={sendformId4}
+                    onClick={showToastMake}
                   >
                     면접 평가 보러가기
                   </ResultLink>
-                </Link>
+                ) : (
+                  <Link to="/interview-result" onClick={sendformId4}>
+                    <ResultLink
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 1.1 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 20,
+                      }}
+                      style={{ justifyContent: "center" }}
+                    >
+                      면접 평가 보러가기
+                    </ResultLink>
+                  </Link>
+                )}
               </ResultBox>
             </Results>
           </Lower>

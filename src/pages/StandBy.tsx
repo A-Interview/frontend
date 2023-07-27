@@ -33,6 +33,8 @@ const StandByInfo = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
+}
 `;
 
 const StandByBlurry = styled(motion.svg)`
@@ -46,7 +48,6 @@ const StandByBlurry = styled(motion.svg)`
   height: 40rem;
   //transform: rotate(0deg);
   display: flex;
-  position: absolute;
 `;
 
 const StandByArchImg = styled(motion.img)`
@@ -75,7 +76,8 @@ const StandByText = styled.p`
   left: 21%;
   right: 10%;
   bottom: 2rem;
-  @media only screen and (max-width: 1300px) {
+
+  @media screen and (max-width: 1500px) {
     font-size: 2rem;
   }
 `;
@@ -99,7 +101,7 @@ const StandByButton = styled(motion.button)`
   margin-left: auto;
   margin-right: auto;
   background: transparent;
-  cursor: progress;
+  cursor: pointer;
 `;
 
 const StandBy = (): JSX.Element => {

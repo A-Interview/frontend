@@ -105,6 +105,7 @@ const AnswerBar = styled(motion.div)`
 `;
 
 const AnswerLists = styled(motion.div)`
+  position: relative;
   overflow: auto;
   height: 100%;
   padding-top: 1rem;
@@ -154,6 +155,15 @@ const ChangeLi = styled.li`
   font-size: 1rem;
 `;
 
+const Loading = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-b);
+  color: white;
+`;
+
 const InterviewResultPage = (): JSX.Element => {
   const navigate = useNavigate();
 
@@ -192,9 +202,9 @@ const InterviewResultPage = (): JSX.Element => {
   // QNA를 받아오기
   const getQna = (): void => {
     const formId = sessionStorage.getItem("form_id");
-    if (formId != null) {
+    if (formId != null && process.env.REACT_APP_API_URL_QNA !== undefined) {
       axios
-        .get(`/api/qna/`, {
+        .get(process.env.REACT_APP_API_URL_QNA, {
           params: { form_id: formId },
         })
         .then((res) => {
@@ -347,7 +357,7 @@ const InterviewResultPage = (): JSX.Element => {
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 {viewData.length === 0 ? (
-                  <div>Loading...</div>
+                  <Loading>Loading...</Loading>
                 ) : (
                   viewData?.map((chunk: any, index) => (
                     <AnswerList
