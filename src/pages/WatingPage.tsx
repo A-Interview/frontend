@@ -143,7 +143,9 @@ const QuestionCreate = styled(motion.button)`
   line-height: 134.766%;
   position: fixed;
   bottom: 2.5rem;
-  right: 43%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
   cursor: pointer;
   box-shadow: 0px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;

@@ -104,6 +104,7 @@ const AnswerBar = styled.div`
 `;
 
 const AnswerLists = styled.div`
+  position: relative;
   overflow: auto;
   height: 100%;
   padding-top: 1rem;
@@ -151,6 +152,15 @@ const ChangeLi = styled.li`
     color: #68a9ff;
   }
   font-size: 1rem;
+`;
+
+const Loading = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-b);
+  color: white;
 `;
 
 const InterviewResultPage = (): JSX.Element => {
@@ -316,7 +326,7 @@ const InterviewResultPage = (): JSX.Element => {
               {/* 질문, 답변 리스트 */}
               <AnswerLists>
                 {viewData.length === 0 ? (
-                  <div>Loading...</div>
+                  <Loading>Loading...</Loading>
                 ) : (
                   viewData?.map((chunk: any, index) => (
                     <AnswerList
