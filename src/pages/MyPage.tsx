@@ -7,7 +7,11 @@ import MyPageImage3 from "../assets/img/MyPageImage3.png";
 import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { formId, maxId } from "../state/Atom";
+import {
+  formId,
+  maxId,
+  SaveCurrentFormIdToSessionStorage,
+} from "../state/Atom";
 import Modal from "../components/Modal";
 import ModalResult from "../components/ModalResult";
 import axios from "axios";
@@ -435,6 +439,14 @@ const MyPage = (): JSX.Element => {
       console.log("오류 발생:", error);
     }
   };
+  const sendformId = (): void => {
+    const formIdString: string | null = sessionStorage.getItem("form_id");
+    if (formIdString !== null) {
+      const formId: number = parseInt(formIdString, 10);
+      SaveCurrentFormIdToSessionStorage(formId);
+    }
+  };
+
   return (
     <>
       <MyPageContainer>
@@ -629,6 +641,7 @@ const MyPage = (): JSX.Element => {
                       damping: 20,
                     }}
                     style={{ justifyContent: "center" }}
+                    onClick={sendformId}
                   >
                     면접 평가 보러가기
                   </ResultLink>
