@@ -399,52 +399,60 @@ const MyPage = (): JSX.Element => {
   // Form이 비었을 경우 면접 결과 페이지로 넘어가는 것을 차단
 
   const getQna1 = (): void => {
-    axios
-      .get(`/api/qna/`, {
-        params: { form_id: formidTime1 },
-      })
-      .then((res) => {
-        setcheckQna1(res.data.QnA);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (process.env.REACT_APP_API_URL_QNA !== undefined) {
+      axios
+        .get(process.env.REACT_APP_API_URL_QNA, {
+          params: { form_id: formidTime1 },
+        })
+        .then((res) => {
+          setcheckQna1(res.data.QnA);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
   const getQna2 = (): void => {
-    axios
-      .get(`/api/qna/`, {
-        params: { form_id: formidTime2 },
-      })
-      .then((res) => {
-        setcheckQna2(res.data.QnA);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (process.env.REACT_APP_API_URL_QNA !== undefined) {
+      axios
+        .get(process.env.REACT_APP_API_URL_QNA, {
+          params: { form_id: formidTime2 },
+        })
+        .then((res) => {
+          setcheckQna2(res.data.QnA);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
   const getQna3 = (): void => {
-    axios
-      .get(`/api/qna/`, {
-        params: { form_id: formidTime3 },
-      })
-      .then((res) => {
-        setcheckQna3(res.data.QnA);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (process.env.REACT_APP_API_URL_QNA !== undefined) {
+      axios
+        .get(process.env.REACT_APP_API_URL_QNA, {
+          params: { form_id: formidTime3 },
+        })
+        .then((res) => {
+          setcheckQna3(res.data.QnA);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
   const getQna4 = (): void => {
-    axios
-      .get(`/api/qna/`, {
-        params: { form_id: formidTime4 },
-      })
-      .then((res) => {
-        setcheckQna4(res.data.QnA);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (process.env.REACT_APP_API_URL_QNA !== undefined) {
+      axios
+        .get(process.env.REACT_APP_API_URL_QNA, {
+          params: { form_id: formidTime4 },
+        })
+        .then((res) => {
+          setcheckQna4(res.data.QnA);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
   // 자기소개서 수정 PUT 요청 부분
   const changeForm = async (): Promise<void> => {
