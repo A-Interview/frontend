@@ -57,7 +57,7 @@ const ApplyContainer = styled.div`
   min-width: 50%;
 `;
 
-const ApplyTitle = styled.div`
+const ApplyTitle = styled(motion.div)`
   color: #fff;
   text-align: center;
   font-family: var(--font-b);
@@ -67,13 +67,13 @@ const ApplyTitle = styled.div`
   line-height: 134.766%; /* 2.948rem */
 `;
 
-const ApplyForms = styled.div`
+const ApplyForms = styled(motion.div)`
   display: flex;
   gap: 2rem;
   justify-content: center;
 `;
 
-const SelectQuestionNumber = styled.div`
+const SelectQuestionNumber = styled(motion.div)`
   border-radius: 0rem 3.125rem;
   background: rgba(215, 215, 215, 0.3);
   width: 100%;
@@ -224,7 +224,13 @@ const ApplyFormPickerPage = (): JSX.Element => {
   const moveToWatingRoom = (e: any): void => {
     navigate("/wating-room");
   };
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 2000);
+  }, []);
   return (
     <>
       <ApplyFormPickerWrapper>
@@ -248,8 +254,18 @@ const ApplyFormPickerPage = (): JSX.Element => {
           </svg>
         </BackWard>
         <ApplyContainer>
-          <ApplyTitle>작성하신 지원서를 선택하세요</ApplyTitle>
-          <ApplyForms>
+          <ApplyTitle
+            initial={{ opacity: 0, y: 100 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+          >
+            작성하신 지원서를 선택하세요
+          </ApplyTitle>
+          <ApplyForms
+            initial={{ opacity: 0, y: 50 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
             {formDatas.map((data: FormType, index) => (
               <ApplyForm
                 key={index}
@@ -297,7 +313,11 @@ const ApplyFormPickerPage = (): JSX.Element => {
             </ApplyFormWrapper>
           </ApplyForms>
 
-          <SelectQuestionNumber>
+          <SelectQuestionNumber
+            initial={{ opacity: 0, y: 50 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.45 }}
+          >
             <SelectQuestionTitle>
               <div style={{ fontSize: "1.5rem" }}>진행할 면접 개수 선택</div>
               <TitleCustomBar />

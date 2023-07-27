@@ -156,9 +156,14 @@ const MainPage = (): JSX.Element => {
             }}
           >
             <StartButton
+              initial={{ opacity: 0, y: 50 }}
+              animate={isLoaded ? { opacity: 1, y: 0 } : {}}
               whileHover={{ scale: 1.3 }}
               whileTap={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 20 }}
+              transition={{
+                opacity: { duration: 0.3, delay: 0.3 }, // opacity에는 0.3초의 트랜지션과 0.3초의 딜레이 적용
+                y: { duration: 2 }, // y에는 2초의 트랜지션 적용
+              }}
             >
               면접 시작
             </StartButton>

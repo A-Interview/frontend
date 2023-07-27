@@ -22,7 +22,7 @@ const WatingPageImage1 = styled.img`
   width: 80vw;
   height: 80vh;
 `;
-const OptionalContainer = styled.div`
+const OptionalContainer = styled(motion.div)`
   width: 27rem;
   height: 33.6rem;
   border-radius: 2.75rem;
@@ -37,7 +37,7 @@ const OptionalContainer = styled.div`
   gap: 2rem;
   padding-top: 3rem;
 `;
-const RightContainer = styled.div`
+const RightContainer = styled(motion.div)`
   width: 27rem;
   height: 33.6rem;
   border-radius: 2.9375rem;
@@ -101,7 +101,7 @@ const Text = styled.p`
   cursor: pointer;
 `;
 
-const InfoFirst = styled.p`
+const InfoFirst = styled(motion.p)`
   white-space: pre-wrap;
   color: #fff;
   text-align: center;
@@ -111,7 +111,7 @@ const InfoFirst = styled.p`
   font-weight: 800;
   line-height: 127.075%;
 `;
-const InfoSecond = styled.p`
+const InfoSecond = styled(motion.p)`
   color: #fff;
   text-align: center;
   font-family: var(--font-r);
@@ -285,6 +285,14 @@ const WatingPage = (): JSX.Element => {
       console.log("입력 실패:", error);
     }
   };
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 2000);
+  }, []);
+
   return (
     <>
       <BackWard
@@ -309,7 +317,11 @@ const WatingPage = (): JSX.Element => {
       <Background>
         <WatingPageImage1 src={WatingPageImage} />
         <div style={{ display: "flex", gap: "6.2rem" }}>
-          <OptionalContainer>
+          <OptionalContainer
+            initial={{ opacity: 0, y: 100 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+          >
             <div
               style={{
                 display: "flex",
@@ -421,7 +433,11 @@ const WatingPage = (): JSX.Element => {
               position: "relative",
             }}
           >
-            <RightContainer />
+            <RightContainer
+              initial={{ opacity: 0, y: 100 }}
+              animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8 }}
+            />
             <div
               style={{
                 display: "flex",
@@ -430,19 +446,35 @@ const WatingPage = (): JSX.Element => {
                 position: "absolute",
               }}
             >
-              <InfoFirst>
+              <InfoFirst
+                initial={{ opacity: 0, y: 50 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
                 여러분의 정보를 <br /> <br />
                 입력해주세요
               </InfoFirst>
-              <InfoSecond>입력하신 내용은 AI 분석에 사용됩니다.</InfoSecond>
+              <InfoSecond
+                initial={{ opacity: 0, y: 50 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                입력하신 내용은 AI 분석에 사용됩니다.
+              </InfoSecond>
             </div>
           </div>
         </div>
         <Link to="/StandBy">
           <QuestionCreate
+            initial={{ opacity: 0, y: 50 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 1.1 }}
-            transition={{ type: "spring", stiffness: 500, damping: 20 }}
+            transition={
+              isLoaded
+                ? { opacity: 1, y: 0, delay: 0.3 }
+                : { type: "spring", stiffness: 500, damping: 20 }
+            }
             onClick={() => {
               handleSave().catch((error) => {
                 console.log("저장 실패:", error);
