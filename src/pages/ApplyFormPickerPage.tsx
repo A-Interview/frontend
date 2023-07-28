@@ -208,11 +208,14 @@ const ApplyFormPickerPage = (): JSX.Element => {
     const userId = sessionStorage.getItem("user_id");
     try {
       if (accessToken != null && userId != null) {
-        const response = await axios.get(`/api/forms/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `http://localhost/api/forms/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setFormDatas(response.data);
       }
     } catch (error) {
