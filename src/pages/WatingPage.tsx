@@ -218,7 +218,7 @@ const WatingPage = (): JSX.Element => {
 
       if (accessToken !== null && userId !== null) {
         const response = await axios.post(
-          `localhost/api/forms/${userId}/`,
+          `http://localhost/api/forms/${userId}/`,
           {
             sector_name: sectorName,
             job_name: jobName,
@@ -249,7 +249,7 @@ const WatingPage = (): JSX.Element => {
     const userId: string | null = sessionStorage.getItem("user_id");
     if (accessToken != null && userId != null) {
       axios
-        .get(`localhost/api/forms/${userId}/`, {
+        .get(`http://localhost/api/forms/${userId}/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
