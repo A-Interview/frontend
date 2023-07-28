@@ -131,7 +131,7 @@ const SignupPage = (): JSX.Element => {
 
   const handleSignUp = async (): Promise<void> => {
     try {
-      await axios.post(process.env.REACT_APP_API_URL_REG, {
+      await axios.post("localhost/api/users/register/", {
         username,
         email,
         password,

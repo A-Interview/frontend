@@ -206,9 +206,9 @@ const InterviewResultPage = (): JSX.Element => {
   // QNA를 받아오기
   const getQna = (): void => {
     const formId = sessionStorage.getItem("form_id");
-    if (formId != null && process.env.REACT_APP_API_URL_QNA !== undefined) {
+    if (formId != null) {
       axios
-        .get(process.env.REACT_APP_API_URL_QNA, {
+        .get("localhost/api/qna/", {
           params: { form_id: formId },
         })
         .then((res) => {

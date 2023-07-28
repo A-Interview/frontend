@@ -208,7 +208,7 @@ const ApplyFormPickerPage = (): JSX.Element => {
     const userId = sessionStorage.getItem("user_id");
     try {
       if (accessToken != null && userId != null) {
-        const response = await axios.get(`/api/forms/${userId}`, {
+        const response = await axios.get(`localhost/api/forms/${userId}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

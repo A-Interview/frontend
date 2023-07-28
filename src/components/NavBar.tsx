@@ -120,7 +120,7 @@ const NavBar = (): JSX.Element => {
   };
 
   const logoutAsync = async (): Promise<void> => {
-    await axios.post(process.env.REACT_APP_API_URL_OUT, {
+    await axios.post("localhost/api/users/logout/", {
       refresh: sessionStorage.getItem("refresh_token"),
     });
 
