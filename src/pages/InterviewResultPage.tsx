@@ -208,7 +208,7 @@ const InterviewResultPage = (): JSX.Element => {
     const formId = sessionStorage.getItem("form_id");
     if (formId != null) {
       axios
-        .get("localhost/api/qna/", {
+        .get("http://localhost/api/qna/", {
           params: { form_id: formId },
         })
         .then((res) => {
