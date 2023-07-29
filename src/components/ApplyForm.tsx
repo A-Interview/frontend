@@ -54,7 +54,7 @@ const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
   // Form을 선택할 때, 새로운 Form 생성 유도하는 함수.
   const selectForm = (id: number): void => {
     axios
-      .get(`api/forms/user/${id}`)
+      .get(`/api/forms/user/${id}`)
       .then((res) => {
         const copyData = res.data[0];
         copyDataToForm(copyData);
@@ -73,7 +73,7 @@ const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
     if (accessToken != null && userId != null) {
       axios
         .post(
-          "http://localhost/api/forms/" + userId + "/",
+          "/api/forms/" + userId + "/",
           {
             sector_name: copyData.sector_name,
             job_name: copyData.job_name,
