@@ -34,7 +34,6 @@ const StandByInfo = styled.div`
   flex-direction: column;
   position: relative;
   overflow: hidden;
-}
 `;
 
 const StandByBlurry = styled(motion.svg)`

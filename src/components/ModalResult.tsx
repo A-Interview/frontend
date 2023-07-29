@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import ResumeImage from "../assets/img/ResumeImage.png";
 
 const ModalView = styled(motion.div).attrs((props) => ({
   role: "dialog",
@@ -8,11 +9,6 @@ const ModalView = styled(motion.div).attrs((props) => ({
   display: flex;
   align-items: center;
   flex-direction: column;
-  border-radius: 10px;
-  width: 70rem;
-  height: 41rem;
-  background-color: #fbfbfb;
-  box-shadow: 4px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
 const ModalContainer = styled.div`
   display: flex;
@@ -30,39 +26,57 @@ const ModalBackdrop = styled.div`
   height: 100vh;
   width: 100vw;
 `;
-
 const Button = styled(motion.button)`
-  width: 6rem;
-  height: 3rem;
+  width: 4rem;
+  height: 2.5rem;
   flex-shrink: 0;
-  border: #7c7c7c;
+  border: #717fff;
   border-radius: 0.5rem;
-  background-color: #7c7c7c;
+  background-color: #717fff;
   color: white;
   font-family: var(--font-r);
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
-  margin: 0.75em 0.3rem 0 0;
+  margin-left: 0.55rem;
   cursor: pointer;
 `;
-const Button2 = styled(motion.button)`
-  width: 6rem;
-  height: 3rem;
-  flex-shrink: 0;
-  border: #2185d0;
-  border-radius: 0.5rem;
-  background-color: #2185d0;
+const ResumeImage1 = styled(motion.img)`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 80vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+`;
+const Textarea = styled.textarea`
+  width: 720px;
+  height: 357px;
+  border: none;
+  background-color: rgb(77 77 77 / 0.08%);
+  font-size: 20px;
+  resize: vertical;
+  padding: 10px 20px 10px 10px;
+  outline: none;
   color: white;
-  font-family: var(--font-r);
-  font-size: 1.1rem;
-  font-style: normal;
-  font-weight: 800;
-  line-height: 134.766%;
-  margin-top: 0.75em;
-  cursor: pointer;
+
+  /* 스크롤바 스타일 추가 */
+  scrollbar-width: thin;
+  scrollbar-color: #dedede #303150;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: #dedede;
+  }
 `;
+
 interface Type {
   isModalResultOpen: boolean;
   setModalResultOpen: () => void;
@@ -86,6 +100,7 @@ const ModalResult = ({
               closeModal();
             }}
           >
+            <ResumeImage1 src={ResumeImage}></ResumeImage1>
             <ModalView
               onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                 e.stopPropagation();
@@ -100,36 +115,24 @@ const ModalResult = ({
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
+                  zIndex: "1000",
                 }}
               >
                 <div
                   style={{
-                    fontSize: "1.7rem",
-                    fontWeight: "600",
-                    margin: "1.5rem 0 1.3rem 1.3rem",
+                    fontSize: "1.6rem",
+                    fontWeight: "500",
+                    margin: "1rem 0rem 0.5rem",
+                    color: "white",
                   }}
                 >
                   자기소개를 입력하세요
                 </div>
-                <textarea
-                  value={resume}
-                  rows={25}
-                  cols={130}
-                  style={{
-                    width: "1119px",
-                    height: "488px",
-                    border: "1px solid #c7c7c7",
-                    backgroundColor: "#fff",
-                    fontSize: "20px",
-                    resize: "vertical",
-                    padding: "20px",
-                    outline: "none",
-                  }}
-                />
+                <Textarea value={resume} rows={25} cols={130} />
                 <div
                   style={{
                     textAlign: "right",
-                    paddingRight: "1.5rem",
+                    marginTop: "0.9rem",
                   }}
                 >
                   <Button
@@ -141,16 +144,8 @@ const ModalResult = ({
                     whileTap={{ scale: 1.1 }}
                     transition={{ type: "spring", stiffness: 200, damping: 10 }}
                   >
-                    취소
+                    확인
                   </Button>
-                  <Button2
-                    type="submit"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                  >
-                    제출하기
-                  </Button2>
                 </div>
               </form>
             </ModalView>
