@@ -19,6 +19,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LoadingPage from "../components/Loading";
 import { motion } from "framer-motion";
+
 const ApplyFormPickerWrapper = styled.div`
   width: 100vw;
   height: 100vh;
