@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, type ChangeEvent } from "react";
 import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import MyPageImage1 from "../assets/img/MyPageImage1.png";
@@ -86,14 +86,19 @@ const SelfIntroduction = styled.div`
   flex-direction: column;
   gap: 2rem;
 `;
-const Pic = styled.div`
+const Pic = styled.img`
+  border-radius: 1.9375rem;
+  width: 18.8125rem;
+  height: 18.875rem;
+  z-index: 1;
+`;
+const Pic2 = styled.div`
   border-radius: 1.9375rem;
   background: url(${MyPageImage1});
   width: 18.8125rem;
   height: 18.875rem;
   z-index: 1;
 `;
-
 const InfoLeft = styled.div`
   color: #fff;
   text-align: left;
@@ -243,6 +248,7 @@ const MyPage = (): JSX.Element => {
   const [checkQna2, setcheckQna2] = useState("");
   const [checkQna3, setcheckQna3] = useState("");
   const [checkQna4, setcheckQna4] = useState("");
+  const [mainImg, setMainImg] = useState<string>("");
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
@@ -400,7 +406,7 @@ const MyPage = (): JSX.Element => {
 
   const getQna1 = (): void => {
     axios
-      .get("http://localhost/api/qna/", {
+      .get("api/qna/", {
         params: { form_id: formidTime1 },
       })
       .then((res) => {
@@ -412,7 +418,7 @@ const MyPage = (): JSX.Element => {
   };
   const getQna2 = (): void => {
     axios
-      .get("http://localhost/api/qna/", {
+      .get("api/qna/", {
         params: { form_id: formidTime2 },
       })
       .then((res) => {
@@ -424,7 +430,7 @@ const MyPage = (): JSX.Element => {
   };
   const getQna3 = (): void => {
     axios
-      .get("http://localhost/api/qna/", {
+      .get("api/qna/", {
         params: { form_id: formidTime3 },
       })
       .then((res) => {
@@ -436,7 +442,7 @@ const MyPage = (): JSX.Element => {
   };
   const getQna4 = (): void => {
     axios
-      .get("http://localhost/api/qna/", {
+      .get("api/qna/", {
         params: { form_id: formidTime4 },
       })
       .then((res) => {
@@ -449,13 +455,10 @@ const MyPage = (): JSX.Element => {
   // 자기소개서 수정 PUT 요청 부분
   const changeForm = async (): Promise<void> => {
     try {
-      const response = await axios.put(
-        `http://localhost/api/forms/user/${userId}`,
-        {
-          userId,
-          resume,
-        }
-      );
+      const response = await axios.put(`api/forms/user/${userId}`, {
+        userId,
+        resume,
+      });
       console.log(response.data);
     } catch (error) {
       console.error("오류 발생:", error);
@@ -474,14 +477,11 @@ const MyPage = (): JSX.Element => {
       const accessToken: string | null = sessionStorage.getItem("access_token");
       const userId: string | null = sessionStorage.getItem("user_id");
       if (userId !== null) {
-        const response = await axios.get(
-          `http://localhost/api/forms/${userId}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken ?? ""}`,
-            },
-          }
-        );
+        const response = await axios.get(`api/forms/${userId}/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken ?? ""}`,
+          },
+        });
         setformAll(response.data);
       }
     } catch (error) {
@@ -498,9 +498,7 @@ const MyPage = (): JSX.Element => {
   // formId로 get
   const handleForm = async (): Promise<void> => {
     try {
-      const response = await axios.get(
-        `http://localhost/api/forms/user/${userId}`
-      );
+      const response = await axios.get(`api/forms/user/${userId}`);
       setformState(response.data);
     } catch (error) {
       console.error("오류 발생:", error);
@@ -552,7 +550,56 @@ const MyPage = (): JSX.Element => {
         console.error("토스트 에러발생:", error);
       });
   };
+  /*
+  const picSelect = async (): Promise<void> => {
+    const formData = new FormData();
 
+    if (selectedFile == null) {
+      console.log("파일을 선택해주세요.");
+      return;
+    }
+    formData.append("uploads", selectedFile);
+    try {
+      const userId: string | null = sessionStorage.getItem("user_id");
+
+      const response = await axios.post("/api/users/profile/", {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        formData,
+        userId,
+      });
+
+      console.log("업로드 성공!");
+    } catch (error) {
+      console.log("업로드 실패:", error);
+    }
+  };
+  const handlePic = async (): Promise<void> => {
+    try {
+      await picSelect();
+    } catch (error) {
+      console.log("업로드 실패:", error);
+    }
+  }; */
+
+  // 파일 선택 시 호출되는 함수
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const file = event.target.files?.[0]; // 선택한 파일 가져오기
+
+    if (file != null) {
+      const reader = new FileReader(); // FileReader 객체를 사용하여 파일 읽기
+
+      // 파일 읽기 완료 시 처리
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          setMainImg(reader.result); // 미리보기에 이미지 URL 설정
+        }
+      };
+
+      reader.readAsDataURL(file); // 파일을 data URL로 읽기
+    }
+  };
   return (
     <>
       <MyPageContainer>
@@ -579,8 +626,23 @@ const MyPage = (): JSX.Element => {
         <NavBar />
 
         <ContentContainer>
+          <input
+            alt="프로필 사진 변경"
+            type="file"
+            id="image"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
           <Upper>
-            <Pic />
+            {mainImg === "" ? (
+              <Pic2></Pic2>
+            ) : (
+              <Pic
+                src={mainImg}
+                style={{ maxWidth: "18.875rem", maxHeight: "18.875rem" }}
+              ></Pic>
+            )}
+
             <Info>
               <InfoLeft>
                 <div>희망하는 직종</div>

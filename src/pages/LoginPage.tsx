@@ -134,7 +134,7 @@ const LoginPage = (): JSX.Element => {
   const [fadeOut, setFadeOut] = useState(false);
   const handleLogin = async (): Promise<void> => {
     try {
-      const response = await axios.post("http://localhost/api/users/login/", {
+      const response = await axios.post("api/users/login/", {
         username,
         email,
         password,
