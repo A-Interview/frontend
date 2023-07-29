@@ -141,8 +141,8 @@ const ChangeUl = styled.ul<{ isOpen: boolean }>`
   border: 1px solid #c4c4c4;
   box-sizing: border-box;
   box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.2);
+  border-radius: 27px;
+  background: rgba(0, 0, 0, 0.8);
   list-style: none;
   padding: initial;
   z-index: 1;
@@ -184,6 +184,9 @@ const InterviewResultPage = (): JSX.Element => {
   // 각 면접 종류 별 보기 버튼
   const [isOpen, setIsOpen] = useState(false);
 
+  // 전체보기가 다른 버튼을 누르면 그 버튼으로 바뀌게 만듦
+  const [onClicknow, setonClicknow] = useState("전체보기");
+
   const onChangeView = (): void => {
     // 이전 인자를 받아와서 역전
     setIsOpen((prev) => !prev);
@@ -203,9 +206,9 @@ const InterviewResultPage = (): JSX.Element => {
   // QNA를 받아오기
   const getQna = (): void => {
     const formId = sessionStorage.getItem("form_id");
-    if (formId != null && process.env.REACT_APP_API_URL_QNA !== undefined) {
+    if (formId != null) {
       axios
-        .get(process.env.REACT_APP_API_URL_QNA, {
+        .get("http://localhost/api/qna/", {
           params: { form_id: formId },
         })
         .then((res) => {
@@ -239,12 +242,19 @@ const InterviewResultPage = (): JSX.Element => {
     }
   };
 
+  useEffect(() => {
+    console.log(onClicknow);
+    setonClicknow(onClicknow);
+  }, [onClicknow]);
   const onClickAll = (): void => {
     setViewData(data);
+    setonClicknow("전체보기");
   };
 
   const onClickDefault = (): void => {
     setViewData(data.slice(0, questionData.defaultQueNum));
+
+    setonClicknow("기본면접");
   };
   const onClickSituation = (): void => {
     setViewData(
@@ -253,6 +263,8 @@ const InterviewResultPage = (): JSX.Element => {
         questionData.defaultQueNum + questionData.situationQueNum
       )
     );
+
+    setonClicknow("상황면접");
   };
 
   const onClickDeep = (): void => {
@@ -264,6 +276,7 @@ const InterviewResultPage = (): JSX.Element => {
           questionData.deepQueNum
       )
     );
+    setonClicknow("심층면접");
   };
   const onClickPersonality = (): void => {
     setViewData(
@@ -274,6 +287,7 @@ const InterviewResultPage = (): JSX.Element => {
         questionData.totalQueNum
       )
     );
+    setonClicknow("성향면접");
   };
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -310,7 +324,7 @@ const InterviewResultPage = (): JSX.Element => {
                   whileTap={{ scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 20 }}
                 >
-                  전체 보기
+                  {onClicknow}
                 </ChangeButton>
                 <ChangeUl isOpen={isOpen}>
                   <ChangeLi onClick={onClickAll}>전체보기</ChangeLi>

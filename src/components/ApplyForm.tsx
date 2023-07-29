@@ -73,7 +73,7 @@ const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
     if (accessToken != null && userId != null) {
       axios
         .post(
-          process.env.REACT_APP_API_URL_FORM + userId + "/",
+          "http://localhost/api/forms/" + userId + "/",
           {
             sector_name: copyData.sector_name,
             job_name: copyData.job_name,
