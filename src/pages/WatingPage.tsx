@@ -249,7 +249,7 @@ const WatingPage = (): JSX.Element => {
     const userId: string | null = sessionStorage.getItem("user_id");
     if (accessToken != null && userId != null) {
       axios
-        .get(`http://localhost/api/forms/${userId}/`, {
+        .get(`/api/forms/${userId}/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
