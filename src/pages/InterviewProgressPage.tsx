@@ -214,6 +214,8 @@ const CameraButton = styled.button`
   top: 1.9rem;
 `;
 
+const HOST = process.env.REACT_APP_HOST;
+
 const InterviewProgressPage = (): JSX.Element => {
   // 페이지 네비게이션
   const navigate = useNavigate();
@@ -325,7 +327,7 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
-    const ws = new WebSocket("ws://localhost/ws/interview/");
+    const ws = new WebSocket(`ws://${HOST as string}/ws/interview/`);
 
     ws.onopen = () => {
       console.log("WebSocket connected");
