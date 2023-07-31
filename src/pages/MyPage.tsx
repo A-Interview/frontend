@@ -433,7 +433,7 @@ const MyPage = (): JSX.Element => {
   };
   const getQna3 = (): void => {
     axios
-      .get("api/qna/", {
+      .get("/api/qna/", {
         params: { form_id: formidTime3 },
       })
       .then((res) => {
@@ -445,7 +445,7 @@ const MyPage = (): JSX.Element => {
   };
   const getQna4 = (): void => {
     axios
-      .get("api/qna/", {
+      .get("/api/qna/", {
         params: { form_id: formidTime4 },
       })
       .then((res) => {
@@ -458,7 +458,7 @@ const MyPage = (): JSX.Element => {
   // 자기소개서 수정 PUT 요청 부분
   const changeForm = async (): Promise<void> => {
     try {
-      const response = await axios.put(`api/forms/user/${userId}`, {
+      const response = await axios.put(`/api/forms/user/${userId}`, {
         userId,
         resume,
       });
@@ -480,7 +480,7 @@ const MyPage = (): JSX.Element => {
       const accessToken: string | null = sessionStorage.getItem("access_token");
       const userId: string | null = sessionStorage.getItem("user_id");
       if (userId !== null) {
-        const response = await axios.get(`api/forms/${userId}/`, {
+        const response = await axios.get(`/api/forms/${userId}/`, {
           headers: {
             Authorization: `Bearer ${accessToken ?? ""}`,
           },
@@ -501,7 +501,7 @@ const MyPage = (): JSX.Element => {
   // formId로 get
   const handleForm = async (): Promise<void> => {
     try {
-      const response = await axios.get(`api/forms/user/${userId}`);
+      const response = await axios.get(`/api/forms/user/${userId}`);
       setformState(response.data);
     } catch (error) {
       console.error("오류 발생:", error);

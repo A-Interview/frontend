@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import React, { type ChangeEvent, type FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import { SaveCurrentFormTrueToSessionStorage } from "../state/Atom";
+import ResumeImage from "../assets/img/ResumeImage.png";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -28,44 +29,72 @@ const ModalView = styled(motion.div).attrs((props) => ({
   align-items: center;
   flex-direction: column;
   position: fixed;
-  border-radius: 10px;
-  width: 70rem;
-  height: 37rem;
-  background-color: #fbfbfb;
-  box-shadow: 4px 4px 10px 0px rgba(89, 212, 169, 0.5);
 `;
 
 const Button = styled(motion.button)`
-  width: 6rem;
-  height: 3rem;
+  width: 4rem;
+  height: 2.5rem;
   flex-shrink: 0;
-  border: #7c7c7c;
+  border: #4d4d4d;
   border-radius: 0.5rem;
-  background-color: #7c7c7c;
+  background-color: #4d4d4d;
   color: white;
   font-family: var(--font-r);
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
-  margin: 0.75em 0.3rem 0 0;
   cursor: pointer;
 `;
 const Button2 = styled(motion.button)`
-  width: 6rem;
-  height: 3rem;
+  width: 4rem;
+  height: 2.5rem;
   flex-shrink: 0;
-  border: #2185d0;
+  border: #717fff;
   border-radius: 0.5rem;
-  background-color: #2185d0;
+  background-color: #717fff;
   color: white;
   font-family: var(--font-r);
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-style: normal;
   font-weight: 800;
   line-height: 134.766%;
-  margin-top: 0.75em;
+  margin-left: 0.55rem;
   cursor: pointer;
+`;
+const ResumeImage1 = styled(motion.img)`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 80vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+`;
+const Textarea = styled.textarea`
+  width: 720px;
+  height: 357px;
+  border: none;
+  background-color: rgb(77 77 77 / 0.08%);
+  font-size: 20px;
+  resize: vertical;
+  padding: 10px 20px 10px 10px;
+  outline: none;
+  color: white;
+
+  /* 스크롤바 스타일 추가 */
+  scrollbar-width: thin;
+  scrollbar-color: #dedede #303150;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: #dedede;
+  }
 `;
 
 interface Type {
@@ -126,6 +155,7 @@ const Modal = ({
               closeModal();
             }}
           >
+            <ResumeImage1 src={ResumeImage}></ResumeImage1>
             <ModalView
               onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                 e.stopPropagation();
@@ -147,14 +177,15 @@ const Modal = ({
               >
                 <div
                   style={{
-                    fontSize: "1.7rem",
-                    fontWeight: "600",
-                    margin: "1.5rem 0 1.3rem 1.3rem",
+                    fontSize: "1.6rem",
+                    fontWeight: "500",
+                    margin: "1rem 0rem 0.5rem",
+                    color: "white",
                   }}
                 >
                   자기소개를 입력하세요
                 </div>
-                <textarea
+                <Textarea
                   value={textValue}
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                     handleTextChange(e);
@@ -162,21 +193,11 @@ const Modal = ({
                   rows={25}
                   cols={130}
                   placeholder="내용을 입력하세요."
-                  style={{
-                    width: "1119px",
-                    height: "420px",
-                    border: "1px solid #c7c7c7",
-                    backgroundColor: "#fff",
-                    fontSize: "20px",
-                    resize: "vertical",
-                    padding: "20px",
-                    outline: "none",
-                  }}
                 />
                 <div
                   style={{
                     textAlign: "right",
-                    paddingRight: "1.5rem",
+                    marginTop: "0.9rem",
                   }}
                 >
                   <Button
