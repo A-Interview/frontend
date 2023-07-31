@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type ChangeEvent } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import { styled } from "styled-components";
 import MyPageImage1 from "../assets/img/MyPageImage1.png";
@@ -18,7 +18,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
-
+// import AWS from "aws-sdk";
 const MyPageContainer = styled.div`
   background: #01001a;
   width: 100vw;
@@ -220,6 +220,7 @@ const ModalWrapper = styled.div`
   z-index: 2;
   // Modal을 위에 배치
 `;
+// const s3 = new AWS.S3();
 const MyPage = (): JSX.Element => {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -248,7 +249,9 @@ const MyPage = (): JSX.Element => {
   const [checkQna2, setcheckQna2] = useState("");
   const [checkQna3, setcheckQna3] = useState("");
   const [checkQna4, setcheckQna4] = useState("");
-  const [mainImg, setMainImg] = useState<string>("");
+  const [picture, setMainImg] = useState(null);
+  const [picture2, setMainImg2] = useState<string>("");
+  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
@@ -550,41 +553,31 @@ const MyPage = (): JSX.Element => {
         console.error("토스트 에러발생:", error);
       });
   };
-  /*
-  const picSelect = async (): Promise<void> => {
-    const formData = new FormData();
 
-    if (selectedFile == null) {
-      console.log("파일을 선택해주세요.");
-      return;
-    }
-    formData.append("uploads", selectedFile);
-    try {
-      const userId: string | null = sessionStorage.getItem("user_id");
+  const picSelect = (): void => {
+    const userId: string | null = sessionStorage.getItem("user_id");
+    if (picture !== null && userId !== null) {
+      const formData = new FormData();
+      formData.append("picture", picture);
+      formData.append("pk", userId);
 
-      const response = await axios.post("/api/users/profile/", {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        formData,
-        userId,
-      });
-
-      console.log("업로드 성공!");
-    } catch (error) {
-      console.log("업로드 실패:", error);
+      axios
+        .post("/api/users/profile/", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("이미지가 업로드되었습니다!:", response.data);
+        })
+        .catch((error) => {
+          console.error("이미지 업로드 중 에러가 발생했습니다.:", error);
+        });
     }
   };
-  const handlePic = async (): Promise<void> => {
-    try {
-      await picSelect();
-    } catch (error) {
-      console.log("업로드 실패:", error);
-    }
-  }; */
-
-  // 파일 선택 시 호출되는 함수
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
+  const handleFileChange = (event: any): void => {
+    setMainImg(event.target.files[0]);
+    console.log(picture2);
     const file = event.target.files?.[0]; // 선택한 파일 가져오기
 
     if (file != null) {
@@ -593,13 +586,48 @@ const MyPage = (): JSX.Element => {
       // 파일 읽기 완료 시 처리
       reader.onloadend = () => {
         if (typeof reader.result === "string") {
-          setMainImg(reader.result); // 미리보기에 이미지 URL 설정
+          setMainImg2(reader.result); // 미리보기에 이미지 URL 설정
         }
       };
 
       reader.readAsDataURL(file); // 파일을 data URL로 읽기
     }
   };
+
+  /*
+  const handleFileSelect = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const file = event.target.files?.[0];
+    if (file != null) {
+      setSelectedFile(file);
+      setMainImg("");
+    }
+  };
+  const uploadImageToS3 = async (): Promise<void> => {
+    if (selectedFile == null) return;
+
+    try {
+      const fileName = selectedFile.name;
+      const fileKey = `images/${fileName}`;
+
+      // 파일 업로드 설정
+      const params: AWS.S3.PutObjectRequest = {
+        Bucket: "ainterview-mybucket",
+        Key: fileKey,
+        Body: selectedFile,
+        ACL: "public-read", // 업로드된 파일에 대한 ACL 설정 (public-read는 누구나 읽을 수 있음을 의미)
+      };
+
+      // S3에 파일 업로드
+      const data = await s3.upload(params).promise();
+      console.log("파일이 성공적으로 업로드되었습니다.", data.Location);
+      // 파일 업로드 성공 후 추가적인 처리를 원한다면 여기에 작성
+    } catch (error) {
+      console.error("파일 업로드 중 오류 발생:", error);
+      // 오류 처리를 원한다면 여기에 작성
+    }
+  }; */
   return (
     <>
       <MyPageContainer>
@@ -633,12 +661,24 @@ const MyPage = (): JSX.Element => {
             accept="image/*"
             onChange={handleFileChange}
           />
+          <button onClick={picSelect}>Upload Image</button>
+          {/*           
+          <input type="file" accept="image/*" onChange={handleFileSelect} />
+          <button
+            onClick={() => {
+              uploadImageToS3().catch((error) => {
+                console.log("업로드 실패:", error);
+              });
+            }}
+          >
+            Upload
+          </button> */}
           <Upper>
-            {mainImg === "" ? (
+            {picture === null ? (
               <Pic2></Pic2>
             ) : (
               <Pic
-                src={mainImg}
+                src={picture2}
                 style={{ maxWidth: "18.875rem", maxHeight: "18.875rem" }}
               ></Pic>
             )}
