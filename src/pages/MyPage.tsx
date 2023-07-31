@@ -594,40 +594,6 @@ const MyPage = (): JSX.Element => {
     }
   };
 
-  /*
-  const handleFileSelect = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const file = event.target.files?.[0];
-    if (file != null) {
-      setSelectedFile(file);
-      setMainImg("");
-    }
-  };
-  const uploadImageToS3 = async (): Promise<void> => {
-    if (selectedFile == null) return;
-
-    try {
-      const fileName = selectedFile.name;
-      const fileKey = `images/${fileName}`;
-
-      // 파일 업로드 설정
-      const params: AWS.S3.PutObjectRequest = {
-        Bucket: "ainterview-mybucket",
-        Key: fileKey,
-        Body: selectedFile,
-        ACL: "public-read", // 업로드된 파일에 대한 ACL 설정 (public-read는 누구나 읽을 수 있음을 의미)
-      };
-
-      // S3에 파일 업로드
-      const data = await s3.upload(params).promise();
-      console.log("파일이 성공적으로 업로드되었습니다.", data.Location);
-      // 파일 업로드 성공 후 추가적인 처리를 원한다면 여기에 작성
-    } catch (error) {
-      console.error("파일 업로드 중 오류 발생:", error);
-      // 오류 처리를 원한다면 여기에 작성
-    }
-  }; */
   return (
     <>
       <MyPageContainer>
@@ -662,17 +628,6 @@ const MyPage = (): JSX.Element => {
             onChange={handleFileChange}
           />
           <button onClick={picSelect}>Upload Image</button>
-          {/*           
-          <input type="file" accept="image/*" onChange={handleFileSelect} />
-          <button
-            onClick={() => {
-              uploadImageToS3().catch((error) => {
-                console.log("업로드 실패:", error);
-              });
-            }}
-          >
-            Upload
-          </button> */}
           <Upper>
             {picture === null ? (
               <Pic2></Pic2>
