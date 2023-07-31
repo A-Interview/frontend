@@ -132,6 +132,7 @@ const LoginPage = (): JSX.Element => {
   const navigate = useNavigate();
   // fadeOut 상태 추가
   const [fadeOut, setFadeOut] = useState(false);
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
   const handleLogin = async (): Promise<void> => {
     try {
       const response = await axios.post("/api/users/login/", {
@@ -159,6 +160,13 @@ const LoginPage = (): JSX.Element => {
     }
   };
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    setButtonDisabled(true);
+
+    // 비활성화된 상태를 1초 후에 해제
+    setTimeout(() => {
+      setButtonDisabled(false);
+    }, 1000);
+
     e.preventDefault();
     try {
       await handleLogin();
@@ -308,7 +316,7 @@ const LoginPage = (): JSX.Element => {
                 />
                 <Button
                   type="submit"
-                  disabled={!allFieldsFilled}
+                  disabled={isButtonDisabled || !allFieldsFilled}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 20 }}

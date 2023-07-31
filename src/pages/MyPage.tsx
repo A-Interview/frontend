@@ -86,12 +86,6 @@ const SelfIntroduction = styled.div`
   flex-direction: column;
   gap: 2rem;
 `;
-const Pic = styled.img`
-  border-radius: 1.9375rem;
-  width: 18.8125rem;
-  height: 18.875rem;
-  z-index: 1;
-`;
 const Pic2 = styled.div`
   border-radius: 1.9375rem;
   background: url(${MyPageImage1});
@@ -249,13 +243,19 @@ const MyPage = (): JSX.Element => {
   const [checkQna2, setcheckQna2] = useState("");
   const [checkQna3, setcheckQna3] = useState("");
   const [checkQna4, setcheckQna4] = useState("");
-  const [picture, setMainImg] = useState(null);
-  const [picture2, setMainImg2] = useState<string>("");
   // const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
+
+  useEffect(() => {
+    const signupNow = sessionStorage.getItem("sign_up_state");
+
+    if (signupNow !== "true") {
+      navigate("/login");
+    }
+  }, []);
   interface FormNow {
     sector_name: string;
     job_name: string;
@@ -554,46 +554,6 @@ const MyPage = (): JSX.Element => {
       });
   };
 
-  const picSelect = (): void => {
-    const userId: string | null = sessionStorage.getItem("user_id");
-    if (picture !== null && userId !== null) {
-      const formData = new FormData();
-      formData.append("picture", picture);
-      formData.append("pk", userId);
-
-      axios
-        .post("/api/users/profile/", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log("이미지가 업로드되었습니다!:", response.data);
-        })
-        .catch((error) => {
-          console.error("이미지 업로드 중 에러가 발생했습니다.:", error);
-        });
-    }
-  };
-  const handleFileChange = (event: any): void => {
-    setMainImg(event.target.files[0]);
-    console.log(picture2);
-    const file = event.target.files?.[0]; // 선택한 파일 가져오기
-
-    if (file != null) {
-      const reader = new FileReader(); // FileReader 객체를 사용하여 파일 읽기
-
-      // 파일 읽기 완료 시 처리
-      reader.onloadend = () => {
-        if (typeof reader.result === "string") {
-          setMainImg2(reader.result); // 미리보기에 이미지 URL 설정
-        }
-      };
-
-      reader.readAsDataURL(file); // 파일을 data URL로 읽기
-    }
-  };
-
   return (
     <>
       <MyPageContainer>
@@ -620,23 +580,8 @@ const MyPage = (): JSX.Element => {
         <NavBar />
 
         <ContentContainer>
-          <input
-            alt="프로필 사진 변경"
-            type="file"
-            id="image"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          <button onClick={picSelect}>Upload Image</button>
           <Upper>
-            {picture === null ? (
-              <Pic2></Pic2>
-            ) : (
-              <Pic
-                src={picture2}
-                style={{ maxWidth: "18.875rem", maxHeight: "18.875rem" }}
-              ></Pic>
-            )}
+            <Pic2></Pic2>
 
             <Info>
               <InfoLeft>

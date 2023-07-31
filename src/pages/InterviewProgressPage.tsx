@@ -5,7 +5,6 @@ import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 import InterviewBackImage from "../assets/img/InterviewBackImage.png";
 import InterviewBox from "../assets/img/InterviewBox.svg";
-import axios from "axios";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -26,7 +25,7 @@ const BackWard = styled(motion.div)`
   left: 1.5rem;
   top: 1.5rem;
   cursor: pointer;
-  z-index: 1;
+  z-index: 9999999999999999;
 `;
 
 const ProgressBox = styled.div`
@@ -128,6 +127,11 @@ const ProgressVideo = styled.video`
   transform: scaleX(-1);
   box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
 `;
+const ProgressImg = styled.img`
+  box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
+  width: 65rem;
+  height: 46rem;
+`;
 
 const ProgressQuestionText = styled.div`
   display: flex;
@@ -175,17 +179,7 @@ const InterviewProgressPage = (): JSX.Element => {
   const [cameraToggle, setCameraToggle] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [userProfile, setuserProfile] = useState("");
 
-  // 프로필 이미지 불러오기
-  useEffect(() => {
-    handlegetImage().catch((error) => {
-      console.log("저장 실패:", error);
-    });
-  }, []);
-  useEffect(() => {
-    console.log(userProfile);
-  }, [userProfile]);
   // 비디오 키는 함수
   const startVideo = (): void => {
     navigator.mediaDevices
@@ -596,26 +590,6 @@ const InterviewProgressPage = (): JSX.Element => {
     setAudioChunks((prevChunks) => [...prevChunks, event.data]);
   };
 
-  const getFormImage = async (): Promise<void> => {
-    try {
-      const userId: string | null = sessionStorage.getItem("user_id");
-      if (userId !== null) {
-        const response = await axios.get("/api/users/profile/", {
-          params: { pk: userId },
-        });
-        setuserProfile(response.data);
-      }
-    } catch (error) {
-      console.error("오류 발생:", error);
-    }
-  };
-  const handlegetImage = async (): Promise<void> => {
-    try {
-      await getFormImage();
-    } catch (error) {
-      console.log("오류 발생:", error);
-    }
-  };
   return (
     <>
       <ProgressBackground>
@@ -640,19 +614,23 @@ const InterviewProgressPage = (): JSX.Element => {
         </BackWard>
         <ProgressBox>
           <InterviewBoxImage>
-            <ProgressVideo
-              autoPlay
-              ref={videoRef}
-              style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                flexShrink: "0",
-                borderRadius: "2rem",
-                zIndex: "-1",
-              }}
-            />
+            {cameraToggle ? (
+              <ProgressVideo
+                autoPlay
+                ref={videoRef}
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  flexShrink: "0",
+                  borderRadius: "2rem",
+                  zIndex: "-1",
+                }}
+              />
+            ) : (
+              <ProgressImg src={""} />
+            )}
             <div
               style={{
                 display: "flex",

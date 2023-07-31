@@ -129,6 +129,7 @@ const SignupPage = (): JSX.Element => {
   // fadeOut 상태 추가
   const [fadeOut, setFadeOut] = useState(false);
 
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
   const handleSignUp = async (): Promise<void> => {
     try {
       await axios.post("/api/users/register/", {
@@ -149,6 +150,13 @@ const SignupPage = (): JSX.Element => {
     }
   };
   const onSubmit = (): void => {
+    setButtonDisabled(true);
+
+    // 비활성화된 상태를 1초 후에 해제
+    setTimeout(() => {
+      setButtonDisabled(false);
+    }, 1000);
+
     try {
       handleSignUp()
         .then(() => {
@@ -314,7 +322,7 @@ const SignupPage = (): JSX.Element => {
                   placeholder="비밀번호를 한번 더 입력해주세요."
                 />
                 <Button
-                  disabled={!allFieldsFilled}
+                  disabled={isButtonDisabled || !allFieldsFilled}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 1.1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 20 }}
