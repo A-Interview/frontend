@@ -218,7 +218,7 @@ const WatingPage = (): JSX.Element => {
 
       if (accessToken !== null && userId !== null) {
         const response = await axios.post(
-          `http://localhost/api/forms/${userId}/`,
+          `/api/forms/${userId}/`,
           {
             sector_name: sectorName,
             job_name: jobName,
