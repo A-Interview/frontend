@@ -233,8 +233,10 @@ const InterviewProgressPage = (): JSX.Element => {
   // 소켓 변수 정의
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<string>(
-    "면접을 시작하시려면 우측의 버튼을 클릭해주세요.\n" +
-      "왼쪽 상단에 있는 버튼을 누르고 카메라가 켜진 상태로 면접을 시작하세요.\n" +
+    "면접을 시작하시려면 우측의 버튼을 클릭해주세요."
+  );
+  const [info, setInfo] = useState<string>(
+    "왼쪽 상단에 있는 버튼을 누르고 카메라가 켜진 상태로 면접을 시작하세요.\n" +
       "질문을 읽고 10초 뒤에 답변을 한 뒤 우측의 버튼을 누르세요. "
   );
 
@@ -412,6 +414,7 @@ const InterviewProgressPage = (): JSX.Element => {
       setFirstConnected(false);
       setCurrentQNum((prev) => prev - 1);
       setMessage("");
+      setInfo("");
     }
   };
 
@@ -508,7 +511,7 @@ const InterviewProgressPage = (): JSX.Element => {
   /* ------------------------------------------------------------------------- */
   // 음성 녹음과 관련
   const [recording, setRecording] = useState(false);
-  const [showRecording, setShowRecording] = useState(false);
+  const [recordColor, setRecordColor] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -567,8 +570,8 @@ const InterviewProgressPage = (): JSX.Element => {
   };
   useEffect(() => {
     // 카운트가 진행 중이면 무조건 파란색으로 변경
-    if (count > 0) {
-      setRecording(false); // 녹음 상태를 해제하여 Recording 컴포넌트에서 빨간색을 표시하지 않도록 함
+    if (count > 0 && count <= 10) {
+      setRecordColor(false); // 녹음 상태를 해제하여 Recording 컴포넌트에서 빨간색을 표시하지 않도록 함
     }
   }, [count]);
 
@@ -583,7 +586,7 @@ const InterviewProgressPage = (): JSX.Element => {
       } else {
         clearInterval(timer);
         setRecording(true);
-        setShowRecording(true); // Recording 부분을 보이도록 설정
+        setRecordColor(true);
         console.log("Countdown finished!");
       }
     }, 1000);
@@ -704,10 +707,10 @@ const InterviewProgressPage = (): JSX.Element => {
                   transition={{ type: "spring", stiffness: 5000, damping: 100 }}
                 ></motion.div>
               </CameraButton>
-              <Recording style={{ display: showRecording ? "flex" : "none" }}>
+              <Recording>
                 <div
                   style={{
-                    backgroundColor: recording ? "red" : "blue",
+                    backgroundColor: recordColor ? "red" : "rgba(86,86,86,1)",
                     width: "1rem",
                     height: "1rem",
                     borderRadius: "50%",
@@ -767,15 +770,11 @@ const InterviewProgressPage = (): JSX.Element => {
                       marginBottom: " -0.6999999999999993rem",
                     }}
                   >
-                    {message.split("\n")[0]}
+                    {message}
                   </span>
                   <br />
                   <span style={{ fontSize: "1rem", lineHeight: "2rem" }}>
-                    {message.split("\n")[1]}
-                  </span>
-                  <br />
-                  <span style={{ fontSize: "1rem" }}>
-                    {message.split("\n")[2]}
+                    {info}
                   </span>
                 </div>
               </ProgressQuestionText>
