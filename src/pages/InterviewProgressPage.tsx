@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { styled } from "styled-components";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 import InterviewBackImage from "../assets/img/InterviewBackImage.png";
@@ -28,11 +28,10 @@ const BackWard = styled(motion.div)`
   z-index: 9999999999999999;
 `;
 
-const ProgressBox = styled.div`
+const ProgressBox = styled(motion.div)`
   background-image: url(${InterviewBackImage});
   width: 100%;
   height: 100%;
-  /* background-size: contain; */
   background-position: center;
   background-repeat: no-repeat;
   z-index: 10;
@@ -42,7 +41,7 @@ const ProgressBox = styled.div`
   flex-direction: column;
   position: relative;
 `;
-const InterviewBoxImage = styled.div`
+const InterviewBoxImage = styled(motion.div)`
   background-image: url(${InterviewBox});
   position: relative;
   width: 65rem;
@@ -55,37 +54,24 @@ const InterviewBoxImage = styled.div`
 `;
 
 const CameraButton = styled(motion.button)`
-  /* border-radius: 1rem;
-  border: 0.1px solid white;
-  background: transparent;
-  backdrop-filter: blur(50px);
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  color: white;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  font-size: 1rem; */
-  /* min-height: 100vh;*/
   padding: 0;
   margin: 0;
-  background: linear-gradient(250deg, #a5dc86, #2778c4);
+  background: transparent;
   background-repeat: no-repeat;
   display: flex;
-  justify-content: center;
   font-family: sans-serif;
   text-align: center;
+  transition: all ease 0.5s;
 `;
 
 const ProgressCountDown = styled.div`
-  border-radius: 2.75rem;
-  background: transparent;
-  /* box-shadow: 0px 8px 6px 0px rgba(0, 0, 0, 0.05),
-    0px 1px 1px 0px rgba(255, 255, 255, 0.15) inset,
-    0px -1px 1px 0px rgba(255, 255, 255, 0.15) inset; */
+  border-radius: 3.75rem;
+  background: rgba(0, 0, 0, 0.13);
   backdrop-filter: blur(50px);
   aspect-ratio: 1/1;
   @media (max-height: 900px) {
-    height: 3rem;
+    height: 2.5rem;
+    width: 4rem;
   }
   display: flex;
   justify-content: center;
@@ -102,28 +88,16 @@ const Count = styled.div`
   font-style: normal;
   color: white;
 `;
-const ProgressNextButton = styled(motion.button)`
+const ProgressNextButton = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 120px;
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
   flex-shrink: 0;
-  color: #ffffff;
-  font-family: var(--font-r);
-  font-size: 1.375rem;
-  font-style: normal;
-  font-weight: 800;
-  line-height: 134.766%;
   cursor: pointer;
-  border-radius: 1rem;
-  background: transparent;
   outline: none;
-  border: 1px solid white;
+  z-index: 2000;
 `;
 const ProgressVideo = styled.video`
-  /* top: 9rem; */
   transform: scaleX(-1);
   box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
 `;
@@ -133,7 +107,7 @@ const ProgressImg = styled.img`
   height: 46rem;
 `;
 
-const ProgressQuestionText = styled.div`
+const ProgressQuestionText = styled(motion.div)`
   display: flex;
   width: 100%;
   height: 100%;
@@ -158,12 +132,12 @@ const ProgressQuestionText = styled.div`
   position: relative;
 `;
 const ProgressBox1 = styled.div`
-  width: 99%;
+  width: 100%;
   height: 30%;
-  background: rgba(242, 242, 242, 0.15);
+  background: rgba(0, 0, 0, 0.15);
   stroke-width: 1px;
   stroke: rgba(255, 255, 255, 0.43);
-  border-radius: 2rem;
+  border-radius: 0 0 1rem 1rem;
 `;
 
 const InterviewProgressPage = (): JSX.Element => {
@@ -173,13 +147,49 @@ const InterviewProgressPage = (): JSX.Element => {
     navigate(-1); // 뒤로가기
   };
   /* ------------------------------------------------------------------------- */
+  const [isLoaded, setIsLoaded] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 2000);
+  }, []);
+
+  // 애니메이션 실행 여부를 추적하는 상태 변수
+  const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
+
+  // 클릭 이벤트 핸들러
+  const handleClick = (): void => {
+    setIsAnimationPlaying(false);
+  };
+  const variants: Variants = {
+    hidden: {
+      opacity: 0.2,
+      y: 10,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: 0.2,
+        duration: 0.8,
+        repeat: isAnimationPlaying ? 100 : 0,
+        repeatType: "reverse",
+      },
+    },
+  };
   /* ------------------------------------------------------------------------- */
 
   // 비디오 관련 코드
   const [cameraToggle, setCameraToggle] = useState(false);
-
+  const toggleSwitch = (): void => {
+    setCameraToggle(!cameraToggle);
+  };
   const videoRef = useRef<HTMLVideoElement>(null);
-
+  // 핸들 애니메이션을 위한 변형(variants)
+  const handleVariants = {
+    on: { x: 30, y: -15 }, // 켜진 상태일 때 핸들을 오른쪽으로 80px 이동
+    off: { x: 0, y: -15 }, // 꺼진 상태일 때 핸들을 원래 위치로 이동
+  };
   // 비디오 키는 함수
   const startVideo = (): void => {
     navigator.mediaDevices
@@ -224,7 +234,9 @@ const InterviewProgressPage = (): JSX.Element => {
   // 소켓 변수 정의
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<string>(
-    "면접을 시작하시려면 다음 질문을 클릭해주세요."
+    "면접을 시작하시려면 우측의 버튼을 클릭해주세요.\n" +
+      "왼쪽 상단에 있는 버튼을 누르고 카메라가 켜진 상태로 면접을 시작하세요.\n" +
+      "질문을 읽고 10초 뒤에 답변을 한 뒤 우측의 버튼을 누르세요. "
   );
 
   // 메세지가 post되었는 지 확인하는 변수, 트리거를 위해 필요
@@ -254,7 +266,8 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    // const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
 
     ws.onopen = () => {
       console.log("WebSocket connected");
@@ -612,8 +625,16 @@ const InterviewProgressPage = (): JSX.Element => {
             />
           </svg>
         </BackWard>
-        <ProgressBox>
-          <InterviewBoxImage>
+        <ProgressBox
+          initial={{ opacity: 0, y: 50 }}
+          animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          <InterviewBoxImage
+            initial={{ opacity: 0, y: 50 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
             {cameraToggle ? (
               <ProgressVideo
                 autoPlay
@@ -637,7 +658,7 @@ const InterviewProgressPage = (): JSX.Element => {
                 alignItems: "center",
                 position: "absolute",
                 justifyContent: "space-between",
-                gap: "22rem",
+                gap: "53rem",
                 top: "1rem",
                 // backgroundColor: "#fff",
               }}
@@ -645,31 +666,41 @@ const InterviewProgressPage = (): JSX.Element => {
               <CameraButton
                 onClick={() => {
                   setCameraToggle((prev) => !prev);
+                  toggleSwitch();
                 }}
                 style={{
-                  transition: "all ease 0.5s",
-                  width: "90px",
-                  height: "48px",
-                  backgroundColor: "rgba(255, 255, 255, 0.4)",
-                  display: "flex",
-                  justifyContent: cameraToggle ? "flex-end" : "flex-start",
+                  width: "78px",
+                  height: "39px",
+                  backgroundColor: cameraToggle
+                    ? "rgba(255, 255, 255, 0.4)"
+                    : "rgba(255, 255, 255, 0.201)",
+                  justifyContent: cameraToggle ? "flex-start" : "flex-end",
                   borderRadius: "50px",
                   padding: "10px",
                   cursor: "pointer",
+                  border: "none",
                 }}
               >
-                <div
+                <motion.div
                   style={{
                     position: "absolute",
                     top: "50%",
                     left: "10px",
-                    transform: "translateY(-50%)",
                     borderRadius: "50rem",
-                    width: "35px",
-                    height: "35px",
+                    width: "30px",
+                    height: "30px",
                     backgroundColor: "white",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    overflow: "hidden",
+                    transition: "all 0.2s ease",
                   }}
-                ></div>
+                  animate={cameraToggle ? "on" : "off"} // isOn 상태에 따라 "on"과 "off" 변형 간 전환
+                  variants={handleVariants}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 5000, damping: 100 }}
+                ></motion.div>
               </CameraButton>
               <ProgressCountDown>
                 <div
@@ -681,6 +712,51 @@ const InterviewProgressPage = (): JSX.Element => {
                   <Count>{count}</Count>
                 </div>
               </ProgressCountDown>
+            </div>
+
+            <ProgressBox1
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "2rem",
+                bottom: "0rem",
+                position: "absolute",
+                zIndex: "1000",
+              }}
+            >
+              <ProgressQuestionText
+                initial={{ opacity: 0, y: 50 }}
+                animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "0",
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "1.5rem",
+                      lineHeight: "3rem",
+                      display: "block",
+                      marginBottom: " -0.6999999999999993rem",
+                    }}
+                  >
+                    {message.split("\n")[0]}
+                  </span>
+                  <br />
+                  <span style={{ fontSize: "1rem", lineHeight: "2rem" }}>
+                    {message.split("\n")[1]}
+                  </span>
+                  <br />
+                  <span style={{ fontSize: "1rem" }}>
+                    {message.split("\n")[2]}
+                  </span>
+                </div>
+              </ProgressQuestionText>
               <ProgressNextButton
                 onClick={() => {
                   if (firstConnected && currentQNum > 0) {
@@ -692,37 +768,28 @@ const InterviewProgressPage = (): JSX.Element => {
                     setStopTrigger(true);
                     setCount(10);
                   }
+                  handleClick();
                 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                initial="hidden"
+                animate="visible"
+                variants={variants}
               >
-                <p>다음 질문</p>
-              </ProgressNextButton>
-            </div>
-
-            <ProgressBox1
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "2rem",
-                bottom: "0.4rem",
-                position: "absolute",
-                zIndex: "1000",
-              }}
-            >
-              <ProgressQuestionText>
-                <div
-                  style={{
-                    position: "absolute",
-                    lineHeight: "2.3rem",
-                    top: "0",
-                  }}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="50"
+                  height="50"
+                  viewBox="0 0 88 88"
+                  fill="none"
                 >
-                  {message}
-                </div>
-              </ProgressQuestionText>
+                  <path
+                    d="M18.3885 47.7907H61.5612L48.3473 63.662C48.0413 64.0301 47.8109 64.4548 47.6691 64.912C47.5273 65.3691 47.4769 65.8497 47.5209 66.3263C47.6096 67.2889 48.0771 68.1768 48.8205 68.7947C49.5639 69.4125 50.5223 69.7098 51.4848 69.6211C52.4474 69.5323 53.3353 69.0648 53.9532 68.3214L72.1541 46.4803C72.2766 46.3065 72.3861 46.124 72.4818 45.9342C72.4818 45.7522 72.6638 45.643 72.7366 45.461C72.9016 45.0436 72.988 44.5993 72.9914 44.1505C72.988 43.7018 72.9016 43.2575 72.7366 42.8401C72.7366 42.6581 72.5546 42.5489 72.4818 42.3669C72.3861 42.1771 72.2766 41.9945 72.1541 41.8208L53.9532 19.9797C53.6109 19.5688 53.1823 19.2383 52.6979 19.0118C52.2134 18.7853 51.685 18.6683 51.1502 18.6692C50.2997 18.6675 49.4754 18.9638 48.8205 19.5064C48.4519 19.812 48.1472 20.1873 47.9239 20.6109C47.7005 21.0344 47.563 21.4978 47.519 21.9746C47.475 22.4514 47.5256 22.9321 47.6677 23.3894C47.8098 23.8466 48.0408 24.2713 48.3473 24.6391L61.5612 40.5104H18.3885C17.423 40.5104 16.4971 40.8939 15.8145 41.5765C15.1318 42.2592 14.7483 43.1851 14.7483 44.1505C14.7483 45.116 15.1318 46.0419 15.8145 46.7246C16.4971 47.4072 17.423 47.7907 18.3885 47.7907Z"
+                    fill="white"
+                  />
+                </svg>
+              </ProgressNextButton>
             </ProgressBox1>
           </InterviewBoxImage>
         </ProgressBox>
