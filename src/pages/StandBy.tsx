@@ -96,7 +96,7 @@ const StandByButton = styled(motion.button)`
   line-height: 134.766%;
   position: absolute;
   bottom: 20%;
-  left: 37%;
+  left: 40%;
   margin-left: auto;
   margin-right: auto;
   background: transparent;
@@ -190,7 +190,8 @@ const StandBy = (): JSX.Element => {
               transition={{ duration: 2 }}
             >
               <span style={{ color: "#86e7b8" }}>면접</span>은 주변 소음이 없는
-              곳에서 진행해야 합니다. 긴장을 풀어주시고, 준비되면 시작하세요.
+              곳에서 진행해야 합니다.
+              <br /> 긴장을 풀어주시고, 준비되면 시작하세요.
             </motion.div>
           </StandByText>
         </StandByInfo>
