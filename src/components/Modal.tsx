@@ -190,6 +190,7 @@ const Modal = ({
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                     handleTextChange(e);
                   }}
+                  maxLength={800}
                   rows={25}
                   cols={130}
                   placeholder="내용을 입력하세요."
