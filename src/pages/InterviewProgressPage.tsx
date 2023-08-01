@@ -25,7 +25,7 @@ const BackWard = styled(motion.div)`
   left: 1.5rem;
   top: 1.5rem;
   cursor: pointer;
-  z-index: 1;
+  z-index: 9999999999999999;
 `;
 
 const ProgressBox = styled(motion.div)`
@@ -111,6 +111,11 @@ const ProgressNextButton = styled(motion.div)`
 const ProgressVideo = styled.video`
   transform: scaleX(-1);
   box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
+`;
+const ProgressImg = styled.img`
+  box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
+  width: 65rem;
+  height: 46rem;
 `;
 
 const ProgressQuestionText = styled(motion.div)`
@@ -267,7 +272,8 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    // const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
 
     ws.onopen = () => {
       console.log("WebSocket connected");
@@ -644,19 +650,23 @@ const InterviewProgressPage = (): JSX.Element => {
             animate={isLoaded ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <ProgressVideo
-              autoPlay
-              ref={videoRef}
-              style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                flexShrink: "0",
-                borderRadius: "2rem",
-                zIndex: "-1",
-              }}
-            />
+            {cameraToggle ? (
+              <ProgressVideo
+                autoPlay
+                ref={videoRef}
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  flexShrink: "0",
+                  borderRadius: "2rem",
+                  zIndex: "-1",
+                }}
+              />
+            ) : (
+              <ProgressImg src={""} />
+            )}
             <div
               style={{
                 display: "flex",

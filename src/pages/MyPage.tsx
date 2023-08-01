@@ -18,7 +18,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
-
+// import AWS from "aws-sdk";
 const MyPageContainer = styled.div`
   background: #01001a;
   width: 100vw;
@@ -86,14 +86,13 @@ const SelfIntroduction = styled.div`
   flex-direction: column;
   gap: 2rem;
 `;
-const Pic = styled.div`
+const Pic2 = styled.div`
   border-radius: 1.9375rem;
   background: url(${MyPageImage1});
   width: 18.8125rem;
   height: 18.875rem;
   z-index: 1;
 `;
-
 const InfoLeft = styled.div`
   color: #fff;
   text-align: left;
@@ -215,6 +214,7 @@ const ModalWrapper = styled.div`
   z-index: 2;
   // Modal을 위에 배치
 `;
+// const s3 = new AWS.S3();
 const MyPage = (): JSX.Element => {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -243,10 +243,19 @@ const MyPage = (): JSX.Element => {
   const [checkQna2, setcheckQna2] = useState("");
   const [checkQna3, setcheckQna3] = useState("");
   const [checkQna4, setcheckQna4] = useState("");
+  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
   };
+
+  useEffect(() => {
+    const signupNow = sessionStorage.getItem("sign_up_state");
+
+    if (signupNow !== "true") {
+      navigate("/login");
+    }
+  }, []);
   interface FormNow {
     sector_name: string;
     job_name: string;
@@ -400,7 +409,7 @@ const MyPage = (): JSX.Element => {
 
   const getQna1 = (): void => {
     axios
-      .get("http://localhost/api/qna/", {
+      .get("/api/qna/", {
         params: { form_id: formidTime1 },
       })
       .then((res) => {
@@ -412,7 +421,7 @@ const MyPage = (): JSX.Element => {
   };
   const getQna2 = (): void => {
     axios
-      .get("http://localhost/api/qna/", {
+      .get("/api/qna/", {
         params: { form_id: formidTime2 },
       })
       .then((res) => {
@@ -572,7 +581,8 @@ const MyPage = (): JSX.Element => {
 
         <ContentContainer>
           <Upper>
-            <Pic />
+            <Pic2></Pic2>
+
             <Info>
               <InfoLeft>
                 <div>희망하는 직종</div>

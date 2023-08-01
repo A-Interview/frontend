@@ -4,10 +4,14 @@ import { motion } from "framer-motion";
 import WatingPageImage from "../assets/img/WatingPageImage.png";
 import WatingPageImage2 from "../assets/img/WatingPageImage2.png";
 import { Link, useNavigate } from "react-router-dom";
-import { SaveCurrentFormIdToSessionStorage } from "../state/Atom";
+import {
+  SaveCurrentFormIdToSessionStorage,
+  SaveCurrentFormTrueToSessionStorage,
+} from "../state/Atom";
 import LoadingPage from "../components/Loading";
 import Modal from "../components/Modal";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Background = styled(motion.div)`
   background: #060434;
@@ -98,7 +102,6 @@ const Text = styled.p`
   font-weight: 700;
   line-height: 127.075%;
   margin: auto;
-  cursor: pointer;
 `;
 
 const InfoFirst = styled(motion.p)`
@@ -188,6 +191,7 @@ const WatingPage = (): JSX.Element => {
   const [career, setCareer] = useState("");
   const [resume, setResume] = useState("");
   const formtrue = sessionStorage.getItem("formtrue");
+  const [isButtonDisabled, setButtonDisabled] = useState(true);
   // 로그인 안되어 있으면 로그인창으로
   useEffect(() => {
     const signupNow = sessionStorage.getItem("sign_up_state");
@@ -195,10 +199,15 @@ const WatingPage = (): JSX.Element => {
     if (signupNow !== "true") {
       navigate("/login");
     }
+    SaveCurrentFormTrueToSessionStorage(false);
   }, []);
+  useEffect(() => {
+    checkDisabled();
+  }, [sectorName, jobName, career, resume]);
   // 뒤로가기
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
+    SaveCurrentFormTrueToSessionStorage(false);
   };
   // 모달 오픈 여부
   const openModal = (): void => {
@@ -206,6 +215,7 @@ const WatingPage = (): JSX.Element => {
   };
   const handleModalClose = (): void => {
     setModalOpen(false);
+    checkDisabled();
   };
   // 자소서 내용 입력
   const updateResume = (newResume: string): void => {
@@ -292,7 +302,29 @@ const WatingPage = (): JSX.Element => {
       setIsLoaded(true);
     }, 2000);
   }, []);
-
+  const checkDisabled = (): void => {
+    console.log(sectorName, jobName, career);
+    if (sectorName !== "" && jobName !== "" && career !== "" && resume !== "") {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  };
+  const showToast2 = async (): Promise<void> => {
+    await Swal.fire({
+      icon: "error",
+      title: "정보 입력을 완료해주세요.",
+      toast: true,
+      position: "center",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+  };
   return (
     <>
       <BackWard
@@ -340,7 +372,7 @@ const WatingPage = (): JSX.Element => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setSector(e.currentTarget.value);
                 }}
-                placeholder="ex) IT"
+                placeholder="ex) IT 개발"
               />
             </div>
             <div
@@ -464,7 +496,32 @@ const WatingPage = (): JSX.Element => {
             </div>
           </div>
         </div>
-        <Link to="/StandBy">
+        {formtrue === "true" ? (
+          <Link to="/StandBy">
+            <QuestionCreate
+              initial={{ opacity: 0, y: 50 }}
+              animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 1.1 }}
+              transition={
+                isLoaded
+                  ? { opacity: 1, y: 0, delay: 0.3 }
+                  : { type: "spring", stiffness: 500, damping: 20 }
+              }
+              onClick={() => {
+                handleSave().catch((error) => {
+                  console.log("저장 실패:", error);
+                  showToast2().catch((error) => {
+                    console.log("저장 실패:", error);
+                  });
+                });
+              }}
+              disabled={isButtonDisabled}
+            >
+              면접 생성
+            </QuestionCreate>
+          </Link>
+        ) : (
           <QuestionCreate
             initial={{ opacity: 0, y: 50 }}
             animate={isLoaded ? { opacity: 1, y: 0 } : {}}
@@ -476,14 +533,15 @@ const WatingPage = (): JSX.Element => {
                 : { type: "spring", stiffness: 500, damping: 20 }
             }
             onClick={() => {
-              handleSave().catch((error) => {
+              showToast2().catch((error) => {
                 console.log("저장 실패:", error);
               });
             }}
           >
             면접 생성
           </QuestionCreate>
-        </Link>
+        )}
+
         <LoadingPage></LoadingPage>
       </Background>
     </>
