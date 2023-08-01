@@ -261,7 +261,8 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    // const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
 
     ws.onopen = () => {
       console.log("WebSocket connected");
