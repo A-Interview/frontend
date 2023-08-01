@@ -32,6 +32,7 @@
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
+  "proxy": "http://backend:8000",
   "scripts": {
     "start": "WATCHPACK_POLLING=true react-scripts start",
     "build": "react-scripts build",

@@ -400,7 +400,7 @@ const MyPage = (): JSX.Element => {
 
   const getQna1 = (): void => {
     axios
-      .get("http://localhost/api/qna/", {
+      .get("/api/qna/", {
         params: { form_id: formidTime1 },
       })
       .then((res) => {
@@ -412,7 +412,7 @@ const MyPage = (): JSX.Element => {
   };
   const getQna2 = (): void => {
     axios
-      .get("http://localhost/api/qna/", {
+      .get("/api/qna/", {
         params: { form_id: formidTime2 },
       })
       .then((res) => {
