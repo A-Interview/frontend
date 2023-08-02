@@ -5,6 +5,8 @@ import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 import InterviewBackImage from "../assets/img/InterviewBackImage.png";
 import InterviewBox from "../assets/img/InterviewBox.svg";
+import cuterobot from "../lottie/cuterobot.json";
+import Lottie from "react-lottie-player";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -25,7 +27,7 @@ const BackWard = styled(motion.div)`
   left: 1.5rem;
   top: 1.5rem;
   cursor: pointer;
-  z-index: 9999999999999999;
+  z-index: 100;
 `;
 
 const ProgressBox = styled(motion.div)`
@@ -101,11 +103,6 @@ const ProgressVideo = styled.video`
   transform: scaleX(-1);
   box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
 `;
-const ProgressImg = styled.img`
-  box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
-  width: 65rem;
-  height: 46rem;
-`;
 
 const ProgressQuestionText = styled(motion.div)`
   display: flex;
@@ -134,7 +131,7 @@ const ProgressQuestionText = styled(motion.div)`
 const ProgressBox1 = styled.div`
   width: 100%;
   height: 30%;
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.5);
   stroke-width: 1px;
   stroke: rgba(255, 255, 255, 0.43);
   border-radius: 0 0 1rem 1rem;
@@ -266,8 +263,8 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
-    // const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
-    const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
+    const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    // const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
 
     ws.onopen = () => {
       console.log("WebSocket connected");
@@ -650,7 +647,12 @@ const InterviewProgressPage = (): JSX.Element => {
                 }}
               />
             ) : (
-              <ProgressImg src={""} />
+              <Lottie
+                loop={true}
+                animationData={cuterobot}
+                play
+                style={{ width: 400, height: 400 }}
+              />
             )}
             <div
               style={{
