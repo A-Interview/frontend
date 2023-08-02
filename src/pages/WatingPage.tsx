@@ -201,9 +201,6 @@ const WatingPage = (): JSX.Element => {
     }
     SaveCurrentFormTrueToSessionStorage(false);
   }, []);
-  useEffect(() => {
-    checkDisabled();
-  }, [sectorName, jobName, career, resume]);
   // 뒤로가기
   const handleGoBack = (): any => {
     navigate(-1); // 뒤로가기
@@ -220,7 +217,11 @@ const WatingPage = (): JSX.Element => {
   // 자소서 내용 입력
   const updateResume = (newResume: string): void => {
     setResume(newResume);
+    checkDisabled();
   };
+  useEffect(() => {
+    checkDisabled();
+  }, [sectorName, jobName, career, resume, updateResume]);
   const handleForm = async (): Promise<void> => {
     try {
       const accessToken: string | null = sessionStorage.getItem("access_token");
@@ -303,7 +304,7 @@ const WatingPage = (): JSX.Element => {
     }, 2000);
   }, []);
   const checkDisabled = (): void => {
-    console.log(sectorName, jobName, career);
+    // console.log(resume);
     if (sectorName !== "" && jobName !== "" && career !== "" && resume !== "") {
       setButtonDisabled(false);
     } else {

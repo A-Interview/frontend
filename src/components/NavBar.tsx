@@ -193,7 +193,7 @@ const NavBar = (): JSX.Element => {
               transition={{ type: "spring", stiffness: 200, damping: 10 }}
               onClick={handleLogout}
             >
-              로그 아웃
+              로그아웃
             </LoginButton>
           ) : (
             <Link

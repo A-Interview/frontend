@@ -239,7 +239,7 @@ const InterviewProgressPage = (): JSX.Element => {
   );
   const [info, setInfo] = useState<string>(
     "왼쪽 상단에 있는 버튼을 누르고 카메라가 켜진 상태로 면접을 시작하세요.\n" +
-      "질문을 읽고 10초 뒤에 답변을 한 뒤 우측의 버튼을 누르세요. "
+      "질문을 읽고 5초 뒤에 빨간 불이 들어오면 답변을 한 뒤 우측의 버튼을 누르세요. "
   );
 
   // 메세지가 post되었는 지 확인하는 변수, 트리거를 위해 필요
@@ -269,8 +269,8 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
-    // const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
+    // const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
 
     ws.onopen = () => {
       console.log("WebSocket connected");
@@ -413,7 +413,7 @@ const InterviewProgressPage = (): JSX.Element => {
         interviewType,
       };
       socket.send(JSON.stringify(data));
-      setCount(10);
+      setCount(5);
       setFirstConnected(false);
       setCurrentQNum((prev) => prev - 1);
       setMessage("");
@@ -507,7 +507,7 @@ const InterviewProgressPage = (): JSX.Element => {
       reader.readAsDataURL(audioBlob);
     }
     setMessage("");
-    setCount(10);
+    setCount(5);
     setIsPost(true);
     setCurrentQNum((prev) => prev - 1);
   };
@@ -520,8 +520,8 @@ const InterviewProgressPage = (): JSX.Element => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [stopTrigger, setStopTrigger] = useState(false);
   const [saveTrigger, setSaveTrigger] = useState(false);
-  // 10초 카운트 변수
-  const [count, setCount] = useState(10);
+  // 5초 카운트 변수
+  const [count, setCount] = useState(5);
 
   // 버튼 누를 시 녹음 본 전달하는 트리거
   useEffect(() => {
@@ -569,18 +569,18 @@ const InterviewProgressPage = (): JSX.Element => {
           console.error("Error accessing microphone:", error);
         });
       console.log("Delayed function executed.");
-    }, 10000); // 10초를 밀리초로 나타냅니다.
+    }, 5000); // 5초를 밀리초로 나타냅니다.
   };
   useEffect(() => {
     // 카운트가 진행 중이면 무조건 파란색으로 변경
-    if (count > 0 && count <= 10) {
+    if (count > 0 && count <= 5) {
       setRecordColor(false); // 녹음 상태를 해제하여 Recording 컴포넌트에서 빨간색을 표시하지 않도록 함
     }
   }, [count]);
 
   // 카운트 다운 함수
   const countDown = (): void => {
-    let dummyCount = 10;
+    let dummyCount = 5;
     const timer = setInterval(() => {
       if (dummyCount > 0) {
         console.log(count);
@@ -592,7 +592,7 @@ const InterviewProgressPage = (): JSX.Element => {
         setRecordColor(true);
         console.log("Countdown finished!");
       }
-    }, 1000);
+    }, 500);
   };
   // 녹음 중지 함수
   const stopRecording = (): void => {
@@ -796,10 +796,10 @@ const InterviewProgressPage = (): JSX.Element => {
                     sendMessage();
                   } else if (!firstConnected && currentQNum > 0) {
                     setStopTrigger(true);
-                    setCount(10);
+                    setCount(5);
                   } else if (currentQNum === 0 && !firstConnected) {
                     setStopTrigger(true);
-                    setCount(10);
+                    setCount(5);
                   }
                 }}
                 whileHover={{ scale: 1.1 }}
