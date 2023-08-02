@@ -269,8 +269,8 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
-    // const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
-    const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
+    const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    // const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
 
     ws.onopen = () => {
       console.log("WebSocket connected");
@@ -615,6 +615,14 @@ const InterviewProgressPage = (): JSX.Element => {
     setAudioChunks((prevChunks) => [...prevChunks, event.data]);
   };
 
+  // TTS 구현
+  const [textToSpeak, setTextToSpeak] = useState("");
+  const speakText = (text: any): any => {
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance(text);
+    synth.speak(utterThis);
+  };
+
   return (
     <>
       <ProgressBackground>
@@ -642,6 +650,22 @@ const InterviewProgressPage = (): JSX.Element => {
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
+          <textarea
+            value={textToSpeak}
+            onChange={(e) => {
+              setTextToSpeak(e.target.value);
+            }}
+            placeholder="Enter the text to be read aloud..."
+            rows={5}
+            cols={50}
+          />
+          <button
+            onClick={() => {
+              speakText(textToSpeak);
+            }}
+          >
+            Speak
+          </button>
           <InterviewBoxImage
             initial={{ opacity: 0, y: 50 }}
             animate={isLoaded ? { opacity: 1, y: 0 } : {}}
