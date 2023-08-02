@@ -66,13 +66,24 @@ const CameraButton = styled(motion.button)`
   transition: all ease 0.5s;
 `;
 
+const Recording = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45em;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5.25em;
+  width: 95px;
+`;
+
 const ProgressCountDown = styled.div`
   border-radius: 3.75rem;
-  background: rgba(0, 0, 0, 0.13);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(50px);
   aspect-ratio: 1/1;
   @media (max-height: 900px) {
-    height: 2.5rem;
+    height: 2rem;
     width: 4rem;
   }
   display: flex;
@@ -151,13 +162,6 @@ const InterviewProgressPage = (): JSX.Element => {
     }, 2000);
   }, []);
 
-  // 애니메이션 실행 여부를 추적하는 상태 변수
-  const [isAnimationPlaying, setIsAnimationPlaying] = useState(true);
-
-  // 클릭 이벤트 핸들러
-  const handleClick = (): void => {
-    setIsAnimationPlaying(false);
-  };
   const variants: Variants = {
     hidden: {
       opacity: 0.2,
@@ -169,7 +173,7 @@ const InterviewProgressPage = (): JSX.Element => {
       transition: {
         delay: 0.2,
         duration: 0.8,
-        repeat: isAnimationPlaying ? 100 : 0,
+        repeat: Infinity,
         repeatType: "reverse",
       },
     },
@@ -184,7 +188,7 @@ const InterviewProgressPage = (): JSX.Element => {
   const videoRef = useRef<HTMLVideoElement>(null);
   // 핸들 애니메이션을 위한 변형(variants)
   const handleVariants = {
-    on: { x: 30, y: -15 }, // 켜진 상태일 때 핸들을 오른쪽으로 80px 이동
+    on: { x: 21, y: -15 }, // 켜진 상태일 때 핸들을 오른쪽으로 80px 이동
     off: { x: 0, y: -15 }, // 꺼진 상태일 때 핸들을 원래 위치로 이동
   };
   // 비디오 키는 함수
@@ -231,8 +235,10 @@ const InterviewProgressPage = (): JSX.Element => {
   // 소켓 변수 정의
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<string>(
-    "면접을 시작하시려면 우측의 버튼을 클릭해주세요.\n" +
-      "왼쪽 상단에 있는 버튼을 누르고 카메라가 켜진 상태로 면접을 시작하세요.\n" +
+    "면접을 시작하시려면 우측의 버튼을 클릭해주세요."
+  );
+  const [info, setInfo] = useState<string>(
+    "왼쪽 상단에 있는 버튼을 누르고 카메라가 켜진 상태로 면접을 시작하세요.\n" +
       "질문을 읽고 10초 뒤에 답변을 한 뒤 우측의 버튼을 누르세요. "
   );
 
@@ -411,6 +417,7 @@ const InterviewProgressPage = (): JSX.Element => {
       setFirstConnected(false);
       setCurrentQNum((prev) => prev - 1);
       setMessage("");
+      setInfo("");
     }
   };
 
@@ -507,6 +514,7 @@ const InterviewProgressPage = (): JSX.Element => {
   /* ------------------------------------------------------------------------- */
   // 음성 녹음과 관련
   const [recording, setRecording] = useState(false);
+  const [recordColor, setRecordColor] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -541,9 +549,10 @@ const InterviewProgressPage = (): JSX.Element => {
   }, [audioBlob]);
 
   console.log(recording);
-
   // 음성 녹음 함수
   const startRecording = (): void => {
+    if (recording) return;
+    setRecording(true);
     console.log(currentQNum);
     countDown();
     setTimeout(() => {
@@ -562,6 +571,12 @@ const InterviewProgressPage = (): JSX.Element => {
       console.log("Delayed function executed.");
     }, 10000); // 10초를 밀리초로 나타냅니다.
   };
+  useEffect(() => {
+    // 카운트가 진행 중이면 무조건 파란색으로 변경
+    if (count > 0 && count <= 10) {
+      setRecordColor(false); // 녹음 상태를 해제하여 Recording 컴포넌트에서 빨간색을 표시하지 않도록 함
+    }
+  }, [count]);
 
   // 카운트 다운 함수
   const countDown = (): void => {
@@ -573,18 +588,18 @@ const InterviewProgressPage = (): JSX.Element => {
         dummyCount--;
       } else {
         clearInterval(timer);
+        setRecording(true);
+        setRecordColor(true);
         console.log("Countdown finished!");
       }
     }, 1000);
   };
-
   // 녹음 중지 함수
   const stopRecording = (): void => {
-    if (mediaRecorderRef.current != null) {
-      mediaRecorderRef.current.stop(); // Access mediaRecorder from the ref
-      setRecording(false);
-      setSaveTrigger(true);
-    }
+    if (!recording || mediaRecorderRef.current == null) return;
+    mediaRecorderRef.current.stop(); // Access mediaRecorder from the ref
+    setRecording(false);
+    setSaveTrigger(true);
   };
 
   // 녹음 저장 함수
@@ -660,7 +675,7 @@ const InterviewProgressPage = (): JSX.Element => {
                 alignItems: "center",
                 position: "absolute",
                 justifyContent: "space-between",
-                gap: "53rem",
+                gap: "23rem",
                 top: "1rem",
                 // backgroundColor: "#fff",
               }}
@@ -671,8 +686,8 @@ const InterviewProgressPage = (): JSX.Element => {
                   toggleSwitch();
                 }}
                 style={{
-                  width: "78px",
-                  height: "39px",
+                  width: "64px",
+                  height: "31px",
                   backgroundColor: cameraToggle
                     ? "rgba(255, 255, 255, 0.4)"
                     : "rgba(255, 255, 255, 0.201)",
@@ -686,11 +701,11 @@ const InterviewProgressPage = (): JSX.Element => {
                 <motion.div
                   style={{
                     position: "absolute",
-                    top: "50%",
+                    top: "56%",
                     left: "10px",
                     borderRadius: "50rem",
-                    width: "30px",
-                    height: "30px",
+                    width: "25px",
+                    height: "25px",
                     backgroundColor: "white",
                     display: "flex",
                     justifyContent: "flex-end",
@@ -704,6 +719,26 @@ const InterviewProgressPage = (): JSX.Element => {
                   transition={{ type: "spring", stiffness: 5000, damping: 100 }}
                 ></motion.div>
               </CameraButton>
+              <Recording>
+                <div
+                  style={{
+                    backgroundColor: recordColor ? "red" : "rgba(86,86,86,1)",
+                    width: "1rem",
+                    height: "1rem",
+                    borderRadius: "50%",
+                    animation: recording ? "pulse 2s infinite" : "none",
+                    marginRight: "0.25rem",
+                  }}
+                ></div>
+                <div
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "white",
+                  }}
+                >
+                  Recording
+                </div>
+              </Recording>
               <ProgressCountDown>
                 <div
                   style={{
@@ -747,15 +782,11 @@ const InterviewProgressPage = (): JSX.Element => {
                       marginBottom: " -0.6999999999999993rem",
                     }}
                   >
-                    {message.split("\n")[0]}
+                    {message}
                   </span>
                   <br />
                   <span style={{ fontSize: "1rem", lineHeight: "2rem" }}>
-                    {message.split("\n")[1]}
-                  </span>
-                  <br />
-                  <span style={{ fontSize: "1rem" }}>
-                    {message.split("\n")[2]}
+                    {info}
                   </span>
                 </div>
               </ProgressQuestionText>
@@ -770,7 +801,6 @@ const InterviewProgressPage = (): JSX.Element => {
                     setStopTrigger(true);
                     setCount(10);
                   }
-                  handleClick();
                 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 1.1 }}
