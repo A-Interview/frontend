@@ -387,13 +387,28 @@ const InterviewProgressPage = (): JSX.Element => {
   useEffect(() => {
     // 현재 토픽의 마지막 질문인 경우 설정.
     if (lastTopicAnswer === "default_last") {
-      setCurrentQNum(situationQuestionNum);
-      setFirstConnected(true);
-      sendMessage();
+      // 다음이 0인 경우를 전부 제외함
+      if (situationQuestionNum === 0 && deepQuestionNum === 0) {
+        setCurrentQNum(personalityQuestionNum);
+        setFirstConnected(true);
+        sendMessage();
+      } else if (situationQuestionNum === 0 && deepQuestionNum !== 0) {
+        setCurrentQNum(deepQuestionNum);
+        setFirstConnected(true);
+        sendMessage();
+      } else {
+        setCurrentQNum(situationQuestionNum);
+        setFirstConnected(true);
+        sendMessage();
+      }
     } else if (lastTopicAnswer === "situation_last") {
-      setCurrentQNum(deepQuestionNum);
-      setFirstConnected(true);
-      sendMessage();
+      if (deepQuestionNum === 0) {
+        setCurrentQNum(personalityQuestionNum);
+      } else {
+        setCurrentQNum(deepQuestionNum);
+        setFirstConnected(true);
+        sendMessage();
+      }
     } else if (lastTopicAnswer === "deep_last") {
       setCurrentQNum(personalityQuestionNum);
       setFirstConnected(true);
