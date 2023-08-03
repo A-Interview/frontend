@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import AiImage from "../assets/img/AiImage.svg";
+import AiImage from "../assets/img/AiImage.png";
 import axios from "axios";
 // import AnswerPlay from "../assets/img/AnswerPlay.svg";
 
@@ -64,6 +64,7 @@ const AnswerButton = styled.button<{ showBulb: boolean }>`
   background-repeat: no-repeat;
   background-size: contain;
   display: ${(props) => (props.showBulb ? "inline-block" : "none")};
+  cursor: pointer;
 `;
 
 const AnswerList = ({
@@ -92,7 +93,6 @@ const AnswerList = ({
         question_id: questionId,
       })
       .then((res) => {
-        console.log("GPT 답변 생성 완료");
         setIsMakeAnswer(true);
       })
       .catch((error) => {
@@ -113,9 +113,7 @@ const AnswerList = ({
         .catch((error) => {
           console.log(error);
         });
-    } catch (error) {
-      console.log("");
-    }
+    } catch (error) {}
   }, []);
 
   useEffect(() => {

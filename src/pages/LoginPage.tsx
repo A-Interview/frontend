@@ -143,11 +143,6 @@ const LoginPage = (): JSX.Element => {
       setUsername(email);
       SaveUserNameStateToSessionStorage(email);
       SaveCurrentUserIdToSessionStorage(response.data.user_id);
-      console.log(
-        "가입된 사용자의 토큰:",
-        response.data.access,
-        response.data.refresh
-      );
       SaveAccessTokenToSessionStorage(response.data.access);
       SaveRefreshTokenToSessionStorage(response.data.refresh);
       SaveSignUpstateToSessionStorage("true");
@@ -156,7 +151,7 @@ const LoginPage = (): JSX.Element => {
       await showToast();
     } catch (error) {
       await showToast2();
-      console.log("로그인 실패", error);
+      console.log(error);
     }
   };
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -172,7 +167,7 @@ const LoginPage = (): JSX.Element => {
       await handleLogin();
     } catch (error) {
       await showToast2();
-      console.log("로그인 실패", error);
+      console.log(error);
     }
   };
   const checkInput = (): void => {

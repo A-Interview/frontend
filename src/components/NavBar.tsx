@@ -100,22 +100,19 @@ const NavBar = (): JSX.Element => {
   }, []);
 
   const handleLogout = (): void => {
-    console.log("실행");
     try {
       const refreshToken: string | null = sessionStorage.getItem("refresh");
       if (refreshToken != null) {
         // 비동기 작업인 axios.post를 여기서 호출하지 않고,
         // 로그아웃 처리를 하기 위한 함수로 분리합니다.
         logoutAsync()
-          .then(() => {
-            console.log("로그아웃 성공");
-          })
+          .then(() => {})
           .catch((error) => {
-            console.log("로그아웃 실패:", error);
+            console.log(error);
           });
       }
     } catch (error) {
-      console.log("로그아웃 실패:", error);
+      console.log(error);
     }
   };
 
@@ -132,15 +129,6 @@ const NavBar = (): JSX.Element => {
       setSignupNow(signUpState);
     }
   };
-
-  // const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-  //   e.preventDefault();
-  //   try {
-  //     await handleLogout();
-  //   } catch (error) {
-  //     console.log("로그아웃 실패:", error);
-  //   }
-  // };
 
   return (
     <NavBarBackGround>
@@ -193,7 +181,7 @@ const NavBar = (): JSX.Element => {
               transition={{ type: "spring", stiffness: 200, damping: 10 }}
               onClick={handleLogout}
             >
-              로그 아웃
+              로그아웃
             </LoginButton>
           ) : (
             <Link

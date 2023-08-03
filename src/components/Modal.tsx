@@ -131,7 +131,7 @@ const Modal = ({
         }
       })
       .catch((error) => {
-        console.error("오류가 발생했습니다:", error);
+        console.error(error);
       });
   };
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -190,7 +190,6 @@ const Modal = ({
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                     handleTextChange(e);
                   }}
-                  maxLength={800}
                   rows={25}
                   cols={130}
                   placeholder="내용을 입력하세요."
