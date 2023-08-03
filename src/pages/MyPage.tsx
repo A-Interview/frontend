@@ -273,13 +273,13 @@ const MyPage = (): JSX.Element => {
     setCareer(idform.career);
     setResume(idform.resume);
     handlegetForm().catch((error) => {
-      console.log("저장 실패:", error);
+      console.log(error);
     });
   }, []);
   // 버튼 누를 때마다 get 요청
   useEffect(() => {
     handleSave().catch((error) => {
-      console.log("저장 실패:", error);
+      console.log(error);
     });
   }, [userId]);
   // form id 바뀔때마다 상태 업데이트
@@ -393,16 +393,13 @@ const MyPage = (): JSX.Element => {
   // 자기소개서 업데이트
   const updateResume = (newResume: string): void => {
     setResume(newResume);
-    console.log(newResume);
   };
 
   useEffect(() => {
     handlechangeForm()
-      .then(() => {
-        console.log("저장 성공");
-      })
+      .then(() => {})
       .catch((error) => {
-        console.log("저장 실패:", error);
+        console.log(error);
       });
   }, [resume]);
   // Form이 비었을 경우 면접 결과 페이지로 넘어가는 것을 차단
@@ -464,14 +461,14 @@ const MyPage = (): JSX.Element => {
       });
       console.log(response.data);
     } catch (error) {
-      console.error("오류 발생:", error);
+      console.error(error);
     }
   };
   const handlechangeForm = async (): Promise<void> => {
     try {
       await changeForm();
     } catch (error) {
-      console.log("오류 발생:", error);
+      console.log(error);
     }
   };
   // 전체 form 가져오기
@@ -488,14 +485,14 @@ const MyPage = (): JSX.Element => {
         setformAll(response.data);
       }
     } catch (error) {
-      console.error("오류 발생:", error);
+      console.error(error);
     }
   };
   const handlegetForm = async (): Promise<void> => {
     try {
       await getForm();
     } catch (error) {
-      console.log("오류 발생:", error);
+      console.log(error);
     }
   };
   // formId로 get
@@ -504,14 +501,14 @@ const MyPage = (): JSX.Element => {
       const response = await axios.get(`/api/forms/user/${userId}`);
       setformState(response.data);
     } catch (error) {
-      console.error("오류 발생:", error);
+      console.error(error);
     }
   };
   const handleSave = async (): Promise<void> => {
     try {
       await handleForm();
     } catch (error) {
-      console.log("오류 발생:", error);
+      console.log(error);
     }
   };
   // form_id 전역 저장
@@ -546,11 +543,9 @@ const MyPage = (): JSX.Element => {
 
   const showToastMake = (): void => {
     showToast()
-      .then(() => {
-        console.log("토스트 생성 완료");
-      })
+      .then(() => {})
       .catch((error) => {
-        console.error("토스트 에러발생:", error);
+        console.error(error);
       });
   };
 

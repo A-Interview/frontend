@@ -244,7 +244,6 @@ const InterviewResultPage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    console.log(onClicknow);
     setonClicknow(onClicknow);
   }, [onClicknow]);
   const onClickAll = (): void => {

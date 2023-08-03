@@ -6,6 +6,10 @@ import LoadingPage from "../components/Loading";
 import { styled } from "styled-components";
 import MainImage1 from "../assets/img/MainPageImage1.png";
 import MainImage2 from "../assets/img/MainPageImage2.png";
+import MainImage3 from "../assets/img/MainPageImage3.svg";
+import MainPageLogo from "../assets/img/MainPageLogo.png";
+import MainPageInterview from "../assets/img/MainPageInterview.png";
+import MainPageStar from "../assets/img/MainPageStar.png";
 import { Link } from "react-router-dom";
 
 const MainPageBackGround = styled.div`
@@ -98,11 +102,70 @@ const variants: Variants = {
   },
 };
 
+const variants2: Variants = {
+  hidden: {
+    opacity: 0.5,
+    y: 15,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 0.2,
+      duration: 1,
+      repeat: Infinity,
+      repeatType: "reverse",
+    },
+  },
+};
+
+const variants3: Variants = {
+  hidden: {
+    opacity: 0.2,
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      delay: 0.2,
+      duration: 1,
+      repeat: Infinity,
+      repeatType: "reverse",
+    },
+  },
+};
+
 const MainPageBackGround2 = styled.img`
   position: absolute;
   bottom: 0px;
   width: 100vw;
   height: 25.8125rem;
+`;
+
+const MainPageImage3 = styled(motion.img)`
+  width: 100%;
+  height: 100%;
+`;
+
+const MainLogo = styled(motion.img)`
+  width: 37rem;
+  display: block;
+  margin: auto;
+`;
+
+const MainInterview = styled(motion.img)`
+  width: 85%;
+  height: 85%;
+  display: block;
+  margin: auto;
+`;
+
+const MainStar = styled(motion.img)`
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin: auto;
+  margin-top: 32rem;
+  z-index: -1;
 `;
 
 const MainPage = (): JSX.Element => {
@@ -177,6 +240,119 @@ const MainPage = (): JSX.Element => {
         />
         <MainPageBackGround2 src={MainImage2} />
         <LoadingPage></LoadingPage>
+      </MainPageBackGround>
+      <MainPageBackGround>
+        <div>
+          <motion.div
+            style={{
+              marginTop: "10rem",
+              lineHeight: "50px",
+              textAlign: "center",
+              width: "100%",
+              fontSize: "2.5rem",
+              fontWeight: "700",
+              color: "#21d696cc",
+            }}
+            initial={{ opacity: 0, y: 100 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+          >
+            chat-GPT를 이용한
+          </motion.div>
+          <motion.div
+            style={{
+              lineHeight: "50px",
+              marginBottom: "40px",
+              textAlign: "center",
+              width: "100%",
+              fontSize: "1.3rem",
+              fontWeight: "600",
+              color: "white",
+            }}
+            initial={{ opacity: 0, y: 50 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            스마트한 면접 서비스
+          </motion.div>
+          <div
+            style={{
+              padding: "0 5rem",
+            }}
+          >
+            <MainPageImage3
+              src={MainImage3}
+              initial="hidden"
+              animate="visible"
+              variants={variants2}
+            ></MainPageImage3>
+          </div>
+        </div>
+      </MainPageBackGround>
+      <MainPageBackGround>
+        <div>
+          <motion.div
+            style={{
+              marginTop: "32rem",
+              marginBottom: "2rem",
+              lineHeight: "50px",
+              textAlign: "center",
+              width: "100%",
+              fontSize: "2.5rem",
+              fontWeight: "700",
+              color: "white",
+            }}
+            initial={{ opacity: 0, y: 100 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+          >
+            AI 면접 질문
+          </motion.div>
+          <MainInterview
+            src={MainPageInterview}
+            initial="hidden"
+            animate="visible"
+            variants={variants2}
+          ></MainInterview>
+        </div>
+      </MainPageBackGround>
+      <MainPageBackGround>
+        <div>
+          <MainStar
+            src={MainPageStar}
+            initial="hidden"
+            animate="visible"
+            variants={variants3}
+          ></MainStar>
+        </div>
+      </MainPageBackGround>
+      <MainPageBackGround>
+        <div
+          style={{
+            width: "100%",
+            height: "15rem",
+            marginTop: "36rem",
+            paddingTop: "2rem",
+            backgroundColor: "rgba(22, 20, 52, 0.71)",
+          }}
+        >
+          <div
+            style={{
+              lineHeight: "50px",
+              textAlign: "center",
+              width: "100%",
+              fontSize: "1.6rem",
+              fontWeight: "600",
+              color: "white",
+              zIndex: "-1",
+              marginTop: "1.5rem",
+              marginBottom: "-1rem",
+            }}
+          >
+            최고의 ai 면접 서비스
+          </div>
+          <MainLogo src={MainPageLogo}></MainLogo>
+        </div>
       </MainPageBackGround>
     </div>
   );

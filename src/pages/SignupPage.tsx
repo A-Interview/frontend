@@ -146,7 +146,7 @@ const SignupPage = (): JSX.Element => {
       navigate("/login");
     } catch (error) {
       await showToast2();
-      console.log("회원가입 실패:", error);
+      console.log(error);
     }
   };
   const onSubmit = (): void => {
@@ -159,14 +159,12 @@ const SignupPage = (): JSX.Element => {
 
     try {
       handleSignUp()
-        .then(() => {
-          console.log("회원가입 성공");
-        })
+        .then(() => {})
         .catch((error) => {
-          console.log("회원 가입 실패", error);
+          console.log(error);
         });
     } catch (error) {
-      console.log("회원가입 실패:", error);
+      console.log(error);
     }
   };
   const checkInput = (): void => {

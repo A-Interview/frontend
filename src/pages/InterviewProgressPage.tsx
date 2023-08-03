@@ -5,6 +5,8 @@ import { useNavigate } from "react-router";
 import LoadingPage from "../components/Loading";
 import InterviewBackImage from "../assets/img/InterviewBackImage.png";
 import InterviewBox from "../assets/img/InterviewBox.svg";
+import cuterobot from "../lottie/cuterobot.json";
+import Lottie from "react-lottie-player";
 
 const ProgressBackground = styled.div`
   width: 100vw;
@@ -25,7 +27,7 @@ const BackWard = styled(motion.div)`
   left: 1.5rem;
   top: 1.5rem;
   cursor: pointer;
-  z-index: 9999999999999999;
+  z-index: 100;
 `;
 
 const ProgressBox = styled(motion.div)`
@@ -99,7 +101,7 @@ const Count = styled.div`
   font-style: normal;
   color: white;
 `;
-const ProgressNextButton = styled(motion.div)`
+const ProgressNextButton = styled(motion.button)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -107,15 +109,12 @@ const ProgressNextButton = styled(motion.div)`
   cursor: pointer;
   outline: none;
   z-index: 2000;
+  border: 0;
+  background-color: transparent;
 `;
 const ProgressVideo = styled.video`
   transform: scaleX(-1);
   box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
-`;
-const ProgressImg = styled.img`
-  box-shadow: 0px 0px 0.29790791869163513px 0px rgba(66, 71, 76, 0.32);
-  width: 65rem;
-  height: 46rem;
 `;
 
 const ProgressQuestionText = styled(motion.div)`
@@ -205,7 +204,6 @@ const InterviewProgressPage = (): JSX.Element => {
       })
       .catch((error) => {
         console.error("Error accessing camera:", error);
-        // Handle the error case here
       });
   };
 
@@ -242,8 +240,10 @@ const InterviewProgressPage = (): JSX.Element => {
   );
   const [info, setInfo] = useState<string>(
     "왼쪽 상단에 있는 버튼을 누르고 카메라가 켜진 상태로 면접을 시작하세요.\n" +
-      "질문을 읽고 10초 뒤에 답변을 한 뒤 우측의 버튼을 누르세요. "
+      "질문을 듣고 3초 뒤에 빨간 불이 들어오면 답변을 한 뒤 우측의 버튼을 누르세요.\n " +
+      "*말을 하지 않고 넘기면 다음 질문으로 넘어가지 않습니다!*"
   );
+  const [speechmessage, setSpeechmessage] = useState(0);
 
   // 메세지가 post되었는 지 확인하는 변수, 트리거를 위해 필요
   const [isPost, setIsPost] = useState(false);
@@ -270,14 +270,14 @@ const InterviewProgressPage = (): JSX.Element => {
   // last_topic_answer 토큰 변수
   const [lastTopicAnswer, setLastTopicAnswer] = useState("");
 
+  const [buttonUnAble, setButtonUnAble] = useState(false);
+  const [loadingCheck, setLoadingCheck] = useState(false);
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
     // const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
     const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
 
     ws.onopen = () => {
-      console.log("WebSocket connected");
-
       // 초기 세팅
       ws.send(
         JSON.stringify({
@@ -299,6 +299,7 @@ const InterviewProgressPage = (): JSX.Element => {
     };
 
     ws.onmessage = (event) => {
+      setLoadingCheck((prev) => !prev);
       setFirstConnected(false);
       const data = JSON.parse(event.data);
 
@@ -309,15 +310,13 @@ const InterviewProgressPage = (): JSX.Element => {
         const finishReason: string = data.finish_reason;
 
         if (finishReason === "stop") {
-          startRecording();
+          setSpeechmessage((prev) => prev + 1);
         }
-        console.log("Received message:", message);
         setMessage((m) => m + message);
       }
     };
 
     ws.onclose = () => {
-      console.log("WebSocket disconnected");
       setSocket(null);
     };
   };
@@ -337,7 +336,6 @@ const InterviewProgressPage = (): JSX.Element => {
       deepValue != null &&
       personalityValue != null
     ) {
-      console.log("form_id : ", id);
       setDefaultQuestionNum(defaultValue);
       setSituationQuestionNum(situationValue);
       setDeepQuestionNum(deepValue);
@@ -389,13 +387,28 @@ const InterviewProgressPage = (): JSX.Element => {
   useEffect(() => {
     // 현재 토픽의 마지막 질문인 경우 설정.
     if (lastTopicAnswer === "default_last") {
-      setCurrentQNum(situationQuestionNum);
-      setFirstConnected(true);
-      sendMessage();
+      // 다음이 0인 경우를 전부 제외함
+      if (situationQuestionNum === 0 && deepQuestionNum === 0) {
+        setCurrentQNum(personalityQuestionNum);
+        setFirstConnected(true);
+        sendMessage();
+      } else if (situationQuestionNum === 0 && deepQuestionNum !== 0) {
+        setCurrentQNum(deepQuestionNum);
+        setFirstConnected(true);
+        sendMessage();
+      } else {
+        setCurrentQNum(situationQuestionNum);
+        setFirstConnected(true);
+        sendMessage();
+      }
     } else if (lastTopicAnswer === "situation_last") {
-      setCurrentQNum(deepQuestionNum);
-      setFirstConnected(true);
-      sendMessage();
+      if (deepQuestionNum === 0) {
+        setCurrentQNum(personalityQuestionNum);
+      } else {
+        setCurrentQNum(deepQuestionNum);
+        setFirstConnected(true);
+        sendMessage();
+      }
     } else if (lastTopicAnswer === "deep_last") {
       setCurrentQNum(personalityQuestionNum);
       setFirstConnected(true);
@@ -407,27 +420,23 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 초기 메세지 요청 함수
   const sendMessage = (): void => {
-    console.log(socket);
     if (socket != null) {
-      console.log("send Initial Message");
       const data = {
         formId: postId,
         type: "withoutAudio",
         interviewType,
       };
       socket.send(JSON.stringify(data));
-      setCount(10);
+      setCount(3);
       setFirstConnected(false);
       setCurrentQNum((prev) => prev - 1);
-      setMessage("");
+      setMessage("로딩 중...");
       setInfo("");
     }
   };
 
   // 한 토픽의 마지막 메세지 요청 함수, 응답으로 오는 질문이 없음
   const sendMessageNoReply = (): void => {
-    console.log("send Message No Reply");
-
     if (audioBlob instanceof Blob) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -446,7 +455,7 @@ const InterviewProgressPage = (): JSX.Element => {
       };
       reader.readAsDataURL(audioBlob);
     }
-    setMessage("");
+    setMessage("로딩 중...");
     setIsPost(true);
     checkInterviewType();
   };
@@ -488,7 +497,6 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 음성 녹음과 함께 질문 요청 함수
   const sendMessageWithAudio = (): void => {
-    console.log("send Message With Audio");
     // Blob 객체를 읽어 데이터 URL로 변환합니다.
     if (audioBlob instanceof Blob) {
       const reader = new FileReader();
@@ -503,14 +511,13 @@ const InterviewProgressPage = (): JSX.Element => {
         };
         if (socket != null && audioBlob != null) {
           socket.send(JSON.stringify(data));
-          console.log("posted");
         }
         setAudioBlob(null);
       };
       reader.readAsDataURL(audioBlob);
     }
-    setMessage("");
-    setCount(10);
+    setMessage("로딩 중...");
+    setCount(3);
     setIsPost(true);
     setCurrentQNum((prev) => prev - 1);
   };
@@ -523,8 +530,8 @@ const InterviewProgressPage = (): JSX.Element => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [stopTrigger, setStopTrigger] = useState(false);
   const [saveTrigger, setSaveTrigger] = useState(false);
-  // 10초 카운트 변수
-  const [count, setCount] = useState(10);
+  // 3초 카운트 변수
+  const [count, setCount] = useState(3);
 
   // 버튼 누를 시 녹음 본 전달하는 트리거
   useEffect(() => {
@@ -551,12 +558,9 @@ const InterviewProgressPage = (): JSX.Element => {
     setSaveTrigger(false);
   }, [audioBlob]);
 
-  console.log(recording);
   // 음성 녹음 함수
   const startRecording = (): void => {
     if (recording) return;
-    setRecording(true);
-    console.log(currentQNum);
     countDown();
     setTimeout(() => {
       navigator.mediaDevices
@@ -566,34 +570,30 @@ const InterviewProgressPage = (): JSX.Element => {
           mediaRecorder.addEventListener("dataavailable", handleDataAvailable);
           mediaRecorder.start();
           mediaRecorderRef.current = mediaRecorder; // Store mediaRecorder in a ref
-          setRecording(true);
         })
         .catch((error) => {
           console.error("Error accessing microphone:", error);
         });
-      console.log("Delayed function executed.");
-    }, 10000); // 10초를 밀리초로 나타냅니다.
+    }, 3000); // 3초를 밀리초로 나타냅니다.
   };
   useEffect(() => {
     // 카운트가 진행 중이면 무조건 파란색으로 변경
-    if (count > 0 && count <= 10) {
+    if (count > 0 && count <= 3) {
       setRecordColor(false); // 녹음 상태를 해제하여 Recording 컴포넌트에서 빨간색을 표시하지 않도록 함
     }
   }, [count]);
 
   // 카운트 다운 함수
   const countDown = (): void => {
-    let dummyCount = 10;
+    let dummyCount = 3;
     const timer = setInterval(() => {
       if (dummyCount > 0) {
-        console.log(count);
         setCount((prev) => prev - 1);
         dummyCount--;
       } else {
         clearInterval(timer);
         setRecording(true);
         setRecordColor(true);
-        console.log("Countdown finished!");
       }
     }, 1000);
   };
@@ -609,7 +609,6 @@ const InterviewProgressPage = (): JSX.Element => {
   const saveRecording = (): void => {
     const mergedBlob = new Blob(audioChunks, { type: "audio/wav" });
     setAudioBlob(mergedBlob);
-    console.log(audioChunks);
     setAudioChunks([]); // Clear the audioChunks array
   };
 
@@ -617,6 +616,53 @@ const InterviewProgressPage = (): JSX.Element => {
   const handleDataAvailable = (event: BlobEvent): void => {
     setAudioChunks((prevChunks) => [...prevChunks, event.data]);
   };
+
+  // TTS 구현
+  const speakText = (text: any): any => {
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance(text);
+
+    utterThis.rate = 2.0;
+    synth.speak(utterThis);
+    utterThis.onend = () => {
+      startRecording();
+    };
+  };
+
+  // 처음 화면에서 TTS가 나오는 것을 방지
+  useEffect(() => {
+    if (message !== "면접을 시작하시려면 우측의 버튼을 클릭해주세요.") {
+      speakText(message);
+    }
+  }, [speechmessage]);
+
+  // 버튼 비활성화
+  const [buttonTrigger, setButtonTrigger] = useState(false);
+  useEffect(() => {
+    if (buttonUnAble && buttonTrigger) {
+      if (firstConnected && currentQNum > 0) {
+        sendMessage();
+      } else if (!firstConnected && currentQNum > 0) {
+        setStopTrigger(true);
+        setCount(3);
+      } else if (currentQNum === 0 && !firstConnected) {
+        setStopTrigger(true);
+        setCount(3);
+      }
+    }
+  }, [buttonUnAble, buttonTrigger]);
+  useEffect(() => {
+    if (recording) {
+      setButtonUnAble(false);
+      setButtonTrigger(true);
+    }
+  }, [recording]);
+  useEffect(() => {
+    if (message.includes("로딩 중...")) {
+      const newMessage = message.split("로딩 중...")[1];
+      setMessage(newMessage);
+    }
+  }, [loadingCheck]);
 
   return (
     <>
@@ -665,7 +711,12 @@ const InterviewProgressPage = (): JSX.Element => {
                 }}
               />
             ) : (
-              <ProgressImg src={""} />
+              <Lottie
+                loop={true}
+                animationData={cuterobot}
+                play
+                style={{ width: 400, height: 400 }}
+              />
             )}
             <div
               style={{
@@ -789,16 +840,10 @@ const InterviewProgressPage = (): JSX.Element => {
                 </div>
               </ProgressQuestionText>
               <ProgressNextButton
+                disabled={buttonUnAble}
                 onClick={() => {
-                  if (firstConnected && currentQNum > 0) {
-                    sendMessage();
-                  } else if (!firstConnected && currentQNum > 0) {
-                    setStopTrigger(true);
-                    setCount(10);
-                  } else if (currentQNum === 0 && !firstConnected) {
-                    setStopTrigger(true);
-                    setCount(10);
-                  }
+                  setButtonUnAble(true);
+                  setButtonTrigger(true);
                 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 1.1 }}
