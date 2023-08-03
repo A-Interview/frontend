@@ -147,7 +147,7 @@ const MainPageImage3 = styled(motion.img)`
 `;
 
 const MainLogo = styled(motion.img)`
-  width: 30rem;
+  width: 37rem;
   display: block;
   margin: auto;
 `;
@@ -345,6 +345,8 @@ const MainPage = (): JSX.Element => {
               fontWeight: "600",
               color: "white",
               zIndex: "-1",
+              marginTop: "1.5rem",
+              marginBottom: "-1rem",
             }}
           >
             최고의 ai 면접 서비스
