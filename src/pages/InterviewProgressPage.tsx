@@ -404,6 +404,8 @@ const InterviewProgressPage = (): JSX.Element => {
     } else if (lastTopicAnswer === "situation_last") {
       if (deepQuestionNum === 0) {
         setCurrentQNum(personalityQuestionNum);
+        setFirstConnected(true);
+        sendMessage();
       } else {
         setCurrentQNum(deepQuestionNum);
         setFirstConnected(true);
