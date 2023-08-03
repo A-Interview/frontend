@@ -274,8 +274,8 @@ const InterviewProgressPage = (): JSX.Element => {
   const [loadingCheck, setLoadingCheck] = useState(false);
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
-    // const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
+    // const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
+    const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
 
     ws.onopen = () => {
       // 초기 세팅
