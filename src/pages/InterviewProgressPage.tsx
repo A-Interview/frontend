@@ -643,7 +643,7 @@ const InterviewProgressPage = (): JSX.Element => {
     }
   }, [recording]);
   useEffect(() => {
-    if (message === "처리 중...") {
+    if (message === "로딩 중...") {
       setMessage("");
     }
   }, [loadingCheck]);
