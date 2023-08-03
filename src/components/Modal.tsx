@@ -131,7 +131,7 @@ const Modal = ({
         }
       })
       .catch((error) => {
-        console.error("오류가 발생했습니다:", error);
+        console.error(error);
       });
   };
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {

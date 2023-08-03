@@ -93,7 +93,6 @@ const AnswerList = ({
         question_id: questionId,
       })
       .then((res) => {
-        console.log("GPT 답변 생성 완료");
         setIsMakeAnswer(true);
       })
       .catch((error) => {
@@ -114,9 +113,7 @@ const AnswerList = ({
         .catch((error) => {
           console.log(error);
         });
-    } catch (error) {
-      console.log("");
-    }
+    } catch (error) {}
   }, []);
 
   useEffect(() => {

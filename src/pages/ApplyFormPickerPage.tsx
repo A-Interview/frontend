@@ -191,9 +191,7 @@ const ApplyFormPickerPage = (): JSX.Element => {
       navigate("/login");
     }
     getForm()
-      .then(() => {
-        console.log("get form");
-      })
+      .then(() => {})
       .catch((error) => {
         console.log(error);
       });
@@ -216,11 +214,8 @@ const ApplyFormPickerPage = (): JSX.Element => {
         });
         setFormDatas(response.data);
       }
-    } catch (error) {
-      console.log("get 오류 발생");
-    }
+    } catch (error) {}
   };
-  console.log(formDatas);
 
   const moveToWatingRoom = (e: any): void => {
     navigate("/wating-room");

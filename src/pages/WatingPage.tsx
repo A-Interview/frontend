@@ -250,7 +250,7 @@ const WatingPage = (): JSX.Element => {
 
       checkFormNumber();
     } catch (error) {
-      console.log("입력 실패:", error);
+      console.log(error);
     }
   };
 
@@ -266,10 +266,8 @@ const WatingPage = (): JSX.Element => {
           },
         })
         .then((res) => {
-          console.log(res.data.length);
           if (res.data.length >= 5) {
             const firstDataId = res.data[0].id;
-            console.log(firstDataId);
             deleteFirst(firstDataId);
           }
         })
@@ -293,7 +291,7 @@ const WatingPage = (): JSX.Element => {
     try {
       await handleForm();
     } catch (error) {
-      console.log("입력 실패:", error);
+      console.log(error);
     }
   };
   const [isLoaded, setIsLoaded] = useState(false);
@@ -304,7 +302,6 @@ const WatingPage = (): JSX.Element => {
     }, 2000);
   }, []);
   const checkDisabled = (): void => {
-    // console.log(resume);
     if (sectorName !== "" && jobName !== "" && career !== "" && resume !== "") {
       setButtonDisabled(false);
     } else {
@@ -511,9 +508,9 @@ const WatingPage = (): JSX.Element => {
               }
               onClick={() => {
                 handleSave().catch((error) => {
-                  console.log("저장 실패:", error);
+                  console.log(error);
                   showToast2().catch((error) => {
-                    console.log("저장 실패:", error);
+                    console.log(error);
                   });
                 });
               }}
@@ -535,7 +532,7 @@ const WatingPage = (): JSX.Element => {
             }
             onClick={() => {
               showToast2().catch((error) => {
-                console.log("저장 실패:", error);
+                console.log(error);
               });
             }}
           >

@@ -87,7 +87,6 @@ const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
           }
         )
         .then((res) => {
-          console.log(res);
           checkFormNumber();
           SaveCurrentFormIdToSessionStorage(res.data.id);
         })
@@ -109,10 +108,8 @@ const ApplyForm = ({ jobName, createdAt, id }: Props): JSX.Element => {
           },
         })
         .then((res) => {
-          console.log(res.data.length);
           if (res.data.length >= 5) {
             const firstDataId = res.data[0].id;
-            console.log(firstDataId);
             deleteFirst(firstDataId);
           }
         })

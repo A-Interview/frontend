@@ -101,7 +101,7 @@ const Count = styled.div`
   font-style: normal;
   color: white;
 `;
-const ProgressNextButton = styled(motion.div)`
+const ProgressNextButton = styled(motion.button)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -109,6 +109,8 @@ const ProgressNextButton = styled(motion.div)`
   cursor: pointer;
   outline: none;
   z-index: 2000;
+  border: 0;
+  background-color: transparent;
 `;
 const ProgressVideo = styled.video`
   transform: scaleX(-1);
@@ -202,7 +204,6 @@ const InterviewProgressPage = (): JSX.Element => {
       })
       .catch((error) => {
         console.error("Error accessing camera:", error);
-        // Handle the error case here
       });
   };
 
@@ -239,8 +240,10 @@ const InterviewProgressPage = (): JSX.Element => {
   );
   const [info, setInfo] = useState<string>(
     "왼쪽 상단에 있는 버튼을 누르고 카메라가 켜진 상태로 면접을 시작하세요.\n" +
-      "질문을 읽고 5초 뒤에 빨간 불이 들어오면 답변을 한 뒤 우측의 버튼을 누르세요. "
+      "질문을 듣고 3초 뒤에 빨간 불이 들어오면 답변을 한 뒤 우측의 버튼을 누르세요.\n " +
+      "*말을 하지 않고 넘기면 다음 질문으로 넘어가지 않습니다!*"
   );
+  const [speechmessage, setSpeechmessage] = useState(0);
 
   // 메세지가 post되었는 지 확인하는 변수, 트리거를 위해 필요
   const [isPost, setIsPost] = useState(false);
@@ -267,14 +270,13 @@ const InterviewProgressPage = (): JSX.Element => {
   // last_topic_answer 토큰 변수
   const [lastTopicAnswer, setLastTopicAnswer] = useState("");
 
+  const [buttonUnAble, setButtonUnAble] = useState(false);
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
     const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
     // const ws = new WebSocket(`wss://ainterview.site/ws/interview/`);
 
     ws.onopen = () => {
-      console.log("WebSocket connected");
-
       // 초기 세팅
       ws.send(
         JSON.stringify({
@@ -306,15 +308,13 @@ const InterviewProgressPage = (): JSX.Element => {
         const finishReason: string = data.finish_reason;
 
         if (finishReason === "stop") {
-          startRecording();
+          setSpeechmessage((prev) => prev + 1);
         }
-        console.log("Received message:", message);
         setMessage((m) => m + message);
       }
     };
 
     ws.onclose = () => {
-      console.log("WebSocket disconnected");
       setSocket(null);
     };
   };
@@ -334,7 +334,6 @@ const InterviewProgressPage = (): JSX.Element => {
       deepValue != null &&
       personalityValue != null
     ) {
-      console.log("form_id : ", id);
       setDefaultQuestionNum(defaultValue);
       setSituationQuestionNum(situationValue);
       setDeepQuestionNum(deepValue);
@@ -404,16 +403,14 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 초기 메세지 요청 함수
   const sendMessage = (): void => {
-    console.log(socket);
     if (socket != null) {
-      console.log("send Initial Message");
       const data = {
         formId: postId,
         type: "withoutAudio",
         interviewType,
       };
       socket.send(JSON.stringify(data));
-      setCount(5);
+      setCount(3);
       setFirstConnected(false);
       setCurrentQNum((prev) => prev - 1);
       setMessage("");
@@ -423,8 +420,6 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 한 토픽의 마지막 메세지 요청 함수, 응답으로 오는 질문이 없음
   const sendMessageNoReply = (): void => {
-    console.log("send Message No Reply");
-
     if (audioBlob instanceof Blob) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -485,7 +480,6 @@ const InterviewProgressPage = (): JSX.Element => {
 
   // 음성 녹음과 함께 질문 요청 함수
   const sendMessageWithAudio = (): void => {
-    console.log("send Message With Audio");
     // Blob 객체를 읽어 데이터 URL로 변환합니다.
     if (audioBlob instanceof Blob) {
       const reader = new FileReader();
@@ -500,14 +494,13 @@ const InterviewProgressPage = (): JSX.Element => {
         };
         if (socket != null && audioBlob != null) {
           socket.send(JSON.stringify(data));
-          console.log("posted");
         }
         setAudioBlob(null);
       };
       reader.readAsDataURL(audioBlob);
     }
     setMessage("");
-    setCount(5);
+    setCount(3);
     setIsPost(true);
     setCurrentQNum((prev) => prev - 1);
   };
@@ -520,8 +513,8 @@ const InterviewProgressPage = (): JSX.Element => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [stopTrigger, setStopTrigger] = useState(false);
   const [saveTrigger, setSaveTrigger] = useState(false);
-  // 5초 카운트 변수
-  const [count, setCount] = useState(5);
+  // 3초 카운트 변수
+  const [count, setCount] = useState(3);
 
   // 버튼 누를 시 녹음 본 전달하는 트리거
   useEffect(() => {
@@ -548,12 +541,9 @@ const InterviewProgressPage = (): JSX.Element => {
     setSaveTrigger(false);
   }, [audioBlob]);
 
-  console.log(recording);
   // 음성 녹음 함수
   const startRecording = (): void => {
     if (recording) return;
-    setRecording(true);
-    console.log(currentQNum);
     countDown();
     setTimeout(() => {
       navigator.mediaDevices
@@ -563,36 +553,32 @@ const InterviewProgressPage = (): JSX.Element => {
           mediaRecorder.addEventListener("dataavailable", handleDataAvailable);
           mediaRecorder.start();
           mediaRecorderRef.current = mediaRecorder; // Store mediaRecorder in a ref
-          setRecording(true);
         })
         .catch((error) => {
           console.error("Error accessing microphone:", error);
         });
-      console.log("Delayed function executed.");
-    }, 5000); // 5초를 밀리초로 나타냅니다.
+    }, 3000); // 3초를 밀리초로 나타냅니다.
   };
   useEffect(() => {
     // 카운트가 진행 중이면 무조건 파란색으로 변경
-    if (count > 0 && count <= 5) {
+    if (count > 0 && count <= 3) {
       setRecordColor(false); // 녹음 상태를 해제하여 Recording 컴포넌트에서 빨간색을 표시하지 않도록 함
     }
   }, [count]);
 
   // 카운트 다운 함수
   const countDown = (): void => {
-    let dummyCount = 5;
+    let dummyCount = 3;
     const timer = setInterval(() => {
       if (dummyCount > 0) {
-        console.log(count);
         setCount((prev) => prev - 1);
         dummyCount--;
       } else {
         clearInterval(timer);
         setRecording(true);
         setRecordColor(true);
-        console.log("Countdown finished!");
       }
-    }, 500);
+    }, 1000);
   };
   // 녹음 중지 함수
   const stopRecording = (): void => {
@@ -606,7 +592,6 @@ const InterviewProgressPage = (): JSX.Element => {
   const saveRecording = (): void => {
     const mergedBlob = new Blob(audioChunks, { type: "audio/wav" });
     setAudioBlob(mergedBlob);
-    console.log(audioChunks);
     setAudioChunks([]); // Clear the audioChunks array
   };
 
@@ -616,13 +601,44 @@ const InterviewProgressPage = (): JSX.Element => {
   };
 
   // TTS 구현
-  const [textToSpeak, setTextToSpeak] = useState("");
   const speakText = (text: any): any => {
     const synth = window.speechSynthesis;
     const utterThis = new SpeechSynthesisUtterance(text);
+
+    utterThis.rate = 2.0;
     synth.speak(utterThis);
+    utterThis.onend = () => {
+      startRecording();
+    };
   };
 
+  // 처음 화면에서 TTS가 나오는 것을 방지
+  useEffect(() => {
+    if (message !== "면접을 시작하시려면 우측의 버튼을 클릭해주세요.") {
+      speakText(message);
+    }
+  }, [speechmessage]);
+
+  const [buttonTrigger, setButtonTrigger] = useState(false);
+  useEffect(() => {
+    if (buttonUnAble && buttonTrigger) {
+      if (firstConnected && currentQNum > 0) {
+        sendMessage();
+      } else if (!firstConnected && currentQNum > 0) {
+        setStopTrigger(true);
+        setCount(3);
+      } else if (currentQNum === 0 && !firstConnected) {
+        setStopTrigger(true);
+        setCount(3);
+      }
+    }
+  }, [buttonUnAble, buttonTrigger]);
+  useEffect(() => {
+    if (recording) {
+      setButtonUnAble(false);
+      setButtonTrigger(true);
+    }
+  }, [recording]);
   return (
     <>
       <ProgressBackground>
@@ -650,22 +666,6 @@ const InterviewProgressPage = (): JSX.Element => {
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <textarea
-            value={textToSpeak}
-            onChange={(e) => {
-              setTextToSpeak(e.target.value);
-            }}
-            placeholder="Enter the text to be read aloud..."
-            rows={5}
-            cols={50}
-          />
-          <button
-            onClick={() => {
-              speakText(textToSpeak);
-            }}
-          >
-            Speak
-          </button>
           <InterviewBoxImage
             initial={{ opacity: 0, y: 50 }}
             animate={isLoaded ? { opacity: 1, y: 0 } : {}}
@@ -815,16 +815,10 @@ const InterviewProgressPage = (): JSX.Element => {
                 </div>
               </ProgressQuestionText>
               <ProgressNextButton
+                disabled={buttonUnAble}
                 onClick={() => {
-                  if (firstConnected && currentQNum > 0) {
-                    sendMessage();
-                  } else if (!firstConnected && currentQNum > 0) {
-                    setStopTrigger(true);
-                    setCount(5);
-                  } else if (currentQNum === 0 && !firstConnected) {
-                    setStopTrigger(true);
-                    setCount(5);
-                  }
+                  setButtonUnAble(true);
+                  setButtonTrigger(true);
                 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 1.1 }}
