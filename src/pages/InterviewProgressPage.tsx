@@ -271,6 +271,7 @@ const InterviewProgressPage = (): JSX.Element => {
   const [lastTopicAnswer, setLastTopicAnswer] = useState("");
 
   const [buttonUnAble, setButtonUnAble] = useState(false);
+  const [loadingCheck, setLoadingCheck] = useState(false);
   // 소켓 연결 함수, 메세지 처리 기능
   const connectWebSocket = (): void => {
     const ws = new WebSocket(`ws://localhost:8000/ws/interview/`);
@@ -298,6 +299,7 @@ const InterviewProgressPage = (): JSX.Element => {
     };
 
     ws.onmessage = (event) => {
+      setLoadingCheck((prev) => !prev);
       setFirstConnected(false);
       const data = JSON.parse(event.data);
 
@@ -413,7 +415,7 @@ const InterviewProgressPage = (): JSX.Element => {
       setCount(3);
       setFirstConnected(false);
       setCurrentQNum((prev) => prev - 1);
-      setMessage("");
+      setMessage("로딩 중...");
       setInfo("");
     }
   };
@@ -438,7 +440,7 @@ const InterviewProgressPage = (): JSX.Element => {
       };
       reader.readAsDataURL(audioBlob);
     }
-    setMessage("");
+    setMessage("로딩 중...");
     setIsPost(true);
     checkInterviewType();
   };
@@ -499,7 +501,7 @@ const InterviewProgressPage = (): JSX.Element => {
       };
       reader.readAsDataURL(audioBlob);
     }
-    setMessage("");
+    setMessage("로딩 중...");
     setCount(3);
     setIsPost(true);
     setCurrentQNum((prev) => prev - 1);
@@ -619,6 +621,7 @@ const InterviewProgressPage = (): JSX.Element => {
     }
   }, [speechmessage]);
 
+  // 버튼 비활성화
   const [buttonTrigger, setButtonTrigger] = useState(false);
   useEffect(() => {
     if (buttonUnAble && buttonTrigger) {
@@ -639,6 +642,12 @@ const InterviewProgressPage = (): JSX.Element => {
       setButtonTrigger(true);
     }
   }, [recording]);
+  useEffect(() => {
+    if (message === "처리 중...") {
+      setMessage("");
+    }
+  }, [loadingCheck]);
+
   return (
     <>
       <ProgressBackground>
