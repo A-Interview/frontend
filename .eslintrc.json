@@ -16,7 +16,7 @@
     "sourceType": "module",
     "project": [
       // local에서 개발 시
-      //"frontend/tsconfig.json"
+      // "frontend/tsconfig.json"
       // docker-compose 사용 시
       "./tsconfig.json"
     ]
