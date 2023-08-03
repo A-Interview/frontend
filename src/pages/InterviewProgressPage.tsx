@@ -658,8 +658,9 @@ const InterviewProgressPage = (): JSX.Element => {
     }
   }, [recording]);
   useEffect(() => {
-    if (message === "로딩 중...") {
-      setMessage("");
+    if (message.includes("로딩 중...")) {
+      const newMessage = message.split("로딩 중...")[1];
+      setMessage(newMessage);
     }
   }, [loadingCheck]);
 
