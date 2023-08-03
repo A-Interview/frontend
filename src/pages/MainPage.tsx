@@ -6,7 +6,7 @@ import LoadingPage from "../components/Loading";
 import { styled } from "styled-components";
 import MainImage1 from "../assets/img/MainPageImage1.png";
 import MainImage2 from "../assets/img/MainPageImage2.png";
-import MainImage3 from "../assets/img/MainPageImage3.svg";
+import MainImage3 from "../assets/img/MainPageImage3.png";
 import MainPageLogo from "../assets/img/MainPageLogo.png";
 import MainPageInterview from "../assets/img/MainPageInterview.png";
 import MainPageStar from "../assets/img/MainPageStar.png";
