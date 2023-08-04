@@ -624,7 +624,7 @@ const InterviewProgressPage = (): JSX.Element => {
     const synth = window.speechSynthesis;
     const utterThis = new SpeechSynthesisUtterance(text);
 
-    utterThis.rate = 2.0;
+    utterThis.rate = 1.0;
     synth.speak(utterThis);
     utterThis.onend = () => {
       startRecording();
